@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<script LANGUAGE="JavaScript">
+    var cont=0;
+    var cont_eval=0;
+    var cont_gen=0;
+    var cont_esp=0;
+    var cont_res=0;
+    var cont_bas=0;
+    var cont_comp=0;
+    cadVariables = location.search.substring(1,location.search.length);
+    arrVariables = cadVariables.split("&");
+    vp = unescape(arrVariables[0].split("=")[1]);
+    cur = unescape(arrVariables[1].split("=")[1]);
+    sem = unescape(arrVariables[2].split("=")[1]);
+    window.addEventListener('load', cargar, false);
+    function cargar(){
+        document.getElementById("v_p").value = vp
+        document.getElementById("c").value = cur
+        document.getElementById("s").value = sem
+    }
+    //Funcion para eliminar unidades
+    function eliminar(obj){
+        unity=document.getElementById("cant_unid");
+        //se eliminara unicamente los nodos despues del nodo 21 que corresponde ala ultima unidad que se introdujo 
+        unity.parentNode.removeChild(unity.parentNode.childNodes[cont+1]);
+        //contador de unidades
+        cont --;
+        document.getElementById("c_u").value=cont;
+        //Si no hay una unidad no tiene sentido eliminar una unidad por ende se remueve la opcion de eliminar unidad
+        //console.log(document.getElementsByName("contadorunidad").values);
+        if (cont==0){
+            document.getElementById("unityManagment").removeChild(document.getElementById("eliminarUnid"));
+        }
+    }
+    function eliminar2(obj,caso){
+        if(caso=="general"){
+            unity=document.getElementById("cant_general");
+            unity.parentNode.removeChild(unity.parentNode.childNodes[cont_gen+1]);
+            cont_gen --;
+            document.getElementById("c_g").value=cont_gen;
+            if (cont_gen==0){
+                document.getElementById("generalManagment").removeChild(document.getElementById("eliminarobjetivog"));
+            }
+        }
+        else if (caso=="especifico"){
+            unity=document.getElementById("cant_espec");
+            unity.parentNode.removeChild(unity.parentNode.childNodes[cont_esp+1]);
+            cont_esp --;
+            document.getElementById("c_es").value=cont_esp;
+            if (cont_esp==0){
+                document.getElementById("espeManagment").removeChild(document.getElementById("eliminarobjetivoe"));
+            }        
+        }
+        else if (caso=="resumido"){
+            unity=document.getElementById("cant_resu");
+            unity.parentNode.removeChild(unity.parentNode.childNodes[cont_res+1]);
+            cont_res --;
+            document.getElementById("c_res").value=cont_res;
+            if (cont_res==0){
+                document.getElementById("contresManagment").removeChild(document.getElementById("eliminarcontres"));
+            }        
+        }   
+        else if (caso=="basica"){
+            unity=document.getElementById("cant_basica");
+            unity.parentNode.removeChild(unity.parentNode.childNodes[cont_bas+1]);
+            cont_bas --;
+            document.getElementById("c_bas").value=cont_bas;
+            if (cont_bas==0){
+                document.getElementById("basicaManagment").removeChild(document.getElementById("eliminarbasica"));
+            }        
+        }
+        else if (caso=="complementaria"){
+            unity=document.getElementById("cant_compl");
+            unity.parentNode.removeChild(unity.parentNode.childNodes[cont_comp+1]);
+            cont_comp --;
+            document.getElementById("c_com").value=cont_comp;
+            if (cont_comp==0){
+                document.getElementById("compManagment").removeChild(document.getElementById("eliminarcomplementaria"));
+            }        
+        }     
+    }
+    //Funcion para eliminar evaluaciones
+    function eliminar_eval(obj){
+        eval=document.getElementById("cant_eval");
+        //se eliminara unicamente los nodos despues del nodo 22 que corresponde ala ultima evaluacion que se introdujo 
+        eval.parentNode.removeChild(eval.parentNode.childNodes[cont_eval+1]);
+        //contador de evaluaciones
+        cont_eval --;
+        document.getElementById("c_e").value=cont_eval;
+        //console.log(document.getElementsByName("contadorevaluacion").values);
+        //Si no hay una unidad no tiene sentido eliminar una unidad por ende se remueve la opcion de eliminar evaluacion
+        if (cont_eval==0){
+            document.getElementById("evalManagment").removeChild(document.getElementById("eliminarEval"));
+        }
+    }
+    //Funcion para una nueva entrada de texto, como parametro de entrada tiene el nombre asignado al input text y el texto que se mostrará antes del input text
+    function newEntry(tipo,text,input_1,input_2,input_3,n_1,n_2,n_3){
+        newInput1 = document.createElement("input");
+        newInput1.type="text";
+        newInput1.name=n_1;
+        newInput2 = document.createElement("input");
+        newInput2.type="text";
+        newInput2.name=n_2;
+        newInput3 = document.createElement("input");
+        if(tipo=="Unidad"){
+            newInput3.type="text";
+        }
+        else if (tipo=="Evaluacion"){
+            newInput3.type="date";
+        }
+        newInput3.name=n_3;
+        newNode = document.createElement("tr");
+        newNode.appendChild(document.createElement("h4"));
+        newNode.appendChild(document.createElement("tr"));
+        newNode.appendChild(document.createElement("tr"));
+        newNode.appendChild(document.createElement("tr"));
+        newNode.childNodes[1].appendChild(document.createElement("td"));
+        newNode.childNodes[1].appendChild(document.createElement("td"));
+        newNode.childNodes[2].appendChild(document.createElement("td"));
+        newNode.childNodes[2].appendChild(document.createElement("td"));
+        newNode.childNodes[3].appendChild(document.createElement("td"));
+        newNode.childNodes[3].appendChild(document.createElement("td"));
+        newNode.childNodes[0].appendChild(document.createTextNode(text));
+        newNode.childNodes[1].childNodes[0].appendChild(document.createTextNode(input_1))
+        newNode.childNodes[1].childNodes[1].appendChild(newInput1);
+        newNode.childNodes[2].childNodes[0].appendChild(document.createTextNode(input_2))
+        newNode.childNodes[2].childNodes[1].appendChild(newInput2);
+        newNode.childNodes[3].childNodes[0].appendChild(document.createTextNode(input_3))
+        newNode.childNodes[3].childNodes[1].appendChild(newInput3);
+        return newNode;
+    }
+    function newuni(text,input_1,input_2,input_3,n_1,n_2,n_3,cont){
+        newInput1 = document.createElement("input");
+        newInput1.type="text";
+        newInput1.name=n_1;
+        newInput2 = document.createElement("input");
+        newInput2.type="text";
+        newInput2.name=n_2;
+        //contador subtemas
+        newInput3 = document.createElement("input");
+        newInput3.type="hidden";
+        newInput3.name=n_3;
+        newInput3.id=n_3;
+        newInput3.value=0;
+        newInput4 = document.createElement("a")
+        newInput4.id="agresubtema"+cont;
+        newInput4.href="javascript:newsubt("+cont+")";
+        newInput4.appendChild(document.createTextNode("Agregar un subtema"));
+        newNode = document.createElement("table");
+        newNode.appendChild(document.createElement("h4"));
+        newNode.appendChild(document.createElement("tr"));
+        newNode.appendChild(document.createElement("tr"));
+        newNode.appendChild(document.createElement("tr"));
+        newNode.appendChild(document.createElement("tr"));
+        newNode.appendChild(document.createElement("tr"));
+        newNode.childNodes[1].appendChild(document.createElement("td"));
+        newNode.childNodes[2].appendChild(document.createElement("td"));
+        newNode.childNodes[2].appendChild(document.createElement("td"));
+        newNode.childNodes[3].appendChild(document.createElement("td"));
+        newNode.childNodes[3].appendChild(document.createElement("td"));
+        newNode.childNodes[5].appendChild(document.createElement("td"));
+        newNode.childNodes[0].appendChild(document.createTextNode(text));
+        newNode.childNodes[4].appendChild(document.createTextNode(input_3));
+        newNode.childNodes[1].firstChild.appendChild(newInput3);
+        newNode.childNodes[2].childNodes[0].appendChild(document.createTextNode(input_1))
+        newNode.childNodes[2].childNodes[1].appendChild(newInput1);
+        newNode.childNodes[3].childNodes[0].appendChild(document.createTextNode(input_2))
+        newNode.childNodes[3].childNodes[1].appendChild(newInput2);
+        newNode.childNodes[5].firstChild.appendChild(newInput4);
+        newNode.childNodes[5].id="nodosub"+cont;
+        newNode.childNodes[5].firstChild.id="agregarsub"+cont;
+        newNode.childNodes[5].firstChild.colspan="2";
+        return newNode;
+    }
+    function newsubt(cont){
+        cont2=document.getElementById("subtemas"+cont).value;
+        cont2++;
+        document.getElementById("subtemas"+cont).value=cont2;
+        unity=document.getElementById("nodosub"+cont);
+        newNode=newEntry2("Subtema "+cont2+": ","subtemauni"+cont+cont2);    
+        document.getElementById("agregarsub"+cont).colspan="2";
+        if (cont2==1){
+            newClose = document.createElement("a");
+            newClose.id="eliminarsubt"+cont2;
+            newClose.href='javascript:eliminari('+cont+')';
+            newClose.appendChild(document.createTextNode(" Borrar el último subtema"));
+            document.getElementById("nodosub"+cont).appendChild(newClose);
+        }
+        unity.parentNode.insertBefore(newNode,unity);
+    }
+    function eliminari(cont){
+        unity=document.getElementById("nodosub"+cont);
+        cont2=parseInt(document.getElementById("subtemas"+cont).value);
+        unity.parentNode.removeChild(unity.parentNode.childNodes[cont2+4]);
+        cont2 --;
+        document.getElementById("subtemas"+cont).value=cont2;
+        if (cont2==0){
+            document.getElementById("nodosub"+cont).removeChild(document.getElementById("eliminarsubt"+cont));
+        }
+    }
+    function newEntry2(input_1,n_1){
+        newInput1 = document.createElement("input");
+        newInput1.type="text";
+        newInput1.name=n_1;
+        newNode = document.createElement("tr");
+        newNode.appendChild(document.createElement("td"));
+        newNode.appendChild(document.createElement("td"));
+        newNode.firstChild.appendChild(document.createTextNode(input_1))
+        newNode.lastChild.appendChild(newInput1);
+        return newNode;
+    }    
+    function newEval(){
+        cont_eval ++;
+        document.getElementById("c_e").value=cont_eval;
+        //console.log(document.getElementsByName("contadorevaluacion").values.type);
+        eval=document.getElementById("cant_eval");
+        //Se crea una nueva evaluacion con su respectivo nombre en orden y su respectivo nombre antes del input
+        //console.log(unity.parentNode.childNodes)
+        newNode=newEntry("Evaluacion","Evaluacion "+cont_eval+":","Actividad :","Porcentaje :","Fecha :","actividad"+cont_eval,"porcentaje"+cont_eval,"fecha"+cont_eval);
+        //Agregamos la nueva evaluacion al frontend
+        eval.parentNode.insertBefore(newNode,eval);
+        //Agregar la opcion para borrar la ultima evaluacion
+        if (cont_eval==1){
+            newClose = document.createElement("a");
+            newClose.id="eliminarEval";
+            newClose.href="javascript:eliminar_eval(this)";
+            newClose.appendChild(document.createTextNode("Borrar la última evaluación"));
+            document.getElementById("evalManagment").appendChild(newClose);
+        }
+    }
+    function newUnity(){
+        cont ++;
+        document.getElementById("c_u").value=cont;
+        //console.log(document.getElementsByName("contadorunidad").values);
+        unity=document.getElementById("cant_unid");
+        //Se crea una nueva unidad con su respectivo nombre en orden y su respectivo nombre antes del input
+        //console.log(unity.parentNode.childNodes)
+        //newNode=newEntry("Unidad","Unidad "+cont+":","Temas :","Subtemas :","# de semanas :","temas"+cont,"subtemas"+cont,"semanas"+cont);
+        newNode=newuni("Unidad "+cont+":","Temas :","# de semanas :","Subtemas :","temas"+cont,"semanas"+cont,"subtemas"+cont,cont);
+        //Agregamos la nueva unidad al frontend
+        unity.parentNode.insertBefore(newNode,unity);
+        //Agregar la opcion para borrar la ultima unidad
+        if (cont==1){
+            newClose = document.createElement("a");
+            newClose.id="eliminarUnid";
+            newClose.href="javascript:eliminar(this)";
+            newClose.appendChild(document.createTextNode("Borrar la última unidad"));
+            document.getElementById("unityManagment").appendChild(newClose);
+        }
+    }
+    function newobject(tipo){
+        if(tipo=="general"){
+            cont_gen++;
+            document.getElementById("c_g").value=cont_gen;
+            unity=document.getElementById("cant_general");
+            newNode=newEntry2("General "+cont_gen+":","general"+cont_gen);    
+            if (cont_gen==1){
+                newClose = document.createElement("a");
+                newClose.id="eliminarobjetivog";
+                newClose.href='javascript:eliminar2(this,"general")';
+                newClose.appendChild(document.createTextNode("Borrar el último objetivo"));
+                document.getElementById("generalManagment").appendChild(newClose);
+            }
+        }
+        else if (tipo=="especifico"){
+            cont_esp++;
+            document.getElementById("c_es").value=cont_esp;
+            unity=document.getElementById("cant_espec");
+            newNode=newEntry2("Especifico "+cont_esp+":","especifico"+cont_esp);
+            if (cont_esp==1){
+                newClose = document.createElement("a");
+                newClose.id="eliminarobjetivoe";
+                newClose.href='javascript:eliminar2(this,"especifico")';
+                newClose.appendChild(document.createTextNode("Borrar el último objetivo"));
+                document.getElementById("espeManagment").appendChild(newClose);
+            }    
+        }
+        else if (tipo=="resumido"){
+            cont_res++;
+            document.getElementById("c_res").value=cont_res;
+            unity=document.getElementById("cant_resu");
+            newNode=newEntry2("Item "+cont_res+":","item"+cont_res);
+            if (cont_res==1){
+                newClose = document.createElement("a");
+                newClose.id="eliminarcontres";
+                newClose.href='javascript:eliminar2(this,"resumido")';
+                newClose.appendChild(document.createTextNode("Borrar el último item"));
+                document.getElementById("contresManagment").appendChild(newClose);
+            }    
+        }
+        else if (tipo=="basica"){
+            cont_bas++;
+            document.getElementById("c_bas").value=cont_bas;
+            unity=document.getElementById("cant_basica");
+            newNode=newEntry2("Basica "+cont_bas+":","basica"+cont_bas);
+            if (cont_bas==1){
+                newClose = document.createElement("a");
+                newClose.id="eliminarbasica";
+                newClose.href='javascript:eliminar2(this,"basica")';
+                newClose.appendChild(document.createTextNode("Borrar la ultima referencia"));
+                document.getElementById("basicaManagment").appendChild(newClose);
+            }    
+        }
+        else if (tipo=="complementaria"){
+            cont_comp++;
+            document.getElementById("c_com").value=cont_comp;
+            unity=document.getElementById("cant_compl");
+            newNode=newEntry2("Complementaria "+cont_comp+":","complementaria"+cont_comp);
+            if (cont_comp==1){
+                newClose = document.createElement("a");
+                newClose.id="eliminarcomplementaria";
+                newClose.href='javascript:eliminar2(this,"complementaria")';
+                newClose.appendChild(document.createTextNode("Borrar la ultima referencia"));
+                document.getElementById("complManagment").appendChild(newClose);
+            }    
+        }                 
+        unity.parentNode.insertBefore(newNode,unity);
+    }
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Editar Microcurriculos</title>
+</head>
+<h1>Asignar un nuevo microcurriculo</h1>
+<body>
+    <form action="{% url 'core' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="c_u" name="contadorunidad" value="0">
+        <input type="hidden" id="c_e" name="contadorevaluacion" value="0">
+        <input type="hidden" id="c_g" name="contadorgeneral" value="0">
+        <input type="hidden" id="c_es" name="contadorespecifico" value="0">
+        <input type="hidden" id="c_res" name="contadoresumido" value="0">
+        <input type="hidden" id="c_bas" name="contadorbasica" value="0">
+        <input type="hidden" id="c_com" name="contadorcomple" value="0">                
+        <input type="hidden" id="v_p" name="version_p">
+        <input type="hidden" id="c" name="curso_es">
+        <input type="hidden" id="s" name="semestre_es">
+        <table id="tabla1">
+            <tr>
+                <td>Descripcion General : </td>
+                <td><input type="text" name="descripcion_general" ></td>
+            </tr>
+            <tr>
+                <td>Proposito : </td>
+                <td><input type="text" name="proposito"></td>
+            </tr>
+            <tr>
+                <td>Metodología : </td>
+                <td><input type="text" name="metodologia"></td>
+            </tr>
+            <tr>
+                <td>Actividades de Asistencia Obligatoria : </td>
+                <td><input type="text" name="actividades_asis_oblig"></td>
+            </tr>
+        </table> 
+        <table>
+            <h2>Objetivos </h2>   
+            <tr>
+                <h3>Generales </h3>
+            </tr> 
+            <tr id="cant_general">
+                <td colspan="2"><CENTER id="generalManagment"><a HREF='javascript:newobject("general");'>Agregar un objetivo general</a>&nbsp;</CENTER></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <h3>Especificos </h3>
+            </tr>    
+            <tr id="cant_espec">
+                <td colspan="2"><CENTER id="espeManagment"><a HREF='javascript:newobject("especifico");'>Agregar un objetivo especifico</a>&nbsp;</CENTER></td>
+            </tr>
+        </table> 
+        <table>     
+            <tr>
+                <h2>Contenido Resumido </h2>
+            </tr>
+            <tr id="cant_resu">
+                <td colspan="2"><CENTER id="contresManagment"><a HREF='javascript:newobject("resumido");'>Agregar un item</a>&nbsp;</CENTER></td>
+            </tr>
+        </table> 
+        <table>
+            <h2>Bibliografía </h2>
+            <tr>
+                <h3>Basica </h3>
+            </tr>      
+            <tr id="cant_basica">
+                <td colspan="2"><CENTER id="basicaManagment"><a HREF='javascript:newobject("basica");'>Agregar una referencia basica</a>&nbsp;</CENTER></td>
+            </tr>
+        </table> 
+        <table>    
+            <tr>
+                <h3>Complementaria</h3>
+            </tr>
+            <tr id="cant_compl">
+                <td colspan="2"><CENTER id="complManagment"><a HREF='javascript:newobject("complementaria");'>Agregar una referencia complementaria</a>&nbsp;</CENTER></td>
+            </tr>
+        </table> 
+        <table>
+            <tr>
+                <h2>Unidades </h2>
+            </tr>      
+            <tr id="cant_unid">
+                <td colspan="2"><CENTER id="unityManagment"><a HREF="javascript:newUnity();">Agregar una unidad</a>&nbsp;</CENTER></td>
+            </tr>
+        </table> 
+        <table>
+            <tr>
+                <h2>Evaluaciones </h2>
+            </tr>          
+            <tr id="cant_eval">
+                <td colspan="2"><CENTER id="evalManagment"><a HREF="javascript:newEval();">Agregar una Evaluacion</a>&nbsp;</CENTER></td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Enviar"></td>
+            </tr>         
+        </table>                            
+    </form>
+</body>
+</html>
