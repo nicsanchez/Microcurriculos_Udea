@@ -7,6 +7,8 @@ import collections
 import json
 # Create your views here.
 
+#Hola
+
 def core(request):
     if request.method == "POST":
         descripcion_gen = request.POST['descripcion_general']
