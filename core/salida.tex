@@ -1,0 +1,193 @@
+% Don't touch this %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[spanish]{babel}
+
+\newcommand{\blankline}{\quad\pagebreak[2]}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Modify Course title, instructor name, semester here %%%%%%%%
+
+\title{2547610: Electrónica Digital II}
+\author{\begin{tabular} {c|c|c|c|c|c} Teórico & \textbf{4} & Teórico-Práctico & \textbf{0} & Práctico & \textbf{hoprac}\end{tabular}
+\\
+\begin{tabular} {c|c|c|c|c|c} Validable & \textbf{No} & Habilitable & \textbf{No} & Clasificable & \textbf{No}\end{tabular}}
+\date{2009-2 a 2017-2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Don't touch this %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[sc]{mathpazo}
+\linespread{1.05} % Palatino needs more leading (space between lines)
+\usepackage[T1]{fontenc}
+\usepackage[mmddyyyy]{datetime}% http://ctan.org/pkg/datetime
+\usepackage{advdate}% http://ctan.org/pkg/advdate
+\newdateformat{syldate}{\twodigit{\THEMONTH}/\twodigit{\THEDAY}}
+\newsavebox{\MONDAY}\savebox{\MONDAY}{Mon}% Mon
+\newcommand{\week}[1]{%
+%  \cleardate{mydate}% Clear date
+% \newdate{mydate}{\the\day}{\the\month}{\the\year}% Store date
+\paragraph*{\kern-2ex\quad #1, \syldate{\today} - \AdvanceDate[4]\syldate{\today}:}% Set heading  \quad #1
+%  \setbox1=\hbox{\shortdayofweekname{\getdateday{mydate}}{\getdatemonth{mydate}}{\getdateyear{mydate}}}%
+\ifdim\wd1=\wd\MONDAY
+\AdvanceDate[7]
+\else
+\AdvanceDate[7]
+\fi%
+}
+\usepackage{setspace}
+\usepackage{multicol}
+%\usepackage{indentfirst}
+\usepackage{fancyhdr,lastpage}
+\usepackage{url}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+\usepackage{amsmath}
+\usepackage{layout}
+\usepackage{booktabs}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\lhead{}
+\chead{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Modify header here %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\rhead{\footnotesize UNIVERSIDAD DE ANTIOQUIA - Facultad de Ingeniería}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Don't touch this %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\usepackage{array, xcolor}
+\usepackage{color,hyperref}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\hypersetup{colorlinks,breaklinks,linkcolor=clemsonorange,urlcolor=clemsonorange,anchorcolor=clemsonorange,citecolor=black}
+
+\begin{document}
+
+\maketitle
+%\blankline
+
+\begin{tabular*}{.93\textwidth}{@{\extracolsep{\fill}}lr}
+\hline\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Modify information %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%E-mail: \texttt{username@ncsu.edu} & Web: \href{www4.ncsu.edu/~username}{\tt\bf www4.ncsu.edu/~username}  \\
+\textbf{Semestre:} 6 & \textbf{Semanas:} 16
+\\
+\textbf{Área:} Básica de ingeniería &    \textbf{Créditos:} 5 
+\\ & \\
+\textbf{Programas a los cuales se ofrece:} Ingeniería Electrónica
+\\ & \\
+\hline
+\end{tabular*}
+
+\vspace{5 mm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Propósito del curso}
+
+Utilizando el diseño de un procesador, introducir a los estudiantes en que consiste un sistemas de cómputo: el procesador, sistemas numéricos, programación en assembler y en C, el ISA,relación entre HW y SW, jerarquía de memoria, I/O, Pipeline.
+
+%\bigskip
+
+%\noindent New paragraph. Bla bla bla ...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Justificación}
+
+Siendo los procesadores uno de los diseños más importantes de la electrónica. Se busca que el estudiante entienda como se enlazan todos los conceptos de circuitos digitales ya vistos en la concepción de un sistema de cómputo.\\De esta manera, el estudiante sea consciente del funcionamiento de una aplicación real a todos los niveles, a partir del comportamiento de los transistores.El curso parte de la microarquitectura del procesador, para entender la relación entre el HW y el SW, y todos los elementos que se tienen que coordinar para crear un sistema que resuelva un problema que interaccione con los humanos.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Prerrequisitos/Correquisitos}
+\begin{description}
+\item [Prerrequisitos:] 2547510
+\item[Correquisitos:] Ninguno
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Objetivos}
+
+\subsection*{General}
+
+\begin{itemize}
+\item Entender el funcionamiento de los procesadores modernos. \item hello hello
+\end{itemize}
+
+\subsection*{Específicos}
+
+\begin{itemize}
+\item Entender como funciona la aritmética en los computadores: complemento a 2, punto flotante, etc. \item Entender los conceptos de Conjunto de Instrucciones (ISA), y Microarquitectura. \item Entender la implementación de cada una de las estructuras de un procesador funcional. \item Entender la interacción entre el HW y el SW en sistemas computacionales. \item Aprender a programar en assembler. \item Entender la técnica del pipeline, en particular, como funciona en los procesadores modernos. \item Realizar una aplicación de mediana complejidad en FPGA.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Contenido Resumido}
+
+\begin{itemize}
+\item Tipos de datos y operaciones binarias. \item Estructuras lógicas digitales. \item Tipos de datos y operaciones binarias. \item Estructuras lógicas digitales. \item Arquitectura de procesadores. \item El conjunto de instrucciones (ISA). \item Programación Lenguaje ensamblador I/O. \item Subrutinas y instrucciones de sistema. \item El Stack.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Unidades}
+\noindent 
+\begin{tabular}{R{0.16\textwidth} L{0.7\textwidth}} 
+ \\ 
+\toprule \textbf{Unidad No. 1} & unidad 1  
+ \\ 
+\midrule\textbf{Subtemas} & 
+\begin{description}
+\item subtema 1 \item subtema 2 \item subtema 3 
+\end{description}
+ \\ 
+\textbf{Semanas} & 4 
+\end{tabular} 
+ \\ 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Metodología}
+
+El contenido del curso será presentado en clase mediante exposiciones regulares y talleres. Se realizarán sesiones prácticas de simulación, implementación usando VHDL, programación en ensamblador. El estudiante deberá hacer un desarrollo de diseño digital de mediano nivel de complejidad en los laboratorios
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Evaluación}
+\noindent \begin{tabular}{R{0.5\textwidth} C{0.2\textwidth} C{0.2\textwidth}}
+	\toprule
+	\textbf{Actividad} & \textbf{Porcentaje} & \textbf{Fecha} \\
+	\midrule
+	Parcial 1 (Unidades 1,2,3,4,5,6) & 30 & 5 \\ Parcial 2 (Unidades 7,8,9,10,11) & 30 & 10 \\ Laboratorios & 40 & Todo el Semestre \\
+	\midrule
+\end{tabular}
+\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Actividades de asistencia obligatoria}
+
+Laboratorios y parciales
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Bibliografía}
+
+\subsection*{Básica}
+
+\begin{itemize}
+\item Capítulos 1 al 10: Introduction to Computing Systems: From Bits \& Gates to C \& Beyond. Yale N. Patt, Sanjay J. Patel, 2nd Edition, McGraw-Hill Higher Education, 2004. ISBN-13:978-0-07-246750-5. \item Capítulo 11: Computer Organization and Design: The hardware/software Interface. David A. Patterson and John L. Hennessy. \item Capítulo 11: Digital Design and Computer Architecture. David Harris, Sarah Harris. VHDL: Hdl Chip Design: A Practical Guide for Designing, Synthesizing and Simulating Asics and Fpgas Using Vhdl or Verilog. Douglas J. Smith. Doone Pubns,1998. ISBN-13: 978-0965193436. \item Información técnica de la tarjeta de desarrollo de Xillinx
+\end{itemize}
+
+\subsection*{Complementaria}
+
+\begin{itemize}
+\item Capítulos 1 al 10: Introduction to Computing Systems: From Bits and Gates to C and Beyond. Yale N. Patt, Sanjay J. Patel, 2nd Edition, McGraw-Hill Higher Education, 2004. ISBN-13:978-0-07-246750-5. \item Capítulo 11: Computer Organization and Design: The hardware/software Interface. David A. Patterson and John L. Hennessy. \item Capítulo 11: Digital Design and Computer Architecture. David Harris, Sarah Harris. VHDL: Hdl Chip Design: A Practical Guide for Designing, Synthesizing and Simulating Asics and Fpgas Using Vhdl or Verilog. Douglas J. Smith. Doone Pubns,1998. ISBN-13: 978-0965193436. \item Información técnica de la tarjeta de desarrollo de Xillinx
+\end{itemize}
+
+\end{document}

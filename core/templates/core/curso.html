@@ -147,6 +147,9 @@
             <tr>
                 <td><a href="javascript:pasarVariables(2)" id="micro_curso">¿Desea asignar un microcurriculo de otro curso?</a></td>
             </tr> 
+            <tr>
+                <td><a href="{% url 'curso' %}" id="nuevo_pdf">mostrar pdf</a></td>
+            </tr> 
         </table>         
     </form>
 </body>
@@ -324,6 +327,35 @@ $(document).ready(function(){
         }
         else if (semestre == "Seleccione"){
             alert("Rellene el campo correspondiente al semestre al cual va a realizar la asignacion ");
+        } 
+        else{
+            $.post(url, postData, function(response){
+                alert(response);
+                window.location = "{% url 'curso' %}";
+            });
+        }
+    });
+    $("#nuevo_pdf").on('click', function (e){
+        e.preventDefault();
+        let url = "{% url 'curso' %}";
+        var pensum_sel = $('#version_pensum').val();
+        var curso_sel = $('#curso').val();
+        var vigencia = $('#vigencia').val();
+        const postData={
+            'pensum': $('#version_pensum').val(),
+            'curso': $('#curso').val(),
+			'vigencia': $('#vigencia').val(),
+            'caso':"nuevopdf",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        if(pensum_sel=="Seleccione"){
+            alert("Rellene el campo correspondiente a la version del pensum ");
+        }
+        else if (curso_sel == "Seleccione"){
+            alert("Rellene el campo correspondiente al curso ");
+        }
+        else if (vigencia == "Seleccione"){
+            alert("Rellene el campo correspondiente a la vigencia para generar el pdf del microcurriculo correspondiente");
         } 
         else{
             $.post(url, postData, function(response){

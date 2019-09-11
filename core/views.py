@@ -5,9 +5,9 @@ from django.core import serializers
 from django.http import JsonResponse
 import collections
 import json
+import os
+from subprocess import call
 # Create your views here.
-
-#Hola
 
 def core(request):
     if request.method == "POST":
@@ -294,6 +294,78 @@ def curso(request):
                 insert = Curso_programado(id_microcurriculos=micro_aso,id_curso_asignado=curso_asig,semestre=semestre)
                 insert.save()
                 return HttpResponse("Se renovó correctamente el microcurriculo del curso")
+        elif(request.POST['caso']=="nuevopdf"):
+            pensum = request.POST['pensum']
+            nombre_c = request.POST['curso']
+            vigencia = request.POST['vigencia']
+            cursoglobal=Curso.objects.get(nombre=nombre_c)
+            #Datos extraidos de la base de datos curso
+            codicur=cursoglobal.codigo
+            nomcur=cursoglobal.nombre
+            credicur=str(cursoglobal.num_creditos)
+            #Datos extraidos de la base de datos curso asignado
+            id_cursoglobal = cursoglobal.id
+            curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
+            hoteo=str(curso_asig.horas_t)
+            hoteopr=str(curso_asig.horas_tp)
+            hoprac=str(curso_asig.horas_p)
+            if(curso_asig.validable==True):
+                valcur="Si"
+            else:
+                valcur="No"
+            if(curso_asig.habilitable==True):
+                habcur="Si"
+            else:
+                habcur="No"
+            if(curso_asig.clasificable==True):
+                clascur="Si"
+            else:
+                clascur="No"        
+            vigencur=vigencia
+            semcur=str(curso_asig.nivel)
+            #preguntar semanas donde esta
+            semncur="16"
+            areacur=curso_asig.area
+            progrcur=curso_asig.id_programa.nombre_progr
+            precur=curso_asig.prereq
+            corrcur=curso_asig.correq
+            #Datos extraidos de la base de datos microcurriculos
+            curso_asociados = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=vigencia[0:6])
+            micro_aso = Microcurriculum.objects.get(id=curso_asociados.id_microcurriculos.id)
+            propcur=micro_aso.proposito
+            propcur=propcur.replace('\n','\\\\')
+            justificacion=micro_aso.descripcion_general
+            justificacion=justificacion.replace('\n','\\\\')
+            generales=micro_aso.objetivo_general
+            objgeni=cadenas(generales,"/objgen-")
+            especificos=micro_aso.objetivo_especifico
+            objespi=cadenas(especificos,"/objesp-")
+            items=micro_aso.contenido_resumido
+            itemires=cadenas(items,"/contresu-")
+            metodocur=micro_aso.metodologia
+            metodocur=metodocur.replace('\n','\\\\')
+            actiasiscur=micro_aso.actividades_asis_oblig
+            actiasiscur=actiasiscur.replace('\n','\\\\')
+            basicas=micro_aso.bibliografia_basica
+            biblbasi=cadenas(basicas,"/biblibas-")
+            complements=micro_aso.bibliografia_complementaria
+            biblcompi=cadenas(complements,"/biblicom-")
+            #Datos extraidos de las evaluaciones            
+            evaluaciones=Evaluation.objects.filter(id_microcurriculos=micro_aso)
+            actividadescuri=''
+            for evaluacion in evaluaciones:
+                actividadescuri=actividadescuri+evaluacion.actividad+" & "+evaluacion.porcentaje+" & "+str(evaluacion.fecha)+" \\\\ "
+            #Datos extraidos de las unidades
+            unitys=Unity.objects.filter(id_microcurriculos=micro_aso)
+            unidades=''
+            cont=1
+            for unit in unitys:
+                subt=unit.subtema
+                subtemas=cadenas(subt,"/subin-")
+                unidades=unidades+"\\begin{tabular}{R{0.16\\textwidth} L{0.7\\textwidth}} \n \\\\ \n\\toprule \\textbf{Unidad No. "+str(cont)+"} & "+unit.tema+" \n \\\\ \n\midrule\\textbf{Subtemas} & \n\\begin{description}\n "+subtemas+"\n\end{description}\n \\\\ \n\\textbf{Semanas} & "+str(unit.num_semanas)+" \n\end{tabular} \n \\\\ \n "
+                cont+=1    
+            generate_pdf(codicur,nomcur,hoteo,hoteopr,hoprac,valcur,habcur,clascur,vigencur,semcur,semncur,areacur,credicur,progrcur,propcur,justificacion,precur,corrcur,objgeni,objespi,itemires,metodocur,actiasiscur,biblbasi,biblcompi,actividadescuri,unidades)
+            return HttpResponse("Se generó correctamente el pdf del microcurriculo seleccionado")               
     semestres = Semestres.objects.all()
     return render(request, "core/curso.html",{'semestres':semestres})
 
@@ -495,4 +567,46 @@ def funcion(a,b,c):
     elif (a != "Seleccione" and b=="Seleccione" and c!="Seleccione"):
         return Curso_asignado.objects.filter(version_pensum=a,area=c)
         
-        
+def generate_pdf(codicur,nomcur,hoteo,hoteopr,hoprac,valcur,habcur,clascur,vigencur,semcur,semncur,areacur,credicur,progrcur,propcur,justificacion,precur,corrcur,objgeni,objespi,itemires,metodocur,actiasiscur,biblbasi,biblcompi,actividadescuri,unidades):
+    template="/home/nicolas/CursoDjango/Microcurriculos/Microcurriculos_Udea/core/templatex.tex"
+    with open(template,'r',encoding="ISO-8859-1") as f:
+        archivo=f.read()
+    archivo=archivo.replace('codicur',codicur)
+    archivo=archivo.replace('nomcur',nomcur)
+    archivo=archivo.replace('hoteo',hoteo)
+    archivo=archivo.replace('hotepr',hoteopr)
+    archivo=archivo.replace('hoprac',hoprac)
+    archivo=archivo.replace('valcur',valcur)
+    archivo=archivo.replace('habcur',habcur)
+    archivo=archivo.replace('clascur',clascur)
+    archivo=archivo.replace('semcur',semcur)
+    archivo=archivo.replace('semncur',semncur)
+    archivo=archivo.replace('areacur',areacur)
+    archivo=archivo.replace('credicur',credicur)
+    archivo=archivo.replace('progrcur',progrcur)
+    archivo=archivo.replace('vigencur',vigencur)
+    archivo=archivo.replace('justcur',justificacion)
+    archivo=archivo.replace('precur',precur)
+    archivo=archivo.replace('corrcur',corrcur)
+    archivo=archivo.replace('propcur',propcur)
+    archivo=archivo.replace('objgeni',objgeni)
+    archivo=archivo.replace('objespi',objespi)
+    archivo=archivo.replace('itemires',itemires)
+    archivo=archivo.replace('metodocur',metodocur)
+    archivo=archivo.replace('actiasiscur',actiasiscur)
+    archivo=archivo.replace('biblbasi',biblbasi)
+    archivo=archivo.replace('biblcompi',biblcompi)
+    archivo=archivo.replace('actividadescuri',actividadescuri)
+    archivo=archivo.replace('unidcuri',unidades)
+    with open ("salida.tex",'w') as h:
+        h.write(archivo)
+    d=os.getcwd()
+    call("pdflatex "+d+"/salida.tex",shell=1)        
+
+def cadenas(iniciales,clave):
+    salida=''
+    iniciales=iniciales.split(clave)
+    for inicial in iniciales:
+        if(inicial!=''):
+            salida=salida+'\item '+inicial+' '
+    return salida                     
