@@ -29,27 +29,27 @@ def core(request):
         for i in range(1,cantidad_generales+1):
             num=str(i)
             objetivo=request.POST['general'+num]   
-            obj_gen=obj_gen+" /objgen-"+objetivo+"-/objgen"
+            obj_gen=obj_gen+" /objgen- "+objetivo
         #print("generales :",obj_gen)
         for i in range(1,cantidad_especificos+1):
             num=str(i)
             objetivo=request.POST['especifico'+num]   
-            obj_esp=obj_esp+" /objesp-"+objetivo+"-/objesp"
+            obj_esp=obj_esp+" /objesp- "+objetivo
         #print("especificos :",obj_esp)
         for i in range(1,cantidad_resumido+1):
             num=str(i)
             objetivo=request.POST['item'+num]   
-            cont_resu=cont_resu+" /contresu-"+objetivo+"-/contresu"
+            cont_resu=cont_resu+" /contresu- "+objetivo
         #print("items :",cont_resu)
         for i in range(1,cantidad_basicas+1):
             num=str(i)
             objetivo=request.POST['basica'+num]   
-            bibliografia_bas=bibliografia_bas+" /biblibas-"+objetivo+"-/biblibas"
+            bibliografia_bas=bibliografia_bas+" /biblibas- "+objetivo
         #print("basicos :",bibliografia_bas)
         for i in range(1,cantidad_complementarias+1):
             num=str(i)
             objetivo=request.POST['complementaria'+num]   
-            bibliografia_comp=bibliografia_comp+" /biblicom-"+objetivo+"-/biblicom"
+            bibliografia_comp=bibliografia_comp+" /biblicom- "+objetivo
         #print("complementarios :",bibliografia_comp)
         try:
             version_pensum = int(request.POST['version_p'])
@@ -86,7 +86,7 @@ def core(request):
                 for j in range(1,contador+1):
                     num2=str(j)
                     subtemai=request.POST['subtemauni'+num+num2]
-                    subtema=subtema+" /subin-"+subtemai+"-/subin"
+                    subtema=subtema+" /subin- "+subtemai
                 semana=request.POST['semanas'+num]
                 insert = Unity(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana)
                 insert.save()
@@ -113,6 +113,18 @@ def curso(request):
                 s = str(curso.id_curso.nombre)
                 lista_cursos_json.append(s)
             return HttpResponse(json.dumps({"data":lista_cursos_json}))
+        elif(request.POST['caso']=="verificacion"):
+            pensum = request.POST['pensum']
+            semestre = request.POST['semestre']
+            nombre_c = request.POST['curso']
+            cursoglobal = Curso.objects.get(nombre=nombre_c)
+            id_cursoglobal = cursoglobal.id
+            curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
+            try:
+                curso_asociado = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
+                return HttpResponse("false")
+            except:
+                return HttpResponse("true")
         elif(request.POST['caso']=="vigencias"):
             nombre_c = request.POST['curso']
             pensum = request.POST['pensum']

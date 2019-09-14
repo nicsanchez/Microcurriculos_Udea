@@ -10,38 +10,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Asignar Microcurriculos</title>
+    <style type="text/css" media="screen">
+        A:link {color: blue; font-size: 12pt; text-decoration: none }
+        A:hover {color: blue; font-size: 12pt; text-decoration: none }
+        A:visited {color: blue; font-size: 12pt; text-decoration: none }
+    </style>
 </head>
-<script LANGUAGE="JavaScript">
-    function pasarVariables(a){
-        if(a == 1){
-            pagina = "{% url 'core' %}"
-        }
-        else if(a == 2){
-            pagina = "{% url 'asignar' %}"
-        }
-        var v_p = document.getElementById("version_pensum").value;
-        var curso_sel = document.getElementById("curso").value;
-        var semestre = document.getElementById("semestre").value;
-        var nombres = 'v_p,curso_sel,semestre'
-        pagina +="?";
-        nomVec = nombres.split(",");
-        for (i=0; i<nomVec.length; i++)
-            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
-        pagina = pagina.substring(0,pagina.length-1);
-        if(v_p != "Seleccione" && curso_sel != "Seleccione" && semestre != "Seleccione"){
-            location.href=pagina;
-        }
-        else if (v_p == "Seleccione"){
-            alert("Rellene el campo correspondientes a la version del pensum ");
-        }
-        else if (curso_sel == "Seleccione"){
-            alert("Rellene el campo correspondientes al curso ");
-        }
-        else if (semestre == "Seleccione"){
-            alert("Rellene el campo correspondientes al semestre al cual va a realizar la asignacion ");
-        } 
-    }
-</script>
 {% if mensaje %}
     <script lenguague="JavaScript">
         alert("{{mensaje}}");
@@ -134,9 +108,12 @@
                     {% endfor %}            
             </tr>
         </table>
-        <table>     
+        <table> 
             <tr>
-                <td><a href="javascript:pasarVariables(1)" id="nuevo_micro">¿Desea asignar un nuevo microcurriculo?</a></td>
+                <h1>Acciones</h1>    
+            </tr>    
+            <tr>
+                <td><a href="" id="nuevo_micro">¿Desea asignar un nuevo microcurriculo?</a></td>
             </tr>
             <tr>
                 <td><a href="{% url 'curso' %}" id="asignar_micro" name="">¿Desea asignar el ultimo microcurriculo vigente?</a></td>
@@ -145,10 +122,10 @@
                 <td><a href="{% url 'curso' %}" id="renovar_micro" name="">¿Desea asignar el microcurriculo seleccionado anteriormente?</a></td>
             </tr>
             <tr>
-                <td><a href="javascript:pasarVariables(2)" id="micro_curso">¿Desea asignar un microcurriculo de otro curso?</a></td>
+                <td><a href="" id="micro_curso">¿Desea asignar un microcurriculo de otro curso?</a></td>
             </tr> 
             <tr>
-                <td><a href="{% url 'curso' %}" id="nuevo_pdf">mostrar pdf</a></td>
+                <td><a href="{% url 'curso' %}" id="nuevo_pdf">Exportar PDF del microcurriculo seleccionado</a></td>
             </tr> 
         </table>         
     </form>
@@ -364,6 +341,86 @@ $(document).ready(function(){
             });
         }
     });
+    $("#nuevo_micro").on('click', function (e){
+        e.preventDefault();
+        var v_p = $('#version_pensum').val();
+        var curso_sel = $('#curso').val();
+        var semestre = $('#semestre').val();
+        var nombres = 'v_p,curso_sel,semestre'
+        let url="{% url 'curso' %}";
+        const postData={
+            'pensum': $('#version_pensum').val(),
+            'curso': $('#curso').val(),
+			'semestre' : $('#semestre').val(),
+            'caso':"verificacion",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        pagina = "{% url 'core' %}"
+        pagina +="?";
+        nomVec = nombres.split(",");
+        for (i=0; i<nomVec.length; i++)
+            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+        pagina = pagina.substring(0,pagina.length-1);
+        if(v_p != "Seleccione" && curso_sel != "Seleccione" && semestre != "Seleccione"){
+            $.post(url, postData, function(response){
+                if(response == "true"){
+                    $(location).attr('href',pagina); 
+                }
+                else{
+                    alert('Existe un microcurriculo asociado al semestre escogido');    
+                }
+            });
+        }
+        else if (v_p == "Seleccione"){
+            alert("Rellene el campo correspondientes a la version del pensum ");
+        }
+        else if (curso_sel == "Seleccione"){
+            alert("Rellene el campo correspondientes al curso ");
+        }
+        else if (semestre == "Seleccione"){
+            alert("Rellene el campo correspondientes al semestre al cual va a realizar la asignacion ");
+        }
+    });
+    $("#micro_curso").on('click', function (e){
+        e.preventDefault();
+        var v_p = $('#version_pensum').val();
+        var curso_sel = $('#curso').val();
+        var semestre = $('#semestre').val();
+        var nombres = 'v_p,curso_sel,semestre'
+        let url="{% url 'curso' %}";
+        const postData={
+            'pensum': $('#version_pensum').val(),
+            'curso': $('#curso').val(),
+			'semestre' : $('#semestre').val(),
+            'caso':"verificacion",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        pagina = "{% url 'asignar' %}"
+        pagina +="?";
+        nomVec = nombres.split(",");
+        for (i=0; i<nomVec.length; i++)
+            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+        pagina = pagina.substring(0,pagina.length-1);
+        if(v_p != "Seleccione" && curso_sel != "Seleccione" && semestre != "Seleccione"){
+            $.post(url, postData, function(response){
+                if(response == "true"){
+                    $(location).attr('href',pagina); 
+                }
+                else{
+                    alert('Existe un microcurriculo asociado al semestre escogido');    
+                }
+            });
+        }
+        else if (v_p == "Seleccione"){
+            alert("Rellene el campo correspondientes a la version del pensum ");
+        }
+        else if (curso_sel == "Seleccione"){
+            alert("Rellene el campo correspondientes al curso ");
+        }
+        else if (semestre == "Seleccione"){
+            alert("Rellene el campo correspondientes al semestre al cual va a realizar la asignacion ");
+        }
+    });         
     $("#renovar_micro").on('click', function (e){
         e.preventDefault();
         let url = "{% url 'curso' %}";
