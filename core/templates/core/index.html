@@ -318,6 +318,10 @@
         unity.parentNode.insertBefore(newNode,unity);
     }
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -333,6 +337,7 @@
 <body>
     <form action="{% url 'core' %}" method="POST">
         {% csrf_token %}
+        <input type="hidden" id="caso" name="caso" value="nuevo">
         <input type="hidden" id="c_u" name="contadorunidad" value="0">
         <input type="hidden" id="c_e" name="contadorevaluacion" value="0">
         <input type="hidden" id="c_g" name="contadorgeneral" value="0">
@@ -346,19 +351,19 @@
         <table id="tabla1">
             <tr>
                 <td>Descripcion General : </td>
-                <td><input type="text" name="descripcion_general" ></td>
+                <td><input type="text" id="des_gen" name="descripcion_general" ></td>
             </tr>
             <tr>
                 <td>Proposito : </td>
-                <td><input type="text" name="proposito"></td>
+                <td><input type="text" id="propos" name="proposito"></td>
             </tr>
             <tr>
                 <td>Metodología : </td>
-                <td><input type="text" name="metodologia"></td>
+                <td><input type="text" id="metodo" name="metodologia"></td>
             </tr>
             <tr>
                 <td>Actividades de Asistencia Obligatoria : </td>
-                <td><input type="text" name="actividades_asis_oblig"></td>
+                <td><input type="text" id="acti_asis" name="actividades_asis_oblig"></td>
             </tr>
         </table> 
         <table>
@@ -420,8 +425,114 @@
             </tr>
             <tr>
                 <td><input type="submit" value="Enviar"></td>
-            </tr>         
-        </table>                            
+            </tr>       
+        </table> 
+        <table>
+            <tr>
+                <td><a href="" id="visualizar_pdf">¿Desea visualizar el pdf del nuevo microcurriculo?</a></td> 
+            </tr>  
+        </table>                           
     </form>
 </body>
+<script lenguague="javascript"> 
+$(document).ready(function(){
+    function generar_cadena(contador,clave){
+        var cadena ='';
+        if(parseInt(contador)==0){
+            cadena='No ha agregado este campo';
+            return cadena;
+        }
+        else{
+            for(var i=1;i<parseInt(contador)+1;i++){
+                var cade=$("input[name="+clave+i+"]").val();
+                cadena+=cade+','
+            }
+            return cadena;
+        }
+    }
+    function generar_evaluaciones(contador){
+        var cadena ='';
+        if(parseInt(contador)==0){
+            cadena='vacio & vacio & vacio \\\\';
+            return cadena;
+        }
+        else{
+            for(var i=1;i<parseInt(contador)+1;i++){
+                var activ=$("input[name=actividad"+i+"]").val();
+                var porce=$("input[name=porcentaje"+i+"]").val();
+                var fecha=$("input[name=fecha"+i+"]").val();
+                cadena+=activ+" & "+porce+" & "+fecha+' \\\\ '
+            }
+            return cadena;
+        }
+    }
+    function generar_unidades(contador){
+        var cadena = '';
+        if(parseInt(contador)==0){
+            cadena='No ha agregado este campo';
+            return cadena;            
+        }
+        else{
+            for(var i=1;i<parseInt(contador)+1;i++){
+                var cont2=$("input[name=subtemas"+i+"]").val();
+                var temai=$("input[name=temas"+i+"]").val();
+                var semai=$("input[name=semanas"+i+"]").val();
+                var subte='';
+                if (parseInt(cont2)==0){
+                    subte = '';
+                }
+                else{
+                    for(var j=1;j<parseInt(cont2)+1;j++){
+                        var subi=$("input[name=subtemauni"+i+j+"]").val()
+                        subte+='\\item '+subi+' '
+                    }    
+                }
+                cadena+=i+" &/& "+temai+" &/& "+subte+" &/& "+semai+" \n"
+            }
+            console.log(cadena)
+            return cadena
+        }
+    }
+    $("#visualizar_pdf").on('click', function (e){
+        e.preventDefault();
+        let url = "{% url 'core' %}";
+        var cont_unid=$('#c_u').val();
+        var cont_eval=$('#c_e').val();
+        var cont_gen=$('#c_g').val();
+        var cont_esp=$('#c_es').val();
+        var cont_res=$('#c_res').val();
+        var cont_bas=$('#c_bas').val();
+        var cont_com=$('#c_com').val();
+        var generales=generar_cadena(cont_gen,"general");
+        var especificos=generar_cadena(cont_esp,"especifico");
+        var items=generar_cadena(cont_res,"item");
+        var basicas=generar_cadena(cont_bas,"basica");
+        var complemen=generar_cadena(cont_com,"complementaria");
+        var actividadescuri = generar_evaluaciones(cont_eval);
+        var unidades = generar_unidades(cont_unid);
+
+        const postData={
+            'pensum': $('#v_p').val(),
+            'curso': $('#c').val(),
+			'vigencia': $('#s').val(),
+            'des_gen': $('#des_gen').val(),
+            'proposito': $('#propos').val(),
+			'metodologia': $('#metodo').val(),
+            'activ_oblig': $('#acti_asis').val(),
+            'generales': generales,
+            'especificos': especificos,
+            'items': items,
+            'basicas': basicas,
+            'complemen': complemen,
+            'actividadescuri': actividadescuri,
+            'unidades': unidades,
+            'caso':"nuevopdf",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+            alert(response);
+        });
+    });
+});    
+</script>
 </html>
