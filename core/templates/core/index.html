@@ -100,7 +100,7 @@
         newInput1.type="text";
         newInput1.name=n_1;
         newInput2 = document.createElement("input");
-        newInput2.type="text";
+        newInput2.type="number";
         newInput2.name=n_2;
         newInput3 = document.createElement("input");
         if(tipo=="Unidad"){
@@ -135,7 +135,7 @@
         newInput1.type="text";
         newInput1.name=n_1;
         newInput2 = document.createElement("input");
-        newInput2.type="text";
+        newInput2.type="number";
         newInput2.name=n_2;
         //contador subtemas
         newInput3 = document.createElement("input");
@@ -321,7 +321,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
 		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-		crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.js"></script>
+        
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -351,19 +353,19 @@
         <table id="tabla1">
             <tr>
                 <td>Descripcion General : </td>
-                <td><input type="text" id="des_gen" name="descripcion_general" ></td>
+                <td><textarea id="des_gen" name="descripcion_general" required="True" rows="1" cols="28" style="font-size:13px"></textarea></td>
             </tr>
             <tr>
                 <td>Proposito : </td>
-                <td><input type="text" id="propos" name="proposito"></td>
+                <td><textarea id="propos" name="proposito" required="True" rows="1" cols="28" style="font-size:13px"></textarea></td>
             </tr>
             <tr>
                 <td>Metodología : </td>
-                <td><input type="text" id="metodo" name="metodologia"></td>
+                <td><textarea id="metodo" name="metodologia" required="True" rows="1" cols="28" style="font-size:13px"></textarea></td>
             </tr>
             <tr>
                 <td>Actividades de Asistencia Obligatoria : </td>
-                <td><input type="text" id="acti_asis" name="actividades_asis_oblig"></td>
+                <td><textarea id="acti_asis" name="actividades_asis_oblig" required="True" rows="1" cols="28" style="font-size:13px"></textarea></td>
             </tr>
         </table> 
         <table>
@@ -433,6 +435,9 @@
             </tr>  
         </table>                           
     </form>
+    <div class="container">
+        <div id="viewpdf"></div>
+    </div>
 </body>
 <script lenguague="javascript"> 
 $(document).ready(function(){
@@ -445,7 +450,12 @@ $(document).ready(function(){
         else{
             for(var i=1;i<parseInt(contador)+1;i++){
                 var cade=$("input[name="+clave+i+"]").val();
-                cadena+=cade+','
+                if(cade==''){
+                    cadena+='Vacio,a,'
+                }
+                else{
+                    cadena+=cade+',a,'
+                }
             }
             return cadena;
         }
@@ -461,6 +471,24 @@ $(document).ready(function(){
                 var activ=$("input[name=actividad"+i+"]").val();
                 var porce=$("input[name=porcentaje"+i+"]").val();
                 var fecha=$("input[name=fecha"+i+"]").val();
+                if(activ==''){
+                    activ='Vacio';
+                }
+                else{
+                    activ=activ;
+                }
+                if(porce==''){
+                    porce='Vacio';
+                }
+                else{
+                    porce=porce;
+                }
+                if(fecha==''){
+                    fecha='Vacio';
+                }
+                else{
+                    fecha=fecha;
+                }
                 cadena+=activ+" & "+porce+" & "+fecha+' \\\\ '
             }
             return cadena;
@@ -477,13 +505,31 @@ $(document).ready(function(){
                 var cont2=$("input[name=subtemas"+i+"]").val();
                 var temai=$("input[name=temas"+i+"]").val();
                 var semai=$("input[name=semanas"+i+"]").val();
+                if(temai==''){
+                    temai='Vacio';
+                }
+                else{
+                    temai=temai;
+                }
+                if(semai==''){
+                    semai='Vacio';
+                }
+                else{
+                    semai=semai;
+                }                
                 var subte='';
                 if (parseInt(cont2)==0){
-                    subte = '';
+                    subte = '\\item No se ha ingresado este campo';
                 }
                 else{
                     for(var j=1;j<parseInt(cont2)+1;j++){
-                        var subi=$("input[name=subtemauni"+i+j+"]").val()
+                        var subi=$("input[name=subtemauni"+i+j+"]").val();
+                        if(subi==''){
+                            subi='Vacio';
+                        }
+                        else{
+                            subi=subi;
+                        }
                         subte+='\\item '+subi+' '
                     }    
                 }
@@ -510,15 +556,33 @@ $(document).ready(function(){
         var complemen=generar_cadena(cont_com,"complementaria");
         var actividadescuri = generar_evaluaciones(cont_eval);
         var unidades = generar_unidades(cont_unid);
-
+        var pensum = $('#v_p').val();
+        var curso = $('#c').val();
+        var vigencia = $('#s').val();
+        var des_gen = $('#des_gen').val();
+        var proposito = $('#propos').val();
+        var metodologia = $('#metodo').val();
+        var acti_asis = $('#acti_asis').val();
+        if(des_gen==''){
+            des_gen='Vacio'
+        }
+        if(proposito==''){
+            proposito='Vacio'
+        }
+        if(metodologia==''){
+            metodologia='Vacio'
+        }
+        if(acti_asis==''){
+            acti_asis='Vacio'
+        }
         const postData={
-            'pensum': $('#v_p').val(),
-            'curso': $('#c').val(),
-			'vigencia': $('#s').val(),
-            'des_gen': $('#des_gen').val(),
-            'proposito': $('#propos').val(),
-			'metodologia': $('#metodo').val(),
-            'activ_oblig': $('#acti_asis').val(),
+            'pensum': pensum,
+            'curso': curso,
+			'vigencia': vigencia,
+            'des_gen': des_gen,
+            'proposito': proposito,
+			'metodologia': metodologia,
+            'activ_oblig': acti_asis,
             'generales': generales,
             'especificos': especificos,
             'items': items,
@@ -530,7 +594,7 @@ $(document).ready(function(){
             csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
         };
         $.post(url, postData, function(response){
-            alert(response);
+            window.open("data:application/pdf;base64, " + response);
         });
     });
 });    

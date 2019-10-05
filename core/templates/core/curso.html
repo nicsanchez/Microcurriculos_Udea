@@ -336,8 +336,7 @@ $(document).ready(function(){
         } 
         else{
             $.post(url, postData, function(response){
-                alert(response);
-                window.location = "{% url 'curso' %}";
+                window.open("data:application/pdf;base64, " + response);
             });
         }
     });

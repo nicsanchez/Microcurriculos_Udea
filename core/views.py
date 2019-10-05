@@ -3,8 +3,10 @@ from .models import Microcurriculum,Unity,Evaluation,Curso,Curso_asignado,Curso_
 from django.contrib import messages
 from django.core import serializers
 from django.http import JsonResponse
+from django.http import FileResponse,Http404
 import collections
 import json
+import base64
 import os
 from subprocess import call
 # Create your views here.
@@ -135,33 +137,37 @@ def core(request):
             progrcur=curso_asig.id_programa.nombre_progr
             precur=curso_asig.prereq
             corrcur=curso_asig.correq
-            justificacion=request.POST['des_gen']
-            justificacion=justificacion.replace('\n','\\\\')
-            propcur=request.POST['proposito']
-            propcur=propcur.replace('\n','\\\\')
-            metodocur=request.POST['metodologia']
-            metodocur=metodocur.replace('\n','\\\\')
-            actiasiscur=request.POST['activ_oblig']
-            actiasiscur=actiasiscur.replace('\n','\\\\')
+            justificacion=procesos('des_gen',request)
+            propcur=procesos('proposito',request)
+            metodocur=procesos('metodologia',request)
+            actiasiscur=procesos('activ_oblig',request)
             objgeni=request.POST['generales']
-            objgeni=cadenas(objgeni,",")
+            objgeni=cadenas(objgeni,",a,")
             objespi=request.POST['especificos']
-            objespi=cadenas(objespi,",")
+            objespi=cadenas(objespi,",a,")
             itemires=request.POST['items']
-            itemires=cadenas(itemires,",")
+            itemires=cadenas(itemires,",a,")
             biblbasi=request.POST['basicas']
-            biblbasi=cadenas(biblbasi,",")
+            biblbasi=cadenas(biblbasi,",a,")
             biblcompi=request.POST['complemen']
-            biblcompi=cadenas(biblcompi,",")
+            biblcompi=cadenas(biblcompi,",a,")
             actividadescuri=request.POST['actividadescuri']
             unitys=request.POST['unidades']
             unidades=""
-            unitys=unitys.split("\n")
-            for i in range(0,len(unitys)-1):
-                a=unitys[i].split("&/&")
-                unidades=unidades+"\\begin{tabular}{R{0.16\\textwidth} L{0.7\\textwidth}} \n \\\\ \n\\toprule \\textbf{Unidad No. "+a[0]+"} & "+a[1]+" \n \\\\ \n\midrule\\textbf{Subtemas} & \n\\begin{description}\n "+a[2]+"\n\end{description}\n \\\\ \n\\textbf{Semanas} & "+a[3]+" \n\end{tabular} \n \\\\ \n "
+            if(unitys=='No ha agregado este campo'):
+                unidades=unitys
+            else:    
+                unitys=unitys.split("\n")
+                for i in range(0,len(unitys)-1):
+                    a=unitys[i].split("&/&")
+                    unidades=unidades+"\\begin{tabular}{R{0.16\\textwidth} L{0.7\\textwidth}} \n \\\\ \n\\toprule \\textbf{Unidad No. "+a[0]+"} & "+a[1]+" \n \\\\ \n\midrule\\textbf{Subtemas} & \n\\begin{description}\n "+a[2]+"\n\end{description}\n \\\\ \n\\textbf{Semanas} & "+a[3]+" \n\end{tabular} \n \\\\ \n "
             generate_pdf(codicur,nomcur,hoteo,hoteopr,hoprac,valcur,habcur,clascur,vigencur,semcur,semncur,areacur,credicur,progrcur,propcur,justificacion,precur,corrcur,objgeni,objespi,itemires,metodocur,actiasiscur,biblbasi,biblcompi,actividadescuri,unidades)
-            return HttpResponse("Se generó correctamente el pdf del microcurriculo nuevo")
+            with open("salida.pdf", "rb") as pdf_file:
+                encoded_string = base64.b64encode(pdf_file.read())
+            a=str(encoded_string)
+            a=a.replace("b'","")
+            a=a.replace("'","")
+            return HttpResponse(a)
     return render(request, "core/index.html")
 
 def curso(request):
@@ -440,7 +446,12 @@ def curso(request):
                 unidades=unidades+"\\begin{tabular}{R{0.16\\textwidth} L{0.7\\textwidth}} \n \\\\ \n\\toprule \\textbf{Unidad No. "+str(cont)+"} & "+unit.tema+" \n \\\\ \n\midrule\\textbf{Subtemas} & \n\\begin{description}\n "+subtemas+"\n\end{description}\n \\\\ \n\\textbf{Semanas} & "+str(unit.num_semanas)+" \n\end{tabular} \n \\\\ \n "
                 cont+=1    
             generate_pdf(codicur,nomcur,hoteo,hoteopr,hoprac,valcur,habcur,clascur,vigencur,semcur,semncur,areacur,credicur,progrcur,propcur,justificacion,precur,corrcur,objgeni,objespi,itemires,metodocur,actiasiscur,biblbasi,biblcompi,actividadescuri,unidades)
-            return HttpResponse("Se generó correctamente el pdf del microcurriculo seleccionado")               
+            with open("salida.pdf", "rb") as pdf_file:
+                encoded_string = base64.b64encode(pdf_file.read())
+                a=str(encoded_string)
+                a=a.replace("b'","")
+                a=a.replace("'","")
+            return HttpResponse(a)
     semestres = Semestres.objects.all()
     return render(request, "core/curso.html",{'semestres':semestres})
 
@@ -683,5 +694,12 @@ def cadenas(iniciales,clave):
     iniciales=iniciales.split(clave)
     for inicial in iniciales:
         if(inicial!=''):
+            inicial=inicial.replace('&','\&')
             salida=salida+'\item '+inicial+' '
     return salida                     
+
+def procesos(cadena1,request):
+    cadena2=request.POST[cadena1]
+    cadena2=cadena2.replace('\n','\\\\')
+    cadena2=cadena2.replace('&','\&')
+    return cadena2
