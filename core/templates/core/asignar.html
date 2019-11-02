@@ -108,7 +108,13 @@
         </table>    
         <table>    
             <tr>
+                <h1>Acciones </h1>
+            </tr>
+            <tr>
                 <td><a href="{% url 'curso' %}" id="asignar_micro" name="">¿Desea asignar microcurriculo seleccionado?</a></td>
+            </tr>
+            <tr>
+                <td><a href="{% url 'asignar' %}" id="nuevo_pdf" name="">¿Desea visualizar el pdf del microcurriculo seleccionado?</a></td>
             </tr>
         </table>
     </form>
@@ -297,6 +303,37 @@ $(document).ready(function(){
             });
         }
     });
+    $("#nuevo_pdf").on('click', function (e){
+        e.preventDefault();
+        let url = "{% url 'asignar' %}";
+        var pensum_sel = $('#version_pensum').val();
+        var curso_sel = $('#curso').val();
+        var vigencia = $('#vigencia').val();
+        const postData={
+            'version_p': $('#v_p').val(),
+            'curso_es': $('#c').val(),
+			'semestre_es': $('#s').val(),
+            'pensum': $('#version_pensum').val(),
+            'curso': $('#curso').val(),
+			'vigencia': $('#vigencia').val(),           
+            'caso':"nuevopdf",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        if(pensum_sel=="Seleccione"){
+            alert("Rellene el campo correspondiente a la version del pensum ");
+        }
+        else if (curso_sel == "Seleccione"){
+            alert("Rellene el campo correspondiente al curso ");
+        }
+        else if (vigencia == "Seleccione"){
+            alert("Rellene el campo correspondiente a la vigencia del microcurriculo");
+        } 
+        else{
+            $.post(url, postData, function(response){
+                window.open("data:application/pdf;base64, " + response);
+            });
+        }
+    });    
 });    
 </script>
 </html>

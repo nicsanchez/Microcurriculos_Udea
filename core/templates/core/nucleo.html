@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Microcurriculos Udea</title>
+    <style type="text/css" media="screen">
+        #col1,#col2 {
+            width: 10%;
+        }
+        A:link {color: blue; font-size: 12pt; text-decoration: none }
+        A:hover {color: blue; font-size: 12pt; text-decoration: none }
+        A:visited {color: blue; font-size: 12pt; text-decoration: none }
+    </style>
+</head>
+{% if mensaje %}
+    <script lenguague="JavaScript">
+        alert("{{mensaje}}");
+        window.location = "{% url 'nucleo' %}";
+    </script>
+{% endif %}
+<body>
+<table id=central>
+    {% csrf_token %}   
+    <h1>Menu</h1>
+    <tr>
+        <td><a href="{% url 'crear2' %}" id="crear_micro">Crear un microcurriculo</a></td> 
+    </tr>
+    <tr>
+        <td><a href="{% url 'editar' %}" id="editar_micro">Editar un microcurriculo</a></td> 
+    </tr>
+    <tr>
+        <td><a href="{% url 'visualizar' %}" id="visualizar_pdf">Visualizar microcurriculo en PDF</a></td> 
+    </tr>
+</table>
+</body>
+</body>
+</html>    

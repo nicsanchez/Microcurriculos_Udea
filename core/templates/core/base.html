@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Asignar Microcurriculos</title>
+    <title>{% block inicio %}{% endblock %}</title>
     <style type="text/css" media="screen">
         A:link {color: blue; font-size: 12pt; text-decoration: none }
         A:hover {color: blue; font-size: 12pt; text-decoration: none }
@@ -22,117 +22,25 @@
         window.location = "{% url 'curso' %}";
     </script>
 {% endif %}
-<h1>Programar un curso</h1>
+<h1>{% block title %}{% endblock %}</h1>
 <body>
     <form action="{% url 'curso' %}" method="POST" id="formulario">
         {% csrf_token %}
         <input type="hidden" id="caso" name="caso" value="asignar">
-        <table>    
-            <tr>
-                <td>Pensum :</td>
-                <td><select name="version_pensum" id="version_pensum">
-                    <option >Seleccione</option> 
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                </select></td>
-                <td>Nivel :</td>
-                <td><select name="nivel" id="nivel">
-                    <option>Seleccione</option> 
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
-                    <option>10</option>
-                </select></td>               
-            </tr>
-            <tr>
-                <td>Area :</td>
-                <td><select name="area" id="area">
-                    <option >Seleccione</option> 
-                    <option>Básica de Ingeniería</option>
-                    <option>Ciencias Básicas</option>
-                    <option>Formacíon Complementaria</option>
-                    <option>Ingeníeria Aplicada</option>
-                </select></td>
-                <td>Cursos : </td>
-                <td><select name="curso" id="curso">
-                    <option >Seleccione</option>
-                </select></td>
-            </tr>
-        </table>
-        <table>
-            <tr>
-                <h1>Microcurriculos Asociados</h1>
-            </tr>
-            <tr>
-                <td>Desde: </td>
-                    <td><select name="desde" id="desde">
-                    <option >Seleccione</option>
-                    {% for semestre in semestres %}
-                        <option> {{semestre.descripcion}} </option>
-                    {% endfor %}
-            </tr>            
-            <tr>
-                <td>Hasta: </td>
-                    <td><select name="desde" id="hasta">
-                    <option >Seleccione</option>
-                    {% for semestre in semestres %}
-                        <option> {{semestre.descripcion}} </option>
-                    {% endfor %}
-            </tr>
-            <tr>
-                <td>Vigencia: </td>
-                <td><select name="vigencia" id="vigencia">
-                    <option >Seleccione</option>
-                </select></td>
-            </tr>
-        </table>
-        <table>
-            <tr>
-                <h1>Asignacion del microcurriculo</h1>    
-            </tr>
-            <tr>
-                <td>Semestre a asignar: </td>
-                    <td><select name="semestre" id="semestre">
-                    <option >Seleccione</option>
-                    {% for semestre in semestres %}
-                        <option> {{semestre.descripcion}} </option>
-                    {% endfor %}            
-            </tr>
-        </table>
+        {% block panel %}{% endblock %}
+        {% block micro_asociado %}{% endblock %}
+        {% block semestre_asignar %}{% endblock %}
         <table> 
             <tr>
                 <h1>Acciones</h1>    
             </tr>    
             <tr>
-                <td><a href="" id="nuevo_micro">¿Desea asignar un nuevo microcurriculo?</a></td>
+                {% block contenido %}{% endblock %}
             </tr>
-            <tr>
-                <td><a href="" id="editar_micro">¿Desea crear un nuevo microcurriculo apartir del microcurriculo seleccionado?</a></td>
-            </tr>
-            <tr>
-                <td><a href="{% url 'curso' %}" id="asignar_micro" name="">¿Desea asignar el ultimo microcurriculo vigente?</a></td>
-            </tr>
-            <tr>
-                <td><a href="{% url 'curso' %}" id="renovar_micro" name="">¿Desea asignar el microcurriculo seleccionado anteriormente?</a></td>
-            </tr>
-            <tr>
-                <td><a href="" id="micro_curso">¿Desea asignar un microcurriculo de otro curso?</a></td>
-            </tr> 
-            <tr>
-                <td><a href="{% url 'curso' %}" id="nuevo_pdf">Exportar PDF del microcurriculo seleccionado</a></td>
-            </tr> 
         </table>         
     </form>
 </body>
+{% block funciones_java %}{% endblock %}
 <script lenguague="javascript"> 
 $(document).ready(function(){
     $("#version_pensum").change(function(){
@@ -192,34 +100,67 @@ $(document).ready(function(){
 		});
     });
     $("#curso").change(function(){
-        let url = "{% url 'curso' %}";
-        var pensum_sel = $('#version_pensum').val();
-        var curso_sel = $('#curso').val();
-        const postData={
-            'curso': $('#curso').val(),
-            //problema cuando no se escoja el curso por la version del pensum, version pensum será seleccione y habrá error
-            'pensum': $('#version_pensum').val(),
-            'desde' : $('#desde').val(),
-            'hasta' : $('#hasta').val(),
-            'caso':"vigencias",
-            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
-        };
-        if($('#desde').val()=="Seleccione"){
-            console.log("Esta vacio el campo desde")
-        }
-        else if($('#hasta').val()=="Seleccione"){
-            console.log("Esta vacio el campo hasta")
+        //Esto debe modificarse cuando se monte e n el servidor la pagina
+        if(window.location=="http://127.0.0.1:8000/crear2/"){
+            let url = "{% url 'crear2' %}"
+            var pensum_sel = $('#version_pensum').val();
+            var curso_sel = $('#curso').val();
+            const postData={
+                'curso': $('#curso').val(),
+                'pensum': $('#version_pensum').val(),
+                'caso': "confirmacion",
+                csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+            };
+            $.post(url, postData, function(response){
+                if(response=="true"){
+                    $("#curso_prin").addClass("isActivated");
+                    $("#curso_prin").removeClass("isDisabled");
+                    $("#curso_prin2").addClass("isActivated");
+                    $("#curso_prin2").removeClass("isDisabled");
+                }
+                else if(response=="true1"){
+                    $("#curso_prin").addClass("isActivated");
+                    $("#curso_prin").removeClass("isDisabled");
+                    $("#curso_prin2").addClass("isDisabled");
+                    $("#curso_prin2").removeClass("isActivated");
+                }
+                else{
+                    $("#curso_prin").addClass("isDisabled");
+                    $("#curso_prin").removeClass("isActivated");
+                    $("#curso_prin2").addClass("isDisabled");
+                    $("#curso_prin2").removeClass("isActivated");
+                }
+            });    
         }
         else{
-            $.post(url, postData, function(response){
-                let curso_prog = JSON.parse(response);
-                $("#vigencia").empty();
-                $("#vigencia").append(`<option>Seleccione</option>`);
-                //console.log(curso_prog)
-                for(var i=0; i<curso_prog.data.length;i++){
-                    $("#vigencia").append(`<option>${curso_prog.data[i]}</option>`);
-                };
-            });   
+            let url = "{% url 'curso' %}";
+            var pensum_sel = $('#version_pensum').val();
+            var curso_sel = $('#curso').val();
+            const postData={
+                'curso': $('#curso').val(),
+                'pensum': $('#version_pensum').val(),
+                'desde' : $('#desde').val(),
+                'hasta' : $('#hasta').val(),
+                'caso':"vigencias",
+                csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+            };
+            if($('#desde').val()=="Seleccione"){
+                console.log("Esta vacio el campo desde")
+            }
+            else if($('#hasta').val()=="Seleccione"){
+                console.log("Esta vacio el campo hasta")
+            }
+            else{
+                $.post(url, postData, function(response){
+                    let curso_prog = JSON.parse(response);
+                    $("#vigencia").empty();
+                    $("#vigencia").append(`<option>Seleccione</option>`);
+                    //console.log(curso_prog)
+                    for(var i=0; i<curso_prog.data.length;i++){
+                        $("#vigencia").append(`<option>${curso_prog.data[i]}</option>`);
+                    };
+                });   
+            }        
         }
     });
     $("#desde").change(function(){
@@ -319,7 +260,7 @@ $(document).ready(function(){
         e.preventDefault();
         var v_p = $('#version_pensum').val();
         var curso_sel = $('#curso').val();
-        var semestre = "nothing";
+        var semestre = $('#vigencia').val();
         var vigencia = $('#vigencia').val();
         var caso = "editar";
         var nombres = 'v_p,curso_sel,semestre,vigencia,caso';
@@ -333,60 +274,13 @@ $(document).ready(function(){
             $(location).attr('href',pagina);
         }
         else if (v_p == "Seleccione"){
-            alert("Seleccione el campo correspondiente a la version del pensum ");
+            alert("Seleccione la version del pensum correspondiente al curso ");
         }
         else if (curso_sel == "Seleccione"){
-            alert("Seleccione el campo correspondiente al curso ");
+            alert("Seleccione el curso al cual pertenece el microcurriculo");
         }
         else if (vigencia == "Seleccione"){
-            alert("Seleccione el campo correspondiente a la vigencia del curso que usará como base");
-        }
-        else if (semestre == "Seleccione"){
-            alert("Seleccione el campo correspondiente al semestre al cual va a realizar la asignacion ");
-        }
-    });
-    $("#hola").on('click', function (e){
-        e.preventDefault();
-        var v_p = $('#version_pensum').val();
-        var curso_sel = $('#curso').val();
-        var semestre = $('#semestre').val();
-        var vigencia = $('#vigencia').val();
-        var nombres = 'v_p,curso_sel,semestre,vigencia'
-        let url="{% url 'curso' %}";
-        const postData={
-            'pensum': $('#version_pensum').val(),
-            'curso': $('#curso').val(),
-			'semestre' : $('#semestre').val(),
-            'caso':"editar",
-            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
-        };
-        pagina = "{% url 'core' %}"
-        pagina +="?";
-        nomVec = nombres.split(",");
-        for (i=0; i<nomVec.length; i++)
-            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
-        pagina = pagina.substring(0,pagina.length-1);
-        if(v_p != "Seleccione" && curso_sel != "Seleccione" && semestre != "Seleccione" && vigencia != "Seleccione"){
-            $.post(url, postData, function(response){
-                if(response == "true"){
-                    $(location).attr('href',pagina); 
-                }
-                else{
-                    alert('Existe un microcurriculo asociado al semestre escogido');    
-                }
-            });
-        }
-        else if (v_p == "Seleccione"){
-            alert("Seleccione el campo correspondiente a la version del pensum ");
-        }
-        else if (curso_sel == "Seleccione"){
-            alert("Seleccione el campo correspondiente al curso ");
-        }
-        else if (vigencia == "Seleccione"){
-            alert("Seleccione el campo correspondiente a la vigencia del curso que usará como base");
-        }
-        else if (semestre == "Seleccione"){
-            alert("Seleccione el campo correspondiente al semestre al cual va a realizar la asignacion ");
+            alert("Seleccione la vigencia del microcurriculo a editar");
         }
     });
     $("#nuevo_pdf").on('click', function (e){
@@ -423,7 +317,8 @@ $(document).ready(function(){
         var curso_sel = $('#curso').val();
         var semestre = $('#semestre').val();
         var vigencia = "";
-        var nombres = 'v_p,curso_sel,semestre,vigencia'
+        var caso = "editar";
+        var nombres = 'v_p,curso_sel,semestre,vigencia,caso'
         let url="{% url 'curso' %}";
         const postData={
             'pensum': $('#version_pensum').val(),
@@ -531,6 +426,93 @@ $(document).ready(function(){
                 window.location = "{% url 'curso' %}";
             });
         }        
+    });
+    $("#version_pensum2").change(function(){
+        let url = "{% url 'curso' %}";
+        var pensum_sel = $('#version_pensum2').val();
+        var curso_sel = $('#curso2').val();
+        const postData={
+			'pensum': $('#version_pensum2').val(),
+            'nivel':$('#nivel2').val(),
+            'area':$('#area2').val(),
+            'caso':"cursos",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+			let curso = JSON.parse(response);
+            $("#curso2").empty();
+            $("#curso2").append(`<option>Seleccione</option>`);
+            for(var i=0; i<curso.data.length;i++){
+                $("#curso2").append(`<option>${curso.data[i]}</option>`);
+            };
+		});
+    });
+    $("#nivel2").change(function(){
+        let url = "{% url 'curso' %}";
+        const postData={
+			'pensum': $('#version_pensum2').val(),
+            'nivel':$('#nivel2').val(),
+            'area':$('#area2').val(),
+            'caso':"cursos",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+			let curso = JSON.parse(response);
+            $("#curso2").empty();
+            $("#curso2").append(`<option>Seleccione</option>`);
+            for(var i=0; i<curso.data.length;i++){
+                $("#curso2").append(`<option>${curso.data[i]}</option>`);
+            };
+		});
+    });
+    $("#area2").change(function(){
+        let url = "{% url 'curso' %}";
+        const postData={
+			'pensum': $('#version_pensum2').val(),
+            'nivel':$('#nivel2').val(),
+            'area':$('#area2').val(),
+            'caso':"cursos",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+			let curso = JSON.parse(response);
+            $("#curso2").empty();
+            $("#curso2").append(`<option>Seleccione</option>`);
+            for(var i=0; i<curso.data.length;i++){
+                $("#curso2").append(`<option>${curso.data[i]}</option>`);
+            };
+		});
+    });
+    $("#curso2").change(function(){
+        let url = "{% url 'crear2' %}"
+        var pensum_sel = $('#version_pensum2').val();
+        var curso_sel = $('#curso2').val();
+        const postData={
+            'curso': $('#curso2').val(),
+            'pensum': $('#version_pensum2').val(),
+            'caso': "confirmacion",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+            if(response=="true"){
+                $("#curso_sec").addClass("isActivated");
+                $("#curso_sec").removeClass("isDisabled");
+                $("#curso_sec2").addClass("isActivated");
+                $("#curso_sec2").removeClass("isDisabled");
+            }
+            else if(response=="true1"){
+                $("#curso_sec").addClass("isActivated");
+                $("#curso_sec").removeClass("isDisabled");
+                $("#curso_sec2").addClass("isDisabled");
+                $("#curso_sec2").removeClass("isActivated");
+            }
+            else{
+                $("#curso_sec").addClass("isDisabled");
+                $("#curso_sec").removeClass("isActivated");
+                $("#curso_sec2").addClass("isDisabled");
+                $("#curso_sec2").removeClass("isActivated");
+            }
+        });
     });
 });    
 </script>

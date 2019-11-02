@@ -13,6 +13,7 @@
     vp = unescape(arrVariables[0].split("=")[1]);
     cur = unescape(arrVariables[1].split("=")[1]);
     sem = unescape(arrVariables[2].split("=")[1]);
+    vige = unescape(arrVariables[3].split("=")[1]);
     window.addEventListener('load', cargar, false);
     function cargar(){
         document.getElementById("v_p").value = vp
@@ -76,7 +77,7 @@
             cont_comp --;
             document.getElementById("c_com").value=cont_comp;
             if (cont_comp==0){
-                document.getElementById("compManagment").removeChild(document.getElementById("eliminarcomplementaria"));
+                document.getElementById("complManagment").removeChild(document.getElementById("eliminarcomplementaria"));
             }        
         }     
     }
@@ -182,7 +183,7 @@
         document.getElementById("agregarsub"+cont).colspan="2";
         if (cont2==1){
             newClose = document.createElement("a");
-            newClose.id="eliminarsubt"+cont2;
+            newClose.id="eliminarsubt"+cont;
             newClose.href='javascript:eliminari('+cont+')';
             newClose.appendChild(document.createTextNode(" Borrar el último subtema"));
             document.getElementById("nodosub"+cont).appendChild(newClose);
@@ -309,8 +310,8 @@
             newNode=newEntry2("Complementaria "+cont_comp+":","complementaria"+cont_comp);
             if (cont_comp==1){
                 newClose = document.createElement("a");
-                newClose.id="eliminarcomplementaria";
-                newClose.href='javascript:eliminar2(this,"complementaria")';
+                newClose.id = "eliminarcomplementaria";
+                newClose.href = 'javascript:eliminar2(this,"complementaria")';
                 newClose.appendChild(document.createTextNode("Borrar la ultima referencia"));
                 document.getElementById("complManagment").appendChild(newClose);
             }    
@@ -350,6 +351,7 @@
         <input type="hidden" id="v_p" name="version_p">
         <input type="hidden" id="c" name="curso_es">
         <input type="hidden" id="s" name="semestre_es">
+        <input type="hidden" id="v" name="vigencia_es">
         <table id="tabla1">
             <tr>
                 <td>Descripcion General : </td>
@@ -418,7 +420,7 @@
                 <td colspan="2"><CENTER id="unityManagment"><a HREF="javascript:newUnity();">Agregar una unidad</a>&nbsp;</CENTER></td>
             </tr>
         </table> 
-        <table>
+        <table id="evaluaciones">
             <tr>
                 <h2>Evaluaciones </h2>
             </tr>          
@@ -431,7 +433,7 @@
         </table> 
         <table>
             <tr>
-                <td><a href="" id="visualizar_pdf">¿Desea visualizar el pdf del nuevo microcurriculo?</a></td> 
+                <td><a href="" id="visualizar_pdf">¿Desea visualizar el microcurriculo en PDF?</a></td> 
             </tr>  
         </table>                           
     </form>
@@ -441,6 +443,154 @@
 </body>
 <script lenguague="javascript"> 
 $(document).ready(function(){
+    cadVariables = location.search.substring(1,location.search.length);
+    arrVariables = cadVariables.split("&");
+    var vige = unescape(arrVariables[3].split("=")[1]);
+    var caso = unescape(arrVariables[4].split("=")[1]);
+    if(caso=="nuevo"){
+        $("#caso").val(caso);
+    };
+    if(vige!=""){
+        $("#v").val(vige);
+        if(caso=="editar"){
+            $("#caso").val(caso);
+        };
+        let url = "{% url 'core' %}";
+        var pensum = $('#v_p').val();
+        var curso = $('#c').val();
+        const postData={
+            'pensum': pensum,
+            'curso': curso,
+			'vigencia': vige,
+            'caso': "base",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+            var micro=JSON.parse(response);
+            $("#des_gen").val(micro.des_gen);
+            $("#propos").val(micro.proposito);
+            $("#metodo").val(micro.metodologia);
+            $("#acti_asis").val(micro.act_obl);
+            procesamiento(micro.generales," /objgen- ","#c_g","eliminarobjetivog","generalManagment","cant_general","General ","general","Borrar el último objetivo","general");
+            procesamiento(micro.especificos," /objesp- ","#c_es","eliminarobjetivoe","espeManagment","cant_espec","Especifico ","especifico","Borrar el último objetivo","especifico");
+            procesamiento(micro.resumido," /contresu- ","#c_res","eliminarcontres","contresManagment","cant_resu","Item ","item","Borrar el último item","resumido");
+            procesamiento(micro.basica," /biblibas- ","#c_bas","eliminarbasica","basicaManagment","cant_basica","Basica ","basica","Borrar la ultima referencia","basica");
+            procesamiento(micro.complementaria," /biblicom- ","#c_com","eliminarcomplementaria","complManagment","cant_compl","Complementaria ","complementaria","Borrar la ultima referencia","complementaria");
+            var actividades = micro.actividad.split(" /acteval- ");
+            var porcentajes = micro.porcentaje.split(" /porceval- ");
+            var fechas = micro.fecha.split(" /feceval- ");
+            procesamientoevaluaciones(actividades,porcentajes,fechas);
+            temas=micro.temas.split(" /temuni- ");
+            subtemas=micro.subtemas.split(" /subtemuni- ");
+            semanas=micro.semanas.split(" /semauni- ");
+            procesamientounidades(temas,subtemas,semanas);
+        });
+        function procesamientounidades(temas,subtemas,semanas){
+            cont=temas.length-1;
+            $("#c_u").val(cont);
+            if(cont>0){
+                for(var i=1;i<cont+1;i++){
+                    unidcon=subtemas[i].split(" /subin- ").length-1
+                    $('<table id="tbunid'+i+'"></table>').insertBefore("#cant_unid");
+                    titulo='<h4>Unidad '+i+':</h4>'
+                    temasi='<tr><td>Temas :</td><td><input type="text" name="temas'+i+'" value="'+temas[i]+'"></td></tr>';
+                    semanasi='<tr><td># de semanas :</td><td><input type="number" name="semanas'+i+'" value="'+semanas[i]+'"></td></tr>';
+                    contadori='<tr><td><input type="hidden" id="subtemas'+i+'" name="subtemas'+i+'" value="'+unidcon+'"></td></tr>';
+                    subt='<tr><td>Subtemas :</td></tr>';
+                    control='<tr id="nodosub'+i+'"><td id="agregarsub'+i+'"><a id="agregarsubtema'+i+'" href="javascript:newsubt('+i+')">Agregar un subtema</a></td></tr>';
+                    contenido=contadori+temasi+semanasi;
+                    $('#tbunid'+i).append(titulo);
+                    $('#tbunid'+i).append(contenido);
+                    $('#tbunid'+i).append(subt);
+                    $('#tbunid'+i).append(control);
+                    if(unidcon>0){
+                        sub=subtemas[i].split(" /subin- ")
+                        for(var j=1;j<unidcon+1;j++){
+                            subtemai='<tr><td>Subtema '+j+':</td><td><input type="text" name="subtemauni'+i+''+j+'" value="'+sub[j]+'"></td></tr>';
+                            $(subtemai).insertBefore("#nodosub"+i);
+                        }
+                        elimi='<a id="eliminarsubt'+i+'" href="javascript:eliminari('+i+')">Borrar el último subtema</a>'
+                        $('#nodosub'+i).append(elimi);
+                    }
+                };
+                eliminar='<a id="eliminarUnid" href="JavaScript:eliminar(this)">Borrar la última unidad</a>';
+                $('#unityManagment').append(eliminar);
+            };
+        };
+        function procesamientoevaluaciones(activ,porcen,fech){
+            cont_eval=activ.length-1;
+            $("#c_e").val(cont_eval);
+            if(cont_eval>0){
+                for(var i=1;i<cont_eval+1;i++){
+                    $('<tr id="treval'+i+'"></tr>').insertBefore("#cant_eval");
+                    titulo='<h4>Evaluacion '+i+':</h4>'
+                    actividadi='<tr><td>Actividad :</td><td><input type="text" name="actividad'+i+'" value="'+activ[i]+'"></td></tr>';
+                    porcentajei='<tr><td>Porcentaje :</td><td><input type="number" name="porcentaje'+i+'" value="'+porcen[i]+'"></td></tr>';
+                    fechai='<tr><td>Fecha :</td><td><input type="date" name="fecha'+i+'" value="'+fech[i]+'"></td></tr>';
+                    contenido=actividadi+porcentajei+fechai;
+                    $('#treval'+i).append(titulo);
+                    $('#treval'+i).append(contenido);
+                };
+                eliminar='<a id="eliminarEval" href="javascript:eliminar_eval(this)">Borrar la última evaluación</a>';
+                $('#evalManagment').append(eliminar);
+            };
+        };
+        function eliminar(obj){
+            unity=document.getElementById("cant_unid");
+            unity.parentNode.removeChild(unity.parentNode.childNodes[cont+1]);
+            cont --;
+            document.getElementById("c_u").value=cont;
+            if (cont==0){
+                document.getElementById("unityManagment").removeChild(document.getElementById("eliminarUnid"));
+            }
+        }
+        function newEntry2(input_1,n_1){
+            newInput1 = document.createElement("input");
+            newInput1.type="text";
+            newInput1.name=n_1;
+            newNode = document.createElement("tr");
+            newNode.appendChild(document.createElement("td"));
+            newNode.appendChild(document.createElement("td"));
+            newNode.firstChild.appendChild(document.createTextNode(input_1))
+            newNode.lastChild.appendChild(newInput1);
+            return newNode;
+        }; 
+        function procesamiento(cadena,clave,clave2,id_close,id_top,n_unity,nombre,nombre_href,mensaje_text,tipo){
+            var cadena2 = cadena.split(clave);
+            var long = cadena2.length-1;
+            if(tipo=="general"){
+                cont_gen=long;
+            }
+            else if(tipo=="especifico"){
+                cont_esp=long;
+            }
+            else if(tipo=="resumido"){
+                cont_res=long;
+            }
+            else if(tipo=="basica"){
+                cont_bas=long;
+            }
+            else if(tipo=="complementaria"){
+                cont_comp=long;
+            }
+            $(clave2).val(long);
+            if(long > 0){
+                newClose = document.createElement("a");
+                newClose.id=id_close;
+                newClose.href='javascript:eliminar2(this,"'+tipo+'")';
+                newClose.appendChild(document.createTextNode(mensaje_text));
+                document.getElementById(id_top).appendChild(newClose);
+                for(var i=1;i<long+1;i++){
+                    unity=document.getElementById(n_unity);
+                    newNode=newEntry2(nombre+i+":",nombre_href+i);
+                    unity.parentNode.insertBefore(newNode,unity);    
+                };
+                for(var i=1;i<long+1;i++){
+                    $("input[name='"+nombre_href+i+"']").val(cadena2[i]);
+                };
+            };
+        };
+    };
     function generar_cadena(contador,clave){
         var cadena ='';
         if(parseInt(contador)==0){
@@ -469,8 +619,11 @@ $(document).ready(function(){
         else{
             for(var i=1;i<parseInt(contador)+1;i++){
                 var activ=$("input[name=actividad"+i+"]").val();
+                activ = activ.replace("&","\\&")
                 var porce=$("input[name=porcentaje"+i+"]").val();
+                porce = porce.replace("&","\\&")
                 var fecha=$("input[name=fecha"+i+"]").val();
+                fecha = fecha.replace("&","\\&")
                 if(activ==''){
                     activ='Vacio';
                 }
@@ -504,7 +657,9 @@ $(document).ready(function(){
             for(var i=1;i<parseInt(contador)+1;i++){
                 var cont2=$("input[name=subtemas"+i+"]").val();
                 var temai=$("input[name=temas"+i+"]").val();
+                temai=temai.replace("&","\\&")
                 var semai=$("input[name=semanas"+i+"]").val();
+                semai=semai.replace("&","\\&")
                 if(temai==''){
                     temai='Vacio';
                 }
@@ -524,6 +679,7 @@ $(document).ready(function(){
                 else{
                     for(var j=1;j<parseInt(cont2)+1;j++){
                         var subi=$("input[name=subtemauni"+i+j+"]").val();
+                        subi=subi.replace("&","\\&")
                         if(subi==''){
                             subi='Vacio';
                         }
@@ -535,7 +691,6 @@ $(document).ready(function(){
                 }
                 cadena+=i+" &/& "+temai+" &/& "+subte+" &/& "+semai+" \n"
             }
-            console.log(cadena)
             return cadena
         }
     }

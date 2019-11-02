@@ -1,0 +1,149 @@
+{% extends 'core/base.html' %}
+
+{% block inicio %}
+    Crear Microcurriculo
+{% endblock %}
+
+{% block panel %}
+<table>
+    <h4>Seleccione el curso al cual creará un nuevo microcurriculo</h4>
+    <tr>
+        <td>Pensum :</td>
+        <td><select name="version_pensum" id="version_pensum">
+            <option >Seleccione</option> 
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </select></td>
+        <td>Nivel :</td>
+        <td><select name="nivel" id="nivel">
+            <option>Seleccione</option> 
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+        </select></td>               
+    </tr>
+    <tr>
+        <td>Area :</td>
+        <td><select name="area" id="area">
+            <option >Seleccione</option> 
+            <option>Básica de Ingeniería</option>
+            <option>Ciencias Básicas</option>
+            <option>Formacíon Complementaria</option>
+            <option>Ingeníeria Aplicada</option>
+        </select></td>
+        <td>Cursos : </td>
+        <td><select name="curso" id="curso">
+            <option >Seleccione</option>
+        </select></td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <h4>Seleccione el semestre al que va a asignar el microcurriculo</h4>    
+    </tr>
+    <tr>
+        <td>Semestre a asignar: </td>
+            <td><select name="semestre" id="semestre">
+            <option >Seleccione</option>
+            {% for semestre in semestres %}
+                <option> {{semestre.descripcion}} </option>
+            {% endfor %}            
+    </tr>
+</table>
+{% endblock %}
+
+
+{% block title %}
+    Crear un nuevo microcurriculo
+{% endblock %}}
+
+{% block contenido %}
+<style type="text/css" media="screen">
+    .isDisabled{
+        color: currentColor;
+        cursor: not-allowed;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    .isActivated{
+        color: blue;
+        font-size: 12pt;
+        text-decoration: none;
+    }
+</style>
+<table>
+    <h2>Nuevo Microcurriculo</h2>
+    <td><a href="" id="nuevo_micro" class="isActivated">Nuevo microcurriculo</a></td>
+</table>
+<table>
+    <h2>A partir de otro Microcurriculo</h2>
+    <table>
+        <h4>Del mismo curso</h4>
+        <tr><td><a href="" id="curso_prin" class="isDisabled" title="No hay">Ultimo Microcurriculo vigente</a></td></tr>
+        <tr><td><a href="" id="curso_prin2" class="isDisabled">Otro Microcurriculo</a></td></tr>
+    </table>
+    <table>
+        <table>
+            <h4>De otro curso</h4>
+            <h5>Seleccione el curso</h5>
+            <tr>
+                <td>Pensum :</td>
+                <td><select name="version_pensum2" id="version_pensum2">
+                    <option >Seleccione</option> 
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select></td>
+                <td>Nivel :</td>
+                <td><select name="nivel2" id="nivel2">
+                    <option>Seleccione</option> 
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                </select></td>               
+            </tr>
+            <tr>
+                <td>Area :</td>
+                <td><select name="area2" id="area2">
+                    <option >Seleccione</option> 
+                    <option>Básica de Ingeniería</option>
+                    <option>Ciencias Básicas</option>
+                    <option>Formacíon Complementaria</option>
+                    <option>Ingeníeria Aplicada</option>
+                </select></td>
+                <td>Cursos : </td>
+                <td><select name="curso2" id="curso2">
+                    <option >Seleccione</option>
+                </select></td>
+            </tr>
+        </table>
+        <table>
+            <tr><td></td></tr>
+            <tr><td></td></tr>
+            <tr><td><a href="" id="curso_sec" class="isDisabled">Ultimo Microcurriculo vigente</a></td></tr>
+            <tr><td><a href="" id="curso_sec2" class="isDisabled">Otro Microcurriculo</a></td></tr>
+        </table>
+    </table>
+
+</table>
+{% endblock %}
+
