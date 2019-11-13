@@ -454,15 +454,52 @@ $(document).ready(function(){
         $("#v").val(vige);
         if(caso=="editar"){
             $("#caso").val(caso);
-        };
+            var caso1 = "base"
+            var pensum = $('#v_p').val();
+            var curso = $('#c').val();
+        }
+        else if(caso=="ultimo"){
+            $("#caso").val("nuevo");
+            var caso1 = "ultimo";
+            var pensum = $('#v_p').val();
+            var curso = $('#c').val();
+        }
+        else if(caso=="crear_otro"){
+            $("#caso").val("nuevo");
+            var caso1 = "base";
+            var pensum = $('#v_p').val();
+            var curso = $('#c').val();
+        }
+        else if(caso=="ultimo2"){
+            $("#caso").val("nuevo");
+            var caso1 = "ultimo"
+            vp = unescape(arrVariables[0].split("=")[1]);
+            cur = unescape(arrVariables[1].split("=")[1]);
+            pensums=vp.split(' /pencur- ');
+            cursos=cur.split(' /cursel- ');
+            $("#v_p").val(pensums[0]);
+            $("#c").val(cursos[0]);
+            var pensum=pensums[1];
+            var curso=cursos[1];
+        }
+        else if(caso=="crear_otro2"){
+            $("#caso").val("nuevo");
+            var caso1 = "base";
+            vp = unescape(arrVariables[0].split("=")[1]);
+            cur = unescape(arrVariables[1].split("=")[1]);
+            pensums=vp.split(' /pencur- ');
+            cursos=cur.split(' /cursel- ');
+            $("#v_p").val(pensums[0]);
+            $("#c").val(cursos[0]);
+            var pensum = pensums[1];
+            var curso = cursos[1];
+        }
         let url = "{% url 'core' %}";
-        var pensum = $('#v_p').val();
-        var curso = $('#c').val();
         const postData={
             'pensum': pensum,
             'curso': curso,
 			'vigencia': vige,
-            'caso': "base",
+            'caso': caso1,
             csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
         };
         $.post(url, postData, function(response){

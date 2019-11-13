@@ -67,7 +67,7 @@
     </tr>            
     <tr>
         <td>Hasta: </td>
-            <td><select name="desde" id="hasta">
+            <td><select name="hasta" id="hasta">
             <option >Seleccione</option>
             {% for semestre in semestres %}
                 <option> {{semestre.descripcion}} </option>
@@ -83,5 +83,7 @@
 {% endblock %}
 
 {% block contenido %}
-<td><a href="{% url 'curso' %}" id="nuevo_pdf">Exportar PDF del microcurriculo seleccionado</a></td>
+<tr>
+    <td><a href="{% url 'curso' %}" id="nuevo_pdf">Exportar PDF del microcurriculo seleccionado</a></td>
+</tr>
 {% endblock %}

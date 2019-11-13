@@ -34,15 +34,55 @@
             <tr>
                 <h1>Acciones</h1>    
             </tr>    
-            <tr>
-                {% block contenido %}{% endblock %}
-            </tr>
+            {% block contenido %}{% endblock %}
         </table>         
     </form>
 </body>
 {% block funciones_java %}{% endblock %}
 <script lenguague="javascript"> 
 $(document).ready(function(){
+    //Condicionales para evitar que al devolver la pagina no aparezcan los cursos
+    if($('#version_pensum').val()!="Seleccione" || $('#nivel').val()!="Seleccione" || $('#area').val()!="Seleccione" ){
+        let url = "{% url 'curso' %}";
+        var pensum_sel = $('#version_pensum').val();
+        var curso_sel = $('#curso').val();
+        const postData={
+			'pensum': $('#version_pensum').val(),
+            'nivel':$('#nivel').val(),
+            'area':$('#area').val(),
+            'caso':"cursos",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+			let curso = JSON.parse(response);
+            $("#curso").empty();
+            $("#curso").append(`<option>Seleccione</option>`);
+            for(var i=0; i<curso.data.length;i++){
+                $("#curso").append(`<option>${curso.data[i]}</option>`);
+            };
+		});
+    }
+    if($('#version_pensum2').val()!="Seleccione" || $('#nivel2').val()!="Seleccione" || $('#area2').val()!="Seleccione" ){
+        let url = "{% url 'curso' %}";
+        var pensum_sel = $('#version_pensum2').val();
+        var curso_sel = $('#curso2').val();
+        const postData={
+			'pensum': $('#version_pensum2').val(),
+            'nivel':$('#nivel2').val(),
+            'area':$('#area2').val(),
+            'caso':"cursos",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+			let curso = JSON.parse(response);
+            $("#curso2").empty();
+            $("#curso2").append(`<option>Seleccione</option>`);
+            for(var i=0; i<curso.data.length;i++){
+                $("#curso2").append(`<option>${curso.data[i]}</option>`);
+            };
+		});
+    }
+    //Panel para curso principal
     $("#version_pensum").change(function(){
         let url = "{% url 'curso' %}";
         var pensum_sel = $('#version_pensum').val();
@@ -163,11 +203,11 @@ $(document).ready(function(){
             }        
         }
     });
+    //Panel para buscar micros asociados del curso principal
     $("#desde").change(function(){
         let url = "{% url 'curso' %}";
         const postData={
             'curso': $('#curso').val(),
-            //problema cuando no se escoja el curso por la version del pensum, version pensum será seleccione y habrá error
             'pensum': $('#version_pensum').val(),
             'desde' : $('#desde').val(),
             'hasta' : $('#hasta').val(),
@@ -227,35 +267,7 @@ $(document).ready(function(){
             });
         } 
     });
-    $("#asignar_micro").on('click', function (e){
-        e.preventDefault();
-        let url = "{% url 'curso' %}";
-        var pensum_sel = $('#version_pensum').val();
-        var curso_sel = $('#curso').val();
-        var semestre = $('#semestre').val();
-        const postData={
-            'pensum': $('#version_pensum').val(),
-            'curso': $('#curso').val(),
-			'semestre': $('#semestre').val(),
-            'caso':"ultimo",
-            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
-        };
-        if(pensum_sel=="Seleccione"){
-            alert("Rellene el campo correspondiente a la version del pensum ");
-        }
-        else if (curso_sel == "Seleccione"){
-            alert("Rellene el campo correspondiente al curso ");
-        }
-        else if (semestre == "Seleccione"){
-            alert("Rellene el campo correspondiente al semestre al cual va a realizar la asignacion ");
-        } 
-        else{
-            $.post(url, postData, function(response){
-                alert(response);
-                window.location = "{% url 'curso' %}";
-            });
-        }
-    });
+    //Editar un microcurriculo
     $("#editar_micro").on('click', function (e){
         e.preventDefault();
         var v_p = $('#version_pensum').val();
@@ -283,6 +295,7 @@ $(document).ready(function(){
             alert("Seleccione la vigencia del microcurriculo a editar");
         }
     });
+    //Visualizar un microcurrriculo
     $("#nuevo_pdf").on('click', function (e){
         e.preventDefault();
         let url = "{% url 'curso' %}";
@@ -311,13 +324,14 @@ $(document).ready(function(){
             });
         }
     });
+    //Crear un nuevo microcurriculo
     $("#nuevo_micro").on('click', function (e){
         e.preventDefault();
         var v_p = $('#version_pensum').val();
         var curso_sel = $('#curso').val();
         var semestre = $('#semestre').val();
         var vigencia = "";
-        var caso = "editar";
+        var caso = "nuevo";
         var nombres = 'v_p,curso_sel,semestre,vigencia,caso'
         let url="{% url 'curso' %}";
         const postData={
@@ -353,80 +367,7 @@ $(document).ready(function(){
             alert("Rellene el campo correspondientes al semestre al cual va a realizar la asignacion ");
         }
     });
-    $("#micro_curso").on('click', function (e){
-        e.preventDefault();
-        var v_p = $('#version_pensum').val();
-        var curso_sel = $('#curso').val();
-        var semestre = $('#semestre').val();
-        var nombres = 'v_p,curso_sel,semestre'
-        let url="{% url 'curso' %}";
-        const postData={
-            'pensum': $('#version_pensum').val(),
-            'curso': $('#curso').val(),
-			'semestre' : $('#semestre').val(),
-            'caso':"verificacion",
-            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
-        };
-        pagina = "{% url 'asignar' %}"
-        pagina +="?";
-        nomVec = nombres.split(",");
-        for (i=0; i<nomVec.length; i++)
-            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
-        pagina = pagina.substring(0,pagina.length-1);
-        if(v_p != "Seleccione" && curso_sel != "Seleccione" && semestre != "Seleccione"){
-            $.post(url, postData, function(response){
-                if(response == "true"){
-                    $(location).attr('href',pagina); 
-                }
-                else{
-                    alert('Existe un microcurriculo asociado al semestre escogido');    
-                }
-            });
-        }
-        else if (v_p == "Seleccione"){
-            alert("Rellene el campo correspondientes a la version del pensum ");
-        }
-        else if (curso_sel == "Seleccione"){
-            alert("Rellene el campo correspondientes al curso ");
-        }
-        else if (semestre == "Seleccione"){
-            alert("Rellene el campo correspondientes al semestre al cual va a realizar la asignacion ");
-        }
-    });         
-    $("#renovar_micro").on('click', function (e){
-        e.preventDefault();
-        let url = "{% url 'curso' %}";
-        var pensum_sel = $('#version_pensum').val();
-        var curso_sel = $('#curso').val();
-        var semestre = $('#semestre').val();
-        var antiguo = $('#vigencia').val();
-        const postData={
-            'pensum': $('#version_pensum').val(),
-            'curso': $('#curso').val(),
-			'semestre': $('#semestre').val(),
-            'vigencia': $('#vigencia').val(),
-            'caso':"renovar",
-            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
-        };
-        if(pensum_sel=="Seleccione"){
-            alert("Rellene el campo correspondiente a la version del pensum ");
-        }
-        else if (curso_sel == "Seleccione"){
-            alert("Rellene el campo correspondiente al curso ");
-        }
-        else if (semestre == "Seleccione"){
-            alert("Rellene el campo correspondiente al semestre al cual va a realizar la asignacion ");
-        }
-        else if (antiguo == "Seleccione"){
-            alert("Rellene el campo correspondiente a la vigencia del microcurriculo asociado ");
-        } 
-        else{
-            $.post(url, postData, function(response){
-                alert(response);
-                window.location = "{% url 'curso' %}";
-            });
-        }        
-    });
+    //Panel para curso secundario
     $("#version_pensum2").change(function(){
         let url = "{% url 'curso' %}";
         var pensum_sel = $('#version_pensum2').val();
@@ -513,6 +454,447 @@ $(document).ready(function(){
                 $("#curso_sec2").removeClass("isActivated");
             }
         });
+    });
+    //Ultimo microcurriculo vigente del mismo curso
+    $("#curso_prin").on('click', function (e){
+        e.preventDefault();
+        var v_p = $('#version_pensum').val();
+        var curso_sel = $('#curso').val();
+        var semestre = $('#semestre').val();
+        var nombres = 'v_p,curso_sel,semestre';
+        let url="{% url 'curso' %}";
+        const postData={
+            'pensum': v_p,
+            'curso': curso_sel,
+			'semestre' : semestre,
+            'caso':"verificacion",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        pagina = "{% url 'nuevo1' %}";
+        pagina +="?";
+        nomVec = nombres.split(",");
+        for (i=0; i<nomVec.length; i++)
+            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+        pagina = pagina.substring(0,pagina.length-1);
+        if(v_p != "Seleccione" && curso_sel != "Seleccione" && semestre != "Seleccione" && semestre != "Seleccione"){
+            $.post(url, postData, function(response){
+                if(response == "true"){
+                    $(location).attr('href',pagina); 
+                }
+                else{
+                    alert('Existe un microcurriculo asociado al semestre escogido');    
+                }
+            });
+        }
+        else if (v_p == "Seleccione"){
+            alert("Seleccione la version del pensum correspondiente al curso ");
+        }
+        else if (curso_sel == "Seleccione"){
+            alert("Seleccione el curso al cual creará el microcurriculo");
+        }
+        else if (semestre == "Seleccione"){
+            alert("Seleccione el semestre al cual asignará el microcurriculo");
+        }
+    });   
+    //Crear uno nuevo apartir de los campos del ultimo vigente del mismo curso 
+    $("#opcion1").on('click', function (e){
+        e.preventDefault();
+        var cadVariables = location.search.substring(1,location.search.length);
+        var arrVariables = cadVariables.split("&");
+        var v_p = unescape(arrVariables[0].split("=")[1]);
+        var curso_sel = unescape(arrVariables[1].split("=")[1]);
+        var semestre = unescape(arrVariables[2].split("=")[1]);
+        var vigencia = semestre;
+        var caso = "ultimo";
+        var nombres = 'v_p,curso_sel,semestre,vigencia,caso'
+        pagina = "{% url 'core' %}";
+        pagina +="?";
+        nomVec = nombres.split(",");
+        for (i=0; i<nomVec.length; i++)
+            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+        pagina = pagina.substring(0,pagina.length-1);
+        $(location).attr('href',pagina);
+    });
+    //Asignar el ultimo micro vigente del mismo curso
+    $("#asig_ulti").on('click', function (e){
+        e.preventDefault();
+        var cadVariables = location.search.substring(1,location.search.length);
+        var arrVariables = cadVariables.split("&");
+        var v_p = unescape(arrVariables[0].split("=")[1]);
+        var curso_sel = unescape(arrVariables[1].split("=")[1]);
+        var semestre = unescape(arrVariables[2].split("=")[1]);
+        let url = "{% url 'curso' %}";
+        const postData={
+            'pensum': v_p,
+            'curso': curso_sel,
+			'semestre': semestre,
+            'caso':"ultimo",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+            alert(response);
+            window.location = "{% url 'nucleo' %}";
+        });
+    });
+    //Otro Microcurriculo del mismo curso
+    $("#curso_prin2").on('click', function (e){
+        e.preventDefault();
+        var v_p = $('#version_pensum').val();
+        var curso_sel = $('#curso').val();
+        var semestre = $('#semestre').val();
+        var nombres = 'v_p,curso_sel,semestre';
+        let url="{% url 'curso' %}";
+        const postData={
+            'pensum': v_p,
+            'curso': curso_sel,
+			'semestre' : semestre,
+            'caso':"verificacion",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        pagina = "{% url 'nuevo2' %}";
+        pagina +="?";
+        nomVec = nombres.split(",");
+        for (i=0; i<nomVec.length; i++)
+            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+        pagina = pagina.substring(0,pagina.length-1);
+        if(v_p != "Seleccione" && curso_sel != "Seleccione" && semestre != "Seleccione" && semestre != "Seleccione"){
+            $.post(url, postData, function(response){
+                if(response == "true"){
+                    $(location).attr('href',pagina); 
+                }
+                else{
+                    alert('Existe un microcurriculo asociado al semestre escogido');    
+                }
+            });
+        }
+        else if (v_p == "Seleccione"){
+            alert("Seleccione la version del pensum correspondiente al curso ");
+        }
+        else if (curso_sel == "Seleccione"){
+            alert("Seleccione el curso al cual creará el microcurriculo");
+        }
+        else if (semestre == "Seleccione"){
+            alert("Seleccione el semestre al cual asignará el microcurriculo");
+        }
+    });
+    //Panel para buscar microcurriculos asociados a curso secundario
+    $("#desde2").change(function(){
+        let url = "{% url 'curso' %}";
+        cadVariables = location.search.substring(1,location.search.length);
+        arrVariables = cadVariables.split("&");
+        var pensums = unescape(arrVariables[0].split("=")[1]);
+        var cursos = unescape(arrVariables[1].split("=")[1]);    
+        var pensum = pensums.split(' /pencur- ')[0];
+        var curso = cursos.split(' /cursel- ')[0];
+        const postData={
+            'curso': curso,
+            'pensum': pensum,
+            'desde' : $('#desde2').val(),
+            'hasta' : $('#hasta2').val(),
+            'caso':"vigencias",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        if($('#desde2').val()=="Seleccione"){
+            console.log("Esta vacio el campo desde")
+        }
+        else if($('#hasta2').val()=="Seleccione"){
+            console.log("Esta vacio el campo hasta")
+        }
+        else{
+            $.post(url, postData, function(response){
+                let curso_prog = JSON.parse(response);
+                $("#vigencia2").empty();
+                $("#vigencia2").append(`<option>Seleccione</option>`);
+                //console.log(curso_prog)
+                for(var i=0; i<curso_prog.data.length;i++){
+                    $("#vigencia").append(`<option>${curso_prog.data[i]}</option>`);
+                };
+            }); 
+        }
+    });
+    $("#hasta2").change(function(){
+        let url = "{% url 'curso' %}";
+        cadVariables = location.search.substring(1,location.search.length);
+        arrVariables = cadVariables.split("&");
+        var pensums = unescape(arrVariables[0].split("=")[1]);
+        var cursos = unescape(arrVariables[1].split("=")[1]);    
+        var pensum = pensums.split(' /pencur- ')[0];
+        var curso = cursos.split(' /cursel- ')[0];
+        const postData={
+            'curso': curso,
+            'pensum': pensum,
+            'desde' : $('#desde2').val(),
+            'hasta' : $('#hasta2').val(),
+            'caso':"vigencias",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        if($('#desde2').val()=="Seleccione"){
+            console.log("Esta vacio el campo desde")
+        }
+        else if($('#hasta2').val()=="Seleccione"){
+            console.log("Esta vacio el campo hasta")
+        }        
+        else{
+            $.post(url, postData, function(response){
+                let curso_prog = JSON.parse(response);
+                $("#vigencia2").empty();
+                $("#vigencia2").append(`<option>Seleccione</option>`);
+                //console.log(curso_prog)
+                for(var i=0; i<curso_prog.data.length;i++){
+                    $("#vigencia2").append(`<option>${curso_prog.data[i]}</option>`);
+                };
+            });
+        } 
+    });
+    //Crear uno nuevo con los campos del microcurriculo seleccionado del mismo curso
+    $("#crear_otro_mismo").on('click', function (e){
+        e.preventDefault();
+        var cadVariables = location.search.substring(1,location.search.length);
+        var arrVariables = cadVariables.split("&");
+        var v_p = unescape(arrVariables[0].split("=")[1]);
+        var curso_sel = unescape(arrVariables[1].split("=")[1]);
+        var semestre = unescape(arrVariables[2].split("=")[1]);
+        var vigencia = $('#vigencia2').val();
+        var caso = "crear_otro";
+        var nombres = 'v_p,curso_sel,semestre,vigencia,caso'
+        console.log(v_p,curso_sel,semestre,vigencia,caso)
+        pagina = "{% url 'core' %}";
+        pagina +="?";
+        nomVec = nombres.split(",");
+        for (i=0; i<nomVec.length; i++)
+            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+        pagina = pagina.substring(0,pagina.length-1);
+        if( vigencia != "Seleccione"){
+            $(location).attr('href',pagina);
+        }
+        else{
+            alert("Rellene el campo correspondiente a la vigencia del microcurriculo asociado "); 
+        }
+    });
+    //Asignar el microcurriculo seleccionado del mismo curso
+    $("#renovar_micro").on('click', function (e){
+        e.preventDefault();
+        var cadVariables = location.search.substring(1,location.search.length);
+        var arrVariables = cadVariables.split("&");
+        let url = "{% url 'curso' %}";
+        var pensum_sel = unescape(arrVariables[0].split("=")[1]);
+        var curso_sel = unescape(arrVariables[1].split("=")[1]);
+        var semestre = unescape(arrVariables[2].split("=")[1]);
+        var antiguo = $('#vigencia2').val();
+        const postData={
+            'pensum': pensum_sel,
+            'curso': curso_sel,
+			'semestre': semestre,
+            'vigencia': antiguo,
+            'caso':"renovar",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        if (antiguo == "Seleccione"){
+            alert("Rellene el campo correspondiente a la vigencia del microcurriculo asociado ");
+        } 
+        else{
+            $.post(url, postData, function(response){
+                alert(response);
+                window.location = "{% url 'nucleo' %}";
+            });
+        }        
+    });
+    //Ultimo microcurriculo vigente de otro curso
+    $("#curso_sec").on('click', function (e){
+        e.preventDefault();
+        var v_p = $('#version_pensum').val();
+        var v_p2 = $('#version_pensum2').val();
+        var pensum = v_p +' /pencur- ' + v_p2 ;
+        var curso_sel = $('#curso').val();
+        var curso_sel2 = $('#curso2').val();
+        var cursos = curso_sel + ' /cursel- ' + curso_sel2 ;
+        var semestre = $('#semestre').val();
+        var nombres = 'pensum,cursos,semestre';
+        let url="{% url 'curso' %}";
+        const postData={
+            'pensum': v_p ,
+            'curso': curso_sel,
+			'semestre' : semestre,
+            'caso':"verificacion",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        pagina = "{% url 'nuevo3' %}";
+        pagina +="?";
+        nomVec = nombres.split(",");
+        for (i=0; i<nomVec.length; i++)
+            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+        pagina = pagina.substring(0,pagina.length-1);
+        if(v_p2 != "Seleccione" && curso_sel2 != "Seleccione" && v_p != "Seleccione" && curso_sel != "Seleccione" && semestre != "Seleccione"){
+            $.post(url, postData, function(response){
+                if(response == "true"){
+                    $(location).attr('href',pagina); 
+                }
+                else{
+                    alert('Existe un microcurriculo asociado al semestre escogido');    
+                }
+            });
+        }
+        else if (v_p == "Seleccione"){
+            alert("Seleccione la version del pensum correspondiente al curso ");
+        }
+        else if (curso_sel == "Seleccione"){
+            alert("Seleccione el curso al cual creará el microcurriculo");
+        }
+        else if (semestre == "Seleccione"){
+            alert("Seleccione el semestre al cual asignará el microcurriculo");
+        }
+        else if (v_p2 == "Seleccione"){
+            alert("Seleccione la version del pensum correspondiente al curso del cual pertenece el microcurriculo");
+        }
+        else if (curso_sel2 == "Seleccione"){
+            alert("Seleccione el curso propietario del microcurriculo");
+        }
+    });
+    //Crear un nuevo cargando los campos del ultimo vigente de otro curso
+    $("#crear_ulti_otro").on('click', function (e){
+        e.preventDefault();
+        var cadVariables = location.search.substring(1,location.search.length);
+        var arrVariables = cadVariables.split("&");
+        var v_p = unescape(arrVariables[0].split("=")[1]);
+        var curso_sel = unescape(arrVariables[1].split("=")[1]);
+        var semestre = unescape(arrVariables[2].split("=")[1]);
+        var vigencia = semestre;
+        var caso = "ultimo2";
+        var nombres = 'v_p,curso_sel,semestre,vigencia,caso'
+        pagina = "{% url 'core' %}";
+        pagina +="?";
+        nomVec = nombres.split(",");
+        for (i=0; i<nomVec.length; i++)
+            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+        pagina = pagina.substring(0,pagina.length-1);
+        $(location).attr('href',pagina);
+    });
+    //Asignar el ultimo microcurriculo de otro curso
+    $("#asignar_ulti_otro").on('click', function (e){
+        e.preventDefault();
+        var cadVariables = location.search.substring(1,location.search.length);
+        var arrVariables = cadVariables.split("&");
+        var v_p = unescape(arrVariables[0].split("=")[1]);
+        var curso_sel = unescape(arrVariables[1].split("=")[1]);
+        var semestre = unescape(arrVariables[2].split("=")[1]);
+        let url = "{% url 'curso' %}";
+        const postData={
+            'pensums': v_p,
+            'cursos': curso_sel,
+			'semestre': semestre,
+            'caso':"ultimo2",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+            alert(response);
+            window.location = "{% url 'nucleo' %}";
+        });
+    });
+    //Otro Microcurriculo de otro curso
+    $("#curso_sec2").on('click', function (e){
+        e.preventDefault();
+        var v_p = $('#version_pensum').val();
+        var v_p2 = $('#version_pensum2').val();
+        var pensum = v_p2 +' /pencur- ' + v_p ;
+        var curso_sel = $('#curso').val();
+        var curso_sel2 = $('#curso2').val();
+        var cursos = curso_sel2 + ' /cursel- ' + curso_sel ;
+        var semestre = $('#semestre').val();
+        var nombres = 'pensum,cursos,semestre';
+        let url="{% url 'curso' %}";
+        const postData={
+            'pensum': v_p,
+            'curso': curso_sel,
+			'semestre' : semestre,
+            'caso':"verificacion",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        pagina = "{% url 'nuevo4' %}";
+        pagina +="?";
+        nomVec = nombres.split(",");
+        for (i=0; i<nomVec.length; i++)
+            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+        pagina = pagina.substring(0,pagina.length-1);
+        if(v_p2 != "Seleccione" && curso_sel2 != "Seleccione" && v_p != "Seleccione" && curso_sel != "Seleccione" && semestre != "Seleccione"){
+            $.post(url, postData, function(response){
+                if(response == "true"){
+                    $(location).attr('href',pagina); 
+                }
+                else{
+                    alert('Existe un microcurriculo asociado al semestre escogido');    
+                }
+            });
+        }
+        else if (v_p == "Seleccione"){
+            alert("Seleccione la version del pensum correspondiente al curso ");
+        }
+        else if (curso_sel == "Seleccione"){
+            alert("Seleccione el curso al cual creará el microcurriculo");
+        }
+        else if (semestre == "Seleccione"){
+            alert("Seleccione el semestre al cual asignará el microcurriculo");
+        }
+        else if (v_p2 == "Seleccione"){
+            alert("Seleccione la version del pensum correspondiente al curso del cual pertenece el microcurriculo");
+        }
+        else if (curso_sel2 == "Seleccione"){
+            alert("Seleccione el curso propietario del microcurriculo");
+        }
+    });
+    //Crear uno nuevo con los campos del microcurriculo seleccionado de otro curso
+    $("#crear_otro_otro").on('click', function (e){
+        e.preventDefault();
+        var cadVariables = location.search.substring(1,location.search.length);
+        var arrVariables = cadVariables.split("&");
+        var v_ps = unescape(arrVariables[0].split("=")[1]).split(' /pencur- ');
+        var curso_sels = unescape(arrVariables[1].split("=")[1]).split(' /cursel- ');
+        var semestre = unescape(arrVariables[2].split("=")[1]);
+        var vigencia = $('#vigencia2').val();
+        var caso = "crear_otro2";
+        var v_p = v_ps[1]+ ' /pencur- ' +v_ps[0];
+        var curso_sel = curso_sels[1]+' /cursel- '+curso_sels[0];
+        var nombres = 'v_p,curso_sel,semestre,vigencia,caso'
+        console.log(v_p,curso_sel,semestre,vigencia,caso)
+        pagina = "{% url 'core' %}";
+        pagina +="?";
+        nomVec = nombres.split(",");
+        for (i=0; i<nomVec.length; i++)
+            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+        pagina = pagina.substring(0,pagina.length-1);
+        if( vigencia != "Seleccione"){
+            $(location).attr('href',pagina);
+        }
+        else{
+            alert("Rellene el campo correspondiente a la vigencia del microcurriculo asociado "); 
+        }
+    });
+    //Asignar el microcurriculo seleccionado del mismo curso
+    $("#renovar_micro_otro").on('click', function (e){
+        e.preventDefault();
+        var cadVariables = location.search.substring(1,location.search.length);
+        var arrVariables = cadVariables.split("&");
+        let url = "{% url 'curso' %}";
+        var pensum_sel = unescape(arrVariables[0].split("=")[1]);
+        var curso_sel = unescape(arrVariables[1].split("=")[1]);
+        var semestre = unescape(arrVariables[2].split("=")[1]);
+        var antiguo = $('#vigencia2').val();
+        const postData={
+            'pensum': pensum_sel,
+            'curso': curso_sel,
+			'semestre': semestre,
+            'vigencia': antiguo,
+            'caso':"renovar2",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        if (antiguo == "Seleccione"){
+            alert("Rellene el campo correspondiente a la vigencia del microcurriculo asociado ");
+        } 
+        else{
+            $.post(url, postData, function(response){
+                alert(response);
+                window.location = "{% url 'nucleo' %}";
+            });
+        }      
     });
 });    
 </script>
