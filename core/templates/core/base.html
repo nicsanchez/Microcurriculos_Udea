@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+{% load auth_extras %}
 {% load static %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -63,24 +64,26 @@ $(document).ready(function(){
 		});
     }
     if($('#version_pensum2').val()!="Seleccione" || $('#nivel2').val()!="Seleccione" || $('#area2').val()!="Seleccione" ){
-        let url = "{% url 'curso' %}";
-        var pensum_sel = $('#version_pensum2').val();
-        var curso_sel = $('#curso2').val();
-        const postData={
-			'pensum': $('#version_pensum2').val(),
-            'nivel':$('#nivel2').val(),
-            'area':$('#area2').val(),
-            'caso':"cursos",
-            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
-        };
-        $.post(url, postData, function(response){
-			let curso = JSON.parse(response);
-            $("#curso2").empty();
-            $("#curso2").append(`<option>Seleccione</option>`);
-            for(var i=0; i<curso.data.length;i++){
-                $("#curso2").append(`<option>${curso.data[i]}</option>`);
+        if(window.location=="http://127.0.0.1:8000/crear2/"){
+            let url = "{% url 'curso' %}";
+            var pensum_sel = $('#version_pensum2').val();
+            var curso_sel = $('#curso2').val();
+            const postData={
+                'pensum': $('#version_pensum2').val(),
+                'nivel':$('#nivel2').val(),
+                'area':$('#area2').val(),
+                'caso':"cursos",
+                csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
             };
-		});
+            $.post(url, postData, function(response){
+                let curso = JSON.parse(response);
+                $("#curso2").empty();
+                $("#curso2").append(`<option>Seleccione</option>`);
+                for(var i=0; i<curso.data.length;i++){
+                    $("#curso2").append(`<option>${curso.data[i]}</option>`);
+                };
+            });
+        }
     }
     //Panel para curso principal
     $("#version_pensum").change(function(){

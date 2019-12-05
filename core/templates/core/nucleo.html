@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 {% load static %}
+{% load auth_extras %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
 		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -27,18 +28,37 @@
 {% endif %}
 <body>
 <table id=central>
-    {% csrf_token %}   
+    {% csrf_token %}  
+    <p>
+        Bienvenido <b>{{request.user.first_name}}</b> a la aplicacion de Microcurriculos.
+    </p>
+    <p>
+        Eres un <b>{{request.user.groups.all.0}}</b> de la aplicacion.
+    </p>
     <h1>Menu</h1>
-    <tr>
-        <td><a href="{% url 'crear2' %}" id="crear_micro">Crear un microcurriculo</a></td> 
-    </tr>
-    <tr>
-        <td><a href="{% url 'editar' %}" id="editar_micro">Editar un microcurriculo</a></td> 
-    </tr>
-    <tr>
-        <td><a href="{% url 'visualizar' %}" id="visualizar_pdf">Visualizar microcurriculo en PDF</a></td> 
-    </tr>
+    {% if request.user|has_group:"Digitador" or request.user|has_group:"Validador" %}
+        <tr>
+            <td><a href="{% url 'crear2' %}" id="crear_micro">Crear un microcurriculo</a></td> 
+        </tr>
+        <tr>
+            <td><a href="{% url 'editar' %}" id="editar_micro">Editar un microcurriculo</a></td> 
+        </tr>
+    {% endif %}
+    {% if request.user|has_group:'Estudiantes' or request.user|has_group:"Digitador" or request.user|has_group:"Validador" %}
+        <tr>
+            <td><a href="{% url 'visualizar' %}" id="visualizar_pdf">Visualizar microcurriculo en PDF</a></td> 
+        </tr>
+    {% endif %}
 </table>
+{% if request.user.is_authenticated %}
+    <table>
+        <h2>
+        </h2>
+        <tr>
+            <a href="/logout">Cerrar Sesión</a>
+        </tr>
+    </table>
+{% endif %}    
 </body>
 </body>
 </html>    

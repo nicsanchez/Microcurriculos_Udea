@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+#Base de datos para el administrador validador
 class Microcurriculum(models.Model):
     id = models.AutoField(primary_key=True)
     descripcion_general = models.TextField(verbose_name="Descripcion General")
@@ -50,6 +51,78 @@ class Evaluation(models.Model):
         
     def __str__(self):
         return str(self.id)
+
+#Base de datos para el administrador digitador
+class Microcurriculum_2(models.Model):
+    id = models.AutoField(primary_key=True)
+    descripcion_general = models.TextField(verbose_name="Descripcion General")
+    proposito = models.TextField(verbose_name="Propósito")
+    objetivo_general = models.TextField(verbose_name="Objetivo General")
+    objetivo_especifico = models.TextField(verbose_name="Objetivo Especifico")
+    contenido_resumido = models.TextField(verbose_name="Contenido Resumido")
+    actividades_asis_oblig = models.CharField(max_length=255,verbose_name="Actividades de Asistencia Obligatoria")
+    bibliografia_basica = models.TextField(verbose_name="Bibliografia Basica")
+    bibliografia_complementaria = models.TextField(verbose_name="Bibliografía Complementaria")
+    metodologia = models.TextField(verbose_name="Metodologia")
+
+    class Meta:
+        verbose_name = "Microcurriculo"
+        verbose_name_plural = "Microcurriculos Digitador"
+        ordering = ["id"]
+    
+    def __str__(self):
+        return str(self.id)
+
+class Unity_2(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_microcurriculos = models.ForeignKey(Microcurriculum_2,verbose_name="Microcurriculo",on_delete=models.PROTECT)
+    tema = models.CharField(max_length=255, verbose_name="Tema")
+    subtema = models.TextField(verbose_name="Subtema")
+    num_semanas = models.SmallIntegerField(verbose_name="Numero de semanas")
+    
+    class Meta:
+        verbose_name = "Unidad"
+        verbose_name_plural = "Unidades Digitador"
+        ordering = ["id"]
+
+    def __str__(self):
+        return str(self.id)
+
+class Evaluation_2(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_microcurriculos = models.ForeignKey(Microcurriculum_2,verbose_name="Microcurriculo",on_delete=models.PROTECT)
+    actividad = models.CharField(max_length=255, verbose_name="Actividad")
+    porcentaje = models.CharField(max_length=255, verbose_name="Porcentaje")
+    fecha = models.DateField(auto_now=False,auto_now_add=False,verbose_name="Fecha")
+    
+    class Meta:
+        verbose_name = "Evaluacion"
+        verbose_name_plural = "Evaluaciones Digitador"
+        ordering = ["id"]
+        
+    def __str__(self):
+        return str(self.id)
+
+#Base de datos para las solicitudes de los usuarios tipo digitador
+class Solicitud(models.Model):
+    id = models.AutoField(primary_key=True)
+    soli = models.CharField(max_length=255, verbose_name="Solicitud")
+    descripcion = models.TextField(verbose_name="Descripcion")
+    curso_destino = models.CharField(max_length=255, verbose_name="Curso Destino")
+    pensum_destino = models.CharField(max_length=255, verbose_name="Pensum Destino")
+    curso_propietario = models.CharField(max_length=255, verbose_name="Curso Propietario")
+    pensum_propietario = models.CharField(max_length=255, verbose_name="Pensum Propietario")
+    semestre_asignar = models.CharField(max_length=255, verbose_name="Semestre a asignar")
+    microcurriculo = models.ForeignKey(Microcurriculum_2,verbose_name="Microcurriculo",on_delete=models.PROTECT)
+    usuario = models.CharField(max_length=255, verbose_name="Usuario que realizo la peticion")
+    class Meta:
+        verbose_name = "Solicitud"
+        verbose_name_plural = "Solicitudes"
+        ordering = ["id"]
+
+    def __str__(self):
+        return str(self.id)
+
 
 class Curso(models.Model):
     id = models.AutoField(primary_key=True)

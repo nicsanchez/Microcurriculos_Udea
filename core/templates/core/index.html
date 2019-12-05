@@ -352,6 +352,9 @@
         <input type="hidden" id="c" name="curso_es">
         <input type="hidden" id="s" name="semestre_es">
         <input type="hidden" id="v" name="vigencia_es">
+        <input type="hidden" id="d" name="Descripcion">
+        <input type="hidden" id="c2" name="curso_es2">
+        <input type="hidden" id="v_p2" name="version_p2">
         <table id="tabla1">
             <tr>
                 <td>Descripcion General : </td>
@@ -449,6 +452,9 @@ $(document).ready(function(){
     var caso = unescape(arrVariables[4].split("=")[1]);
     if(caso=="nuevo"){
         $("#caso").val(caso);
+        $("#c2").val($('#c').val());
+        $("#v_p2").val($('#v_p').val());
+        $("#d").val("Crear un nuevo microcurriculo sin usar otro como base");
     };
     if(vige!=""){
         $("#v").val(vige);
@@ -463,12 +469,20 @@ $(document).ready(function(){
             var caso1 = "ultimo";
             var pensum = $('#v_p').val();
             var curso = $('#c').val();
+            var descripcion = "Crear un nuevo microcurriculo a partir del ultimo microcurriculo vigente del mismo curso";
+            $("#c2").val(curso);
+            $("#v_p2").val(pensum);
+            $("#d").val(descripcion);
         }
         else if(caso=="crear_otro"){
             $("#caso").val("nuevo");
             var caso1 = "base";
             var pensum = $('#v_p').val();
             var curso = $('#c').val();
+            var descripcion = "Crear un nuevo microcurriculo a partir de otro microcurriculo del mismo curso ";
+            $("#c2").val(curso);
+            $("#v_p2").val(pensum);
+            $("#d").val(descripcion);
         }
         else if(caso=="ultimo2"){
             $("#caso").val("nuevo");
@@ -481,6 +495,10 @@ $(document).ready(function(){
             $("#c").val(cursos[0]);
             var pensum=pensums[1];
             var curso=cursos[1];
+            var descripcion = "Crear un nuevo microcurriculo a partir del ultimo microcurriculo vigente de otro curso"
+            $("#c2").val(curso);
+            $("#v_p2").val(pensum);
+            $("#d").val(descripcion);
         }
         else if(caso=="crear_otro2"){
             $("#caso").val("nuevo");
@@ -493,6 +511,10 @@ $(document).ready(function(){
             $("#c").val(cursos[0]);
             var pensum = pensums[1];
             var curso = cursos[1];
+            var descripcion = "Crear un nuevo microcurriculo a partir de otro microcurriculo de otro curso"
+            $("#c2").val(curso);
+            $("#v_p2").val(pensum);
+            $("#d").val(descripcion);
         }
         let url = "{% url 'core' %}";
         const postData={

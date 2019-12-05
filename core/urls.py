@@ -13,5 +13,7 @@ urlpatterns = [
     path('nuevo1/',views.nuevo1,name="nuevo1"),
     path('nuevo2/',views.nuevo2,name="nuevo2"),
     path('nuevo3/',views.nuevo3,name="nuevo3"),
-    path('nuevo4/',views.nuevo4,name="nuevo4")
+    path('nuevo4/',views.nuevo4,name="nuevo4"),
+    path('logout/',views.logout,name="logout"),
+    path('login/',views.login,name="login")
 ]
