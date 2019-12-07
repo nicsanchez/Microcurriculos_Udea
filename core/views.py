@@ -291,81 +291,121 @@ def core(request):
                             mensaje = 'Se ha agregado un nuevo registro de microcurriculo con éxito'
                             return render(request, "core/nucleo.html",{'mensaje': mensaje})  
                     elif request.POST['caso']=="editar":
-                        pensum = int(request.POST['version_p'])
-                        nombre_c = request.POST['curso_es']
-                        vigencia =request.POST['vigencia_es']
-                        semestre = vigencia[0:6]
-                        cursoglobal=Curso.objects.get(nombre=nombre_c)
-                        id_cursoglobal = cursoglobal.id
-                        curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
-                        curso_asociado = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
-                        micro_aso = Microcurriculum.objects.get(id=curso_asociado.id_microcurriculos.id)
-                        micro_aso.descripcion_general=descripcion_gen
-                        micro_aso.proposito=proposito
-                        micro_aso.objetivo_general=obj_gen
-                        micro_aso.objetivo_especifico=obj_esp
-                        micro_aso.contenido_resumido=cont_resu
-                        micro_aso.actividades_asis_oblig=act_asis_oblig
-                        micro_aso.bibliografia_basica=bibliografia_bas
-                        micro_aso.bibliografia_complementaria=bibliografia_comp
-                        micro_aso.metodologia=metodologia
-                        micro_aso.save(update_fields=['descripcion_general','proposito','objetivo_general','objetivo_especifico','contenido_resumido','actividades_asis_oblig','bibliografia_basica','bibliografia_complementaria','metodologia'])
-                        eval_micro=Evaluation.objects.filter(id_microcurriculos=curso_asociado.id_microcurriculos.id)
-                        contador=1
-                        cont_eval=int(request.POST['contadorevaluacion'])
-                        while (contador<cont_eval+1):
-                            if(contador<=len(eval_micro)):
-                                for evaluacion in eval_micro:
-                                    if(contador<cont_eval+1):
-                                        evaluacion.actividad=request.POST['actividad'+str(contador)]
-                                        evaluacion.porcentaje=request.POST['porcentaje'+str(contador)]
-                                        evaluacion.fecha=request.POST['fecha'+str(contador)]
-                                        evaluacion.save(update_fields=['actividad','porcentaje','fecha'])
-                                    else:
-                                        evaluacion.delete()
+                        if(str(request.user.groups.all()[0])=='Validador'):
+                            pensum = int(request.POST['version_p'])
+                            nombre_c = request.POST['curso_es']
+                            vigencia =request.POST['vigencia_es']
+                            semestre = vigencia[0:6]
+                            cursoglobal=Curso.objects.get(nombre=nombre_c)
+                            id_cursoglobal = cursoglobal.id
+                            curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
+                            curso_asociado = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
+                            micro_aso = Microcurriculum.objects.get(id=curso_asociado.id_microcurriculos.id)
+                            micro_aso.descripcion_general=descripcion_gen
+                            micro_aso.proposito=proposito
+                            micro_aso.objetivo_general=obj_gen
+                            micro_aso.objetivo_especifico=obj_esp
+                            micro_aso.contenido_resumido=cont_resu
+                            micro_aso.actividades_asis_oblig=act_asis_oblig
+                            micro_aso.bibliografia_basica=bibliografia_bas
+                            micro_aso.bibliografia_complementaria=bibliografia_comp
+                            micro_aso.metodologia=metodologia
+                            micro_aso.save(update_fields=['descripcion_general','proposito','objetivo_general','objetivo_especifico','contenido_resumido','actividades_asis_oblig','bibliografia_basica','bibliografia_complementaria','metodologia'])
+                            eval_micro=Evaluation.objects.filter(id_microcurriculos=curso_asociado.id_microcurriculos.id)
+                            contador=1
+                            cont_eval=int(request.POST['contadorevaluacion'])
+                            while (contador<cont_eval+1):
+                                if(contador<=len(eval_micro)):
+                                    for evaluacion in eval_micro:
+                                        if(contador<cont_eval+1):
+                                            evaluacion.actividad=request.POST['actividad'+str(contador)]
+                                            evaluacion.porcentaje=request.POST['porcentaje'+str(contador)]
+                                            evaluacion.fecha=request.POST['fecha'+str(contador)]
+                                            evaluacion.save(update_fields=['actividad','porcentaje','fecha'])
+                                        else:
+                                            evaluacion.delete()
+                                        contador=contador+1
+                                else:
+                                    actividad=request.POST['actividad'+str(contador)]
+                                    porcentaje=request.POST['porcentaje'+str(contador)]
+                                    fecha=request.POST['fecha'+str(contador)]
+                                    insert = Evaluation(id_microcurriculos=micro_aso,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
+                                    insert.save()
+                                    contador=contador+1   
+                            contador=1
+                            cont_uni=int(request.POST['contadorunidad'])
+                            unid_micro=Unity.objects.filter(id_microcurriculos=curso_asociado.id_microcurriculos.id)
+                            while(contador<cont_uni+1):
+                                if(contador<=len(unid_micro)):
+                                    for unidad in unid_micro:
+                                        if(contador<cont_uni+1):
+                                            unidad.tema=request.POST['temas'+str(contador)]
+                                            unidad.num_semanas=request.POST['semanas'+str(contador)]
+                                            contador2=int(request.POST['subtemas'+str(contador)])
+                                            subtema=""
+                                            for j in range(1,contador2+1):
+                                                num2=str(j)
+                                                subtemai=request.POST['subtemauni'+str(contador)+num2]
+                                                subtema=subtema+" /subin- "+subtemai
+                                            unidad.subtema=subtema
+                                            unidad.save(update_fields=['tema','subtema','num_semanas'])
+                                        else:
+                                            unidad.delete()
+                                        contador=contador+1        
+                                else:
+                                    tema=request.POST['temas'+str(contador)]
+                                    semana=request.POST['semanas'+str(contador)]
+                                    contador2=int(request.POST['subtemas'+str(contador)])
+                                    subtema=""
+                                    for j in range(1,contador2+1):
+                                        num2=str(j)
+                                        subtemai=request.POST['subtemauni'+str(contador)+num2]
+                                        subtema=subtema+" /subin- "+subtemai
+                                    insert = Unity(id_microcurriculos=micro_aso,tema=tema,subtema=subtema,num_semanas=semana)
+                                    insert.save()
                                     contador=contador+1
-                            else:
-                                actividad=request.POST['actividad'+str(contador)]
-                                porcentaje=request.POST['porcentaje'+str(contador)]
-                                fecha=request.POST['fecha'+str(contador)]
-                                insert = Evaluation(id_microcurriculos=micro_aso,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
-                                insert.save()
-                                contador=contador+1   
-                        contador=1
-                        cont_uni=int(request.POST['contadorunidad'])
-                        unid_micro=Unity.objects.filter(id_microcurriculos=curso_asociado.id_microcurriculos.id)
-                        while(contador<cont_uni+1):
-                            if(contador<=len(unid_micro)):
-                                for unidad in unid_micro:
-                                    if(contador<cont_uni+1):
-                                        unidad.tema=request.POST['temas'+str(contador)]
-                                        unidad.num_semanas=request.POST['semanas'+str(contador)]
-                                        contador2=int(request.POST['subtemas'+str(contador)])
-                                        subtema=""
-                                        for j in range(1,contador2+1):
-                                            num2=str(j)
-                                            subtemai=request.POST['subtemauni'+str(contador)+num2]
-                                            subtema=subtema+" /subin- "+subtemai
-                                        unidad.subtema=subtema
-                                        unidad.save(update_fields=['tema','subtema','num_semanas'])
-                                    else:
-                                        unidad.delete()
-                                    contador=contador+1        
-                            else:
-                                tema=request.POST['temas'+str(contador)]
-                                semana=request.POST['semanas'+str(contador)]
-                                contador2=int(request.POST['subtemas'+str(contador)])
+                        elif(str(request.user.groups.all()[0])=='Digitador'):
+                            #Creo un nuevo registro en la base de datos fantasma para luego comparar las ediciones realizadas
+                            insert = Microcurriculum_2(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
+                            insert.save()
+                            microcurriculos = Microcurriculum_2.objects.filter(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
+                            ids = []
+                            for micro in microcurriculos:
+                                a = int(micro.id)
+                                ids.append(a)
+                            id_microcurriculo = Microcurriculum_2.objects.get(id=max(ids))
+                            descripcion=request.POST['Descripcion']
+                            curso_d=request.POST['curso_es']
+                            pensum_d=request.POST['version_p']
+                            curso_p=request.POST['curso_es2']
+                            pensum_p=request.POST['version_p2']
+                            semestre=request.POST['vigencia_es']
+                            user_p=str(request.user.first_name)+' '+str(request.user.last_name)
+                            insert2=Solicitud(soli='Editar',descripcion=descripcion,curso_destino=curso_d,pensum_destino=pensum_d,curso_propietario=curso_p,pensum_propietario=pensum_p,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p)
+                            insert2.save()
+                            cantidad_unidades = int(request.POST["contadorunidad"])
+                            cantidad_evaluaciones = int(request.POST["contadorevaluacion"])
+                            for i in range(1,cantidad_unidades+1):
+                                num=str(i)
+                                tema=request.POST['temas'+num]
+                                contador=int(request.POST['subtemas'+num])
                                 subtema=""
-                                for j in range(1,contador2+1):
+                                for j in range(1,contador+1):
                                     num2=str(j)
-                                    subtemai=request.POST['subtemauni'+str(contador)+num2]
+                                    subtemai=request.POST['subtemauni'+num+num2]
                                     subtema=subtema+" /subin- "+subtemai
-                                insert = Unity(id_microcurriculos=micro_aso,tema=tema,subtema=subtema,num_semanas=semana)
+                                semana=request.POST['semanas'+num]
+                                insert = Unity_2(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana) 
                                 insert.save()
-                                contador=contador+1
-                        mensaje = 'Se ha editado el microcurriculo con éxito'
+                            for i in range(1,cantidad_evaluaciones+1):
+                                num=str(i)
+                                actividad=request.POST['actividad'+num]
+                                porcentaje=request.POST['porcentaje'+num]
+                                fecha=request.POST['fecha'+num]
+                                insert = Evaluation_2(id_microcurriculos=id_microcurriculo,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
+                                insert.save()
+                        mensaje = 'Se proceso correctamente la solicitud'
                         return render(request, "core/nucleo.html",{'mensaje': mensaje})  
-                    
                 elif request.POST['caso']=="nuevopdf":
                     pensum = request.POST['pensum']
                     nombre_c = request.POST['curso']
@@ -670,111 +710,231 @@ def curso(request):
                 lista_cursos_prog_json = sorted(lista_cursos_prog_json)
                 return HttpResponse(json.dumps({"data":lista_cursos_prog_json}))
             elif(request.POST['caso']=="ultimo"):
-                pensum = request.POST['pensum']
-                nombre_c = request.POST['curso']
-                semestre = request.POST['semestre']
-                semestre_es = int(semestre.replace("-",""))
-                cursoglobal = Curso.objects.get(nombre=nombre_c)
-                id_cursoglobal = cursoglobal.id
-                curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
-                id_cursoasig = curso_asig.id
-                Cursos_prog = Curso_programado.objects.filter(id_curso_asignado=id_cursoasig)
-                lista = []
-                for Curso_prog in Cursos_prog:
-                    hi=Curso_prog.semestre
-                    hasta_i = int(hi.replace("-", ""))
-                    s=str(Curso_prog.semestre)
-                    lista.append(s) 
-                if( not lista ):
-                    return HttpResponse("No hay un ultimo curso vigente")
-                else:
+                if (str(request.user.groups.all()[0])=='Validador'): 
+                    pensum = request.POST['pensum']
+                    nombre_c = request.POST['curso']
+                    semestre = request.POST['semestre']
+                    semestre_es = int(semestre.replace("-",""))
+                    cursoglobal = Curso.objects.get(nombre=nombre_c)
+                    id_cursoglobal = cursoglobal.id
+                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
+                    id_cursoasig = curso_asig.id
+                    Cursos_prog = Curso_programado.objects.filter(id_curso_asignado=id_cursoasig)
+                    lista = []
+                    for Curso_prog in Cursos_prog:
+                        hi=Curso_prog.semestre
+                        hasta_i = int(hi.replace("-", ""))
+                        s=str(Curso_prog.semestre)
+                        lista.append(s) 
+                    if( not lista ):
+                        return HttpResponse("No hay un ultimo curso vigente")
+                    else:
+                        lista = sorted(lista,reverse=True)
+                        Cursos_prog = Curso_programado.objects.get(id_curso_asignado=id_cursoasig,semestre=lista[0])
+                        id_ultimo = Cursos_prog.id
+                        microcurriculo = Microcurriculum.objects.get(id=Cursos_prog.id_microcurriculos.id)
+                        try:
+                            curso_asociado2 = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
+                            return HttpResponse("Ya hay un microcurriculo asignado en el semestre seleccionado")
+                        except:
+                            insert = Curso_programado(id_microcurriculos=microcurriculo,id_curso_asignado=curso_asig,semestre=semestre)
+                            insert.save()
+                            return HttpResponse("Se asignó correctamente el ultimo microcurriculo vigente al semestre seleccionado")
+                elif (str(request.user.groups.all()[0])=='Digitador'):
+                    pensum_d = request.POST['pensum']
+                    curso_d = request.POST['curso']
+                    semestre = request.POST['semestre']
+                    descripcion = 'Asignar ultimo microcurriculo del mismo curso al semestre seleccionado'
+                    user_p=str(request.user.first_name)+' '+str(request.user.last_name)
+                    cursoglobal = Curso.objects.get(nombre=curso_d)
+                    id_cursoglobal = cursoglobal.id
+                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum_d)
+                    id_cursoasig = curso_asig.id
+                    Cursos_prog = Curso_programado.objects.filter(id_curso_asignado=id_cursoasig)
+                    lista = []
+                    for Curso_prog in Cursos_prog:
+                        hi=Curso_prog.semestre
+                        hasta_i = int(hi.replace("-", ""))
+                        s=str(Curso_prog.semestre)
+                        lista.append(s)
                     lista = sorted(lista,reverse=True)
                     Cursos_prog = Curso_programado.objects.get(id_curso_asignado=id_cursoasig,semestre=lista[0])
                     id_ultimo = Cursos_prog.id
-                    microcurriculo = Microcurriculum.objects.get(id=Cursos_prog.id_microcurriculos.id)
+                    microcurriculo = Microcurriculum.objects.get(id=Cursos_prog.id_microcurriculos.id)    
+                    insert = Microcurriculum_2(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
+                    insert.save()
+                    microcurriculos = Microcurriculum_2.objects.filter(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
+                    ids = []
+                    for micro in microcurriculos:
+                        a = int(micro.id)
+                        ids.append(a)
+                    id_microcurriculo = Microcurriculum_2.objects.get(id=max(ids))
+                    insert2 = Solicitud(soli='Asignar',descripcion=descripcion,curso_destino=curso_d,pensum_destino=pensum_d,curso_propietario=curso_d,pensum_propietario=pensum_d,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p)
+                    insert2.save()
+                    return HttpResponse("Se proceso correctamente la solicitud")
+            elif(request.POST['caso']=="ultimo2"):
+                if (str(request.user.groups.all()[0])=='Validador'): 
+                    pensums = request.POST['pensums'].split(" /pencur- ")
+                    nombre_cs = request.POST['cursos'].split(" /cursel- ")
+                    semestre = request.POST['semestre']
+                    semestre_es = int(semestre.replace("-",""))
+                    nombre_c=nombre_cs[1]
+                    pensum=pensums[1]
+                    nombre_c2=nombre_cs[0]
+                    pensum2=pensums[0]
+                    cursoglobal = Curso.objects.get(nombre=nombre_c)
+                    id_cursoglobal = cursoglobal.id
+                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
+                    cursoglobal2 = Curso.objects.get(nombre=nombre_c2)
+                    id_cursoglobal2 = cursoglobal2.id
+                    curso_asig2 = Curso_asignado.objects.get(id_curso=id_cursoglobal2,version_pensum=pensum2)
+                    id_cursoasig = curso_asig.id
+                    Cursos_prog = Curso_programado.objects.filter(id_curso_asignado=id_cursoasig)
+                    lista = []
+                    for Curso_prog in Cursos_prog:
+                        hi=Curso_prog.semestre
+                        hasta_i = int(hi.replace("-", ""))
+                        s=str(Curso_prog.semestre)
+                        lista.append(s) 
+                    if( not lista ):
+                        return HttpResponse("No hay un ultimo curso vigente")
+                    else:
+                        lista = sorted(lista,reverse=True)
+                        Cursos_prog = Curso_programado.objects.get(id_curso_asignado=id_cursoasig,semestre=lista[0])
+                        id_ultimo = Cursos_prog.id
+                        microcurriculo = Microcurriculum.objects.get(id=Cursos_prog.id_microcurriculos.id)
+                        try:
+                            curso_asociado2 = Curso_programado.objects.get(id_curso_asignado=curso_asig2,semestre=semestre)
+                            return HttpResponse("Ya hay un microcurriculo asignado en el semestre seleccionado")
+                        except:
+                            insert = Curso_programado(id_microcurriculos=microcurriculo,id_curso_asignado=curso_asig2,semestre=semestre)
+                            insert.save()
+                            return HttpResponse("Se asignó correctamente el ultimo microcurriculo vigente al semestre seleccionado")    
+                elif (str(request.user.groups.all()[0])=='Digitador'):
+                    pensums = request.POST['pensums'].split(" /pencur- ")
+                    nombre_cs = request.POST['cursos'].split(" /cursel- ")
+                    semestre = request.POST['semestre']
+                    nombre_c=nombre_cs[1]
+                    pensum=pensums[1]
+                    nombre_c2=nombre_cs[0]
+                    pensum2=pensums[0]
+                    cursoglobal = Curso.objects.get(nombre=nombre_c)
+                    id_cursoglobal = cursoglobal.id
+                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
+                    id_cursoasig = curso_asig.id
+                    Cursos_prog = Curso_programado.objects.filter(id_curso_asignado=id_cursoasig)
+                    lista = []
+                    for Curso_prog in Cursos_prog:
+                        hi=Curso_prog.semestre
+                        hasta_i = int(hi.replace("-", ""))
+                        s=str(Curso_prog.semestre)
+                        lista.append(s) 
+                    lista = sorted(lista,reverse=True)
+                    Cursos_prog = Curso_programado.objects.get(id_curso_asignado=id_cursoasig,semestre=lista[0])
+                    id_ultimo = Cursos_prog.id
+                    microcurriculo = Microcurriculum.objects.get(id=Cursos_prog.id_microcurriculos.id)    
+                    insert = Microcurriculum_2(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
+                    insert.save()
+                    microcurriculos = Microcurriculum_2.objects.filter(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
+                    ids = []
+                    for micro in microcurriculos:
+                        a = int(micro.id)
+                        ids.append(a)
+                    id_microcurriculo = Microcurriculum_2.objects.get(id=max(ids))
+                    descripcion = 'Asignar ultimo microcurriculo de otro curso al semestre seleccionado'
+                    user_p=str(request.user.first_name)+' '+str(request.user.last_name)
+                    insert2 = Solicitud(soli='Asignar',descripcion=descripcion,curso_destino=nombre_c2,pensum_destino=pensum2,curso_propietario=nombre_c,pensum_propietario=pensum,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p)
+                    insert2.save()
+                    return HttpResponse("Se proceso correctamente la solicitud")
+            elif(request.POST['caso']=="renovar"):
+                if (str(request.user.groups.all()[0])=='Validador'):
+                    pensum = request.POST['pensum']
+                    nombre_c = request.POST['curso']
+                    vigencia = request.POST['vigencia']
+                    semestre = request.POST['semestre']
+                    cursoglobal = Curso.objects.get(nombre=nombre_c)
+                    id_cursoglobal = cursoglobal.id
+                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
+                    curso_asociados = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=vigencia[0:6])
+                    micro_aso = Microcurriculum.objects.get(id=curso_asociados.id_microcurriculos.id)
                     try:
                         curso_asociado2 = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
                         return HttpResponse("Ya hay un microcurriculo asignado en el semestre seleccionado")
                     except:
-                        insert = Curso_programado(id_microcurriculos=microcurriculo,id_curso_asignado=curso_asig,semestre=semestre)
+                        insert = Curso_programado(id_microcurriculos=micro_aso,id_curso_asignado=curso_asig,semestre=semestre)
                         insert.save()
-                        return HttpResponse("Se asignó correctamente el ultimo microcurriculo vigente al semestre seleccionado")
-            elif(request.POST['caso']=="ultimo2"):
-                pensums = request.POST['pensums'].split(" /pencur- ")
-                nombre_cs = request.POST['cursos'].split(" /cursel- ")
-                semestre = request.POST['semestre']
-                semestre_es = int(semestre.replace("-",""))
-                nombre_c=nombre_cs[1]
-                pensum=pensums[1]
-                nombre_c2=nombre_cs[0]
-                pensum2=pensums[0]
-                cursoglobal = Curso.objects.get(nombre=nombre_c)
-                id_cursoglobal = cursoglobal.id
-                curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
-                cursoglobal2 = Curso.objects.get(nombre=nombre_c2)
-                id_cursoglobal2 = cursoglobal2.id
-                curso_asig2 = Curso_asignado.objects.get(id_curso=id_cursoglobal2,version_pensum=pensum2)
-                id_cursoasig = curso_asig.id
-                Cursos_prog = Curso_programado.objects.filter(id_curso_asignado=id_cursoasig)
-                lista = []
-                for Curso_prog in Cursos_prog:
-                    hi=Curso_prog.semestre
-                    hasta_i = int(hi.replace("-", ""))
-                    s=str(Curso_prog.semestre)
-                    lista.append(s) 
-                if( not lista ):
-                    return HttpResponse("No hay un ultimo curso vigente")
-                else:
-                    lista = sorted(lista,reverse=True)
-                    Cursos_prog = Curso_programado.objects.get(id_curso_asignado=id_cursoasig,semestre=lista[0])
-                    id_ultimo = Cursos_prog.id
-                    microcurriculo = Microcurriculum.objects.get(id=Cursos_prog.id_microcurriculos.id)
+                        return HttpResponse("Se renovó correctamente el microcurriculo del curso")
+                elif (str(request.user.groups.all()[0])=='Digitador'):
+                    pensum = request.POST['pensum']
+                    nombre_c = request.POST['curso']
+                    vigencia = request.POST['vigencia']
+                    semestre = request.POST['semestre']
+                    cursoglobal = Curso.objects.get(nombre=nombre_c)
+                    id_cursoglobal = cursoglobal.id
+                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
+                    curso_asociados = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=vigencia[0:6])
+                    microcurriculo = Microcurriculum.objects.get(id=curso_asociados.id_microcurriculos.id)
+                    insert = Microcurriculum_2(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
+                    insert.save()
+                    microcurriculos = Microcurriculum_2.objects.filter(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
+                    ids = []
+                    for micro in microcurriculos:
+                        a = int(micro.id)
+                        ids.append(a)
+                    id_microcurriculo = Microcurriculum_2.objects.get(id=max(ids))
+                    descripcion = 'Asignar otro microcurriculo del mismo curso al semestre seleccionado'
+                    user_p=str(request.user.first_name)+' '+str(request.user.last_name)
+                    insert2 = Solicitud(soli='Asignar',descripcion=descripcion,curso_destino=nombre_c,pensum_destino=pensum,curso_propietario=nombre_c,pensum_propietario=pensum,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p)
+                    insert2.save()
+                    return HttpResponse("Se procesó correctamente su solicitud")
+            elif(request.POST['caso']=="renovar2"):
+                if (str(request.user.groups.all()[0])=='Validador'):
+                    pensums = request.POST['pensum'].split(' /pencur- ')
+                    cursos = request.POST['curso'].split(' /cursel- ')
+                    pensum = pensums[0]
+                    nombre_c = cursos[0]
+                    vigencia = request.POST['vigencia']
+                    semestre = request.POST['semestre']
+                    cursoglobal = Curso.objects.get(nombre=nombre_c)
+                    id_cursoglobal = cursoglobal.id
+                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
+                    curso_asociados = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=vigencia[0:6])
+                    micro_aso = Microcurriculum.objects.get(id=curso_asociados.id_microcurriculos.id)
+                    cursoglobal = Curso.objects.get(nombre=cursos[1])
+                    id_cursoglobal = cursoglobal.id
+                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensums[1])
                     try:
-                        curso_asociado2 = Curso_programado.objects.get(id_curso_asignado=curso_asig2,semestre=semestre)
+                        curso_asociado2 = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
                         return HttpResponse("Ya hay un microcurriculo asignado en el semestre seleccionado")
                     except:
-                        insert = Curso_programado(id_microcurriculos=microcurriculo,id_curso_asignado=curso_asig2,semestre=semestre)
+                        insert = Curso_programado(id_microcurriculos=micro_aso,id_curso_asignado=curso_asig,semestre=semestre)
                         insert.save()
-                        return HttpResponse("Se asignó correctamente el ultimo microcurriculo vigente al semestre seleccionado")    
-            elif(request.POST['caso']=="renovar"):
-                pensum = request.POST['pensum']
-                nombre_c = request.POST['curso']
-                vigencia = request.POST['vigencia']
-                semestre = request.POST['semestre']
-                cursoglobal = Curso.objects.get(nombre=nombre_c)
-                id_cursoglobal = cursoglobal.id
-                curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
-                curso_asociados = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=vigencia[0:6])
-                micro_aso = Microcurriculum.objects.get(id=curso_asociados.id_microcurriculos.id)
-                try:
-                    curso_asociado2 = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
-                    return HttpResponse("Ya hay un microcurriculo asignado en el semestre seleccionado")
-                except:
-                    insert = Curso_programado(id_microcurriculos=micro_aso,id_curso_asignado=curso_asig,semestre=semestre)
+                        return HttpResponse("Se renovó correctamente el microcurriculo del curso")        
+                elif (str(request.user.groups.all()[0])=='Digitador'):
+                    pensums = request.POST['pensum'].split(' /pencur- ')
+                    cursos = request.POST['curso'].split(' /cursel- ')
+                    pensum = pensums[0]
+                    nombre_c = cursos[0]
+                    vigencia = request.POST['vigencia']
+                    semestre = request.POST['semestre']
+                    cursoglobal = Curso.objects.get(nombre=nombre_c)
+                    id_cursoglobal = cursoglobal.id
+                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
+                    curso_asociados = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=vigencia[0:6])
+                    microcurriculo = Microcurriculum.objects.get(id=curso_asociados.id_microcurriculos.id)
+                    insert = Microcurriculum_2(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
                     insert.save()
-                    return HttpResponse("Se renovó correctamente el microcurriculo del curso")
-            elif(request.POST['caso']=="renovar2"):
-                pensums = request.POST['pensum'].split(' /pencur- ')
-                cursos = request.POST['curso'].split(' /cursel- ')
-                pensum = pensums[0]
-                nombre_c = cursos[0]
-                vigencia = request.POST['vigencia']
-                semestre = request.POST['semestre']
-                cursoglobal = Curso.objects.get(nombre=nombre_c)
-                id_cursoglobal = cursoglobal.id
-                curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
-                curso_asociados = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=vigencia[0:6])
-                micro_aso = Microcurriculum.objects.get(id=curso_asociados.id_microcurriculos.id)
-                cursoglobal = Curso.objects.get(nombre=cursos[1])
-                id_cursoglobal = cursoglobal.id
-                curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensums[1])
-                try:
-                    curso_asociado2 = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
-                    return HttpResponse("Ya hay un microcurriculo asignado en el semestre seleccionado")
-                except:
-                    insert = Curso_programado(id_microcurriculos=micro_aso,id_curso_asignado=curso_asig,semestre=semestre)
-                    insert.save()
-                    return HttpResponse("Se renovó correctamente el microcurriculo del curso")        
+                    microcurriculos = Microcurriculum_2.objects.filter(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
+                    ids = []
+                    for micro in microcurriculos:
+                        a = int(micro.id)
+                        ids.append(a)
+                    id_microcurriculo = Microcurriculum_2.objects.get(id=max(ids))
+                    descripcion = 'Asignar otro microcurriculo de otro curso al semestre seleccionado'
+                    user_p=str(request.user.first_name)+' '+str(request.user.last_name)
+                    insert2 = Solicitud(soli='Asignar',descripcion=descripcion,curso_destino=cursos[1],pensum_destino=pensums[1],curso_propietario=nombre_c,pensum_propietario=pensum,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p)
+                    insert2.save()
+                    return HttpResponse("Se procesó correctamente su solicitud")
             elif(request.POST['caso']=="nuevopdf"):
                 pensum = request.POST['pensum']
                 nombre_c = request.POST['curso']

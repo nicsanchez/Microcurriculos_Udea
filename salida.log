@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.6.3)  2 DEC 2019 16:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.6.3)  5 DEC 2019 05:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1120,7 +1120,7 @@ Package rerunfilecheck Info: File `salida.out' has not changed.
 Here is how much of TeX's memory you used:
  9815 strings out of 492982
  135763 string characters out of 6134897
- 273677 words of memory out of 5000000
+ 273689 words of memory out of 5000000
  13175 multiletter control sequences out of 15000+600000
  38554 words of font info for 71 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1128,7 +1128,7 @@ Here is how much of TeX's memory you used:
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-dist
 /fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on salida.pdf (4 pages, 45830 bytes).
+Output written on salida.pdf (4 pages, 46218 bytes).
 PDF statistics:
  52 PDF objects out of 1000 (max. 8388607)
  43 compressed objects within 1 object stream
