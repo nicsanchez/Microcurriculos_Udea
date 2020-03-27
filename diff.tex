@@ -1,0 +1,309 @@
+% Don't touch this %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%DIF LATEXDIFF DIFFERENCE FILE
+%DIF DEL /home/nicolas/CursoDjango/Microcurriculos/Microcurriculos_Udea/salida.tex    Tue Mar 24 23:43:53 2020
+%DIF ADD /home/nicolas/CursoDjango/Microcurriculos/Microcurriculos_Udea/salida2.tex   Tue Mar 24 23:43:54 2020
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[spanish]{babel}
+
+\newcommand{\blankline}{\quad\pagebreak[2]}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Modify Course title, instructor name, semester here %%%%%%%%
+
+\title{2538100: Inglés I}
+\author{\begin{tabular} {c|c|c|c|c|c} Teórico & \textbf{0} & Teórico-Práctico & \textbf{4} & Práctico & \textbf{0}\end{tabular}
+\\
+\begin{tabular} {c|c|c|c|c|c} Validable & \textbf{Si} & Habilitable & \textbf{No} & Clasificable & \textbf{Si}\end{tabular}}
+\date{2016-1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Don't touch this %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[sc]{mathpazo}
+\linespread{1.05} % Palatino needs more leading (space between lines)
+\usepackage[T1]{fontenc}
+\usepackage[mmddyyyy]{datetime}% http://ctan.org/pkg/datetime
+\usepackage{advdate}% http://ctan.org/pkg/advdate
+\newdateformat{syldate}{\twodigit{\THEMONTH}/\twodigit{\THEDAY}}
+\newsavebox{\MONDAY}\savebox{\MONDAY}{Mon}% Mon
+\newcommand{\week}[1]{%
+%  \cleardate{mydate}% Clear date
+% \newdate{mydate}{\the\day}{\the\month}{\the\year}% Store date
+\paragraph*{\kern-2ex\quad #1, \syldate{\today} - \AdvanceDate[4]\syldate{\today}:}% Set heading  \quad #1
+%  \setbox1=\hbox{\shortdayofweekname{\getdateday{mydate}}{\getdatemonth{mydate}}{\getdateyear{mydate}}}%
+\ifdim\wd1=\wd\MONDAY
+\AdvanceDate[7]
+\else
+\AdvanceDate[7]
+\fi%
+}
+\usepackage{setspace}
+\usepackage{multicol}
+%\usepackage{indentfirst}
+\usepackage{fancyhdr,lastpage}
+\usepackage{url}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+\usepackage{amsmath}
+\usepackage{layout}
+\usepackage{booktabs}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\lhead{}
+\chead{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Modify header here %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\rhead{\footnotesize UNIVERSIDAD DE ANTIOQUIA - Facultad de Ingeniería}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Don't touch this %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\usepackage{array, xcolor}
+\usepackage{color,hyperref}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\hypersetup{colorlinks,breaklinks,linkcolor=clemsonorange,urlcolor=clemsonorange,anchorcolor=clemsonorange,citecolor=black}
+%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
+%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
+\RequirePackage[normalem]{ulem} %DIF PREAMBLE
+\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{BLUE}{rgb}{0,0,1} %DIF PREAMBLE
+\providecommand{\DIFaddtex}[1]{{\protect\color{blue}\uwave{#1}}} %DIF PREAMBLE
+\providecommand{\DIFdeltex}[1]{{\protect\color{red}\sout{#1}}}                      %DIF PREAMBLE
+%DIF SAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
+\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFdelbegin}{} %DIF PREAMBLE
+\providecommand{\DIFdelend}{} %DIF PREAMBLE
+%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelendFL}{} %DIF PREAMBLE
+%DIF HYPERREF PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFadd}[1]{\texorpdfstring{\DIFaddtex{#1}}{#1}} %DIF PREAMBLE
+\providecommand{\DIFdel}[1]{\texorpdfstring{\DIFdeltex{#1}}{}} %DIF PREAMBLE
+\newcommand{\DIFscaledelfig}{0.5}
+%DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
+\RequirePackage{settobox} %DIF PREAMBLE
+\RequirePackage{letltxmacro} %DIF PREAMBLE
+\newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
+\newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
+\newlength{\DIFdelgraphicsheight} %DIF PREAMBLE
+% store original definition of \includegraphics %DIF PREAMBLE
+\LetLtxMacro{\DIFOincludegraphics}{\includegraphics} %DIF PREAMBLE
+\newcommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
+\newcommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
+\sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
+\settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
+\parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
+\setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
+\begin{picture}(1,1)% %DIF PREAMBLE
+\thicklines\linethickness{2pt} %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\framebox(1,1){}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\line( 1,1){1}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,1){\line(1,-1){1}}}% %DIF PREAMBLE
+\end{picture}% %DIF PREAMBLE
+}\hspace*{3pt}}} %DIF PREAMBLE
+} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbegin}{\DIFaddbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddend}{\DIFaddend} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbegin}{\DIFdelbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelend}{\DIFdelend} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbegin}{\DIFOaddbegin \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbegin}{\DIFOdelbegin \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbeginFL}{\DIFaddbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddendFL}{\DIFaddendFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbeginFL}{\DIFdelbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelendFL}{\DIFdelendFL} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbeginFL}{\DIFOaddbeginFL \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbeginFL}{\DIFOdelbeginFL \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
+
+\begin{document}
+
+\maketitle
+%\blankline
+
+\begin{tabular*}{.93\textwidth}{@{\extracolsep{\fill}}lr}
+\hline\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Modify information %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%E-mail: \texttt{username@ncsu.edu} & Web: \href{www4.ncsu.edu/~username}{\tt\bf www4.ncsu.edu/~username}  \\
+\textbf{Semestre:} 1 & \textbf{Semanas:} 16
+\\
+\textbf{Área:} Formacíon Complementaria &    \textbf{Créditos:} 0 
+\\ & \\
+\textbf{Programas a los cuales se ofrece:} Ingeniería de Telecomunicaciones
+\\ & \\
+\hline
+\end{tabular*}
+
+\vspace{5 mm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Propósito del curso}
+
+Utilizando el diseño de un procesador, introducir a los estudiantes en que consiste un sistemas de cómputo: el procesador, sistemas numéricos, programación en assembler y en C, el ISA,relación entre HW y SW, jerarquía de memoria, I/O, Pipeline.
+
+%\bigskip
+
+%\noindent New paragraph. Bla bla bla ...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Justificación}
+
+Siendo los procesadores uno de los diseños más importantes de la electrónica. Se busca que el estudiante entienda como se enlazan todos los conceptos de circuitos digitales ya vistos en la concepción de un sistema de cómputo.\\De esta manera, el estudiante sea consciente del funcionamiento de una aplicación real a todos los niveles, a partir del comportamiento de los transistores.\\El curso parte de la microarquitectura del procesador, para entender la relación entre el HW y el SW, y todos los elementos que se tienen que coordinar para crear un sistema que resuelva un problema que interaccione con los humanos.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Prerrequisitos/Correquisitos}
+\begin{description}
+\item [Prerrequisitos:] Ninguno
+\item[Correquisitos:] Ninguno
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Objetivos}
+
+\subsection*{General}
+
+\begin{itemize}
+\item general 1 \item general 2  
+\end{itemize}
+
+\subsection*{Específicos}
+
+\begin{itemize}
+\item especifico 1 \item especifico 2  \item especifico 3  
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Contenido Resumido}
+
+\begin{itemize}
+\item item 1 \item  item 2  \item  item 3  \item  item 4  \item  item 5  \item hola 6 
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Unidades}
+\noindent 
+\begin{tabular}{R{0.16\textwidth} L{0.7\textwidth}} 
+ \\ 
+\toprule \textbf{Unidad No. 1} & temas unidad 1 
+ \\ 
+\midrule\textbf{Subtemas} & 
+\begin{description}
+ \item subtema 1 unidad 1 \item subtema 2 unidad 1 \item subtema 3 unidad 1 
+\end{description}
+ \\ 
+\textbf{Semanas} & 5 
+\end{tabular} 
+ \\ 
+ \begin{tabular}{R{0.16\textwidth} L{0.7\textwidth}} 
+ \\ 
+\toprule \textbf{Unidad No. 2} & temas unidad 2 
+ \\ 
+\midrule\textbf{Subtemas} & 
+\begin{description}
+ \item subtema 1 unidad 2 \item subtema 2 unidad 2 
+\end{description}
+ \\ 
+\textbf{Semanas} & 4 
+\end{tabular} 
+ \\ 
+ \DIFdelbegin %DIFDELCMD < \begin{tabular}{R{0.16\textwidth} L{0.7\textwidth}} 
+%DIFDELCMD <  \\ 
+%DIFDELCMD < \toprule %%%
+\textbf{\DIFdel{Unidad No. 3}} %DIFAUXCMD
+%DIFDELCMD < & %%%
+\DIFdel{temas unidad 3 
+ }%DIFDELCMD < \\ 
+%DIFDELCMD < \midrule%%%
+\textbf{\DIFdel{Subtemas}} %DIFAUXCMD
+%DIFDELCMD < & 
+%DIFDELCMD < \begin{description}
+\begin{description}%DIFAUXCMD
+%DIFDELCMD <  \item %%%
+\item%DIFAUXCMD
+\DIFdel{subtema 1 unidad 3 }%DIFDELCMD < \item %%%
+\item%DIFAUXCMD
+\DIFdel{subtema 2 unidad 3 }%DIFDELCMD < \item %%%
+\item%DIFAUXCMD
+\DIFdel{subtema 3 unidad 3 }%DIFDELCMD < \item %%%
+\item%DIFAUXCMD
+\DIFdel{subtema 4 unidad 3 
+}
+\end{description}%DIFAUXCMD
+%DIFDELCMD < \end{description}
+%DIFDELCMD <  \\ 
+%DIFDELCMD < %%%
+\textbf{\DIFdel{Semanas}} %DIFAUXCMD
+%DIFDELCMD < & %%%
+\DIFdel{5 
+}%DIFDELCMD < \end{tabular} 
+%DIFDELCMD <  \\ 
+%DIFDELCMD <  %%%
+\DIFdelend 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Metodología}
+
+El contenido del curso será presentado en clase mediante exposiciones regulares y talleres. Se realizarán sesiones prácticas de simulación, implementación usando VHDL, programación en ensamblador. El estudiante deberá hacer un desarrollo de diseño digital de mediano nivel de complejidad en los laboratorios
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Evaluación}
+\noindent \begin{tabular}{R{0.5\textwidth} C{0.2\textwidth} C{0.2\textwidth}}
+	\toprule
+	\textbf{Actividad} & \textbf{Porcentaje} & \textbf{Fecha} \\
+	\\
+	\midrule
+	actividad evaluacion 1 & 20 & 2019-10-29 \\ actividad evaluacion 2 & 30 & 2019-10-30 \DIFdelbegin %DIFDELCMD < \\ %%%
+\DIFdel{sebas }%DIFDELCMD < & %%%
+\DIFdel{1 }%DIFDELCMD < & %%%
+\DIFdel{2019-11-12 }\DIFdelend \\ 
+	\\
+	\midrule
+\end{tabular}
+\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Actividades de asistencia obligatoria}
+
+Exámenes parciales
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Bibliografía}
+
+\subsection*{Básica}
+
+\begin{itemize}
+\item basica 1  \item  basica 2  \item  basica 3  
+\end{itemize}
+
+\subsection*{Complementaria}
+
+\begin{itemize}
+\item complemen 1  \item  complemen 2  \item  complemen 3  
+\end{itemize}
+
+\end{document}

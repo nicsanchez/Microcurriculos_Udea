@@ -1,7 +1,8 @@
 from django.db import models
 
+
 # Create your models here.
-#Base de datos para el administrador validador
+#Base de datos para el administrador 
 class Microcurriculum(models.Model):
     id = models.AutoField(primary_key=True)
     descripcion_general = models.TextField(verbose_name="Descripcion General")
@@ -52,7 +53,7 @@ class Evaluation(models.Model):
     def __str__(self):
         return str(self.id)
 
-#Base de datos para el administrador digitador
+#Base de datos para el administrador Editor
 class Microcurriculum_2(models.Model):
     id = models.AutoField(primary_key=True)
     descripcion_general = models.TextField(verbose_name="Descripcion General")
@@ -67,7 +68,7 @@ class Microcurriculum_2(models.Model):
 
     class Meta:
         verbose_name = "Microcurriculo"
-        verbose_name_plural = "Microcurriculos Digitador"
+        verbose_name_plural = "Microcurriculos Editor"
         ordering = ["id"]
     
     def __str__(self):
@@ -82,7 +83,7 @@ class Unity_2(models.Model):
     
     class Meta:
         verbose_name = "Unidad"
-        verbose_name_plural = "Unidades Digitador"
+        verbose_name_plural = "Unidades Editor"
         ordering = ["id"]
 
     def __str__(self):
@@ -97,24 +98,32 @@ class Evaluation_2(models.Model):
     
     class Meta:
         verbose_name = "Evaluacion"
-        verbose_name_plural = "Evaluaciones Digitador"
+        verbose_name_plural = "Evaluaciones Editor"
         ordering = ["id"]
         
     def __str__(self):
         return str(self.id)
 
-#Base de datos para las solicitudes de los usuarios tipo digitador
+#Base de datos para las solicitudes de los usuarios tipo Editor
 class Solicitud(models.Model):
     id = models.AutoField(primary_key=True)
     soli = models.CharField(max_length=255, verbose_name="Solicitud")
+    estado = models.CharField(max_length=255, verbose_name="Estado")
     descripcion = models.TextField(verbose_name="Descripcion")
     curso_destino = models.CharField(max_length=255, verbose_name="Curso Destino")
     pensum_destino = models.CharField(max_length=255, verbose_name="Pensum Destino")
     curso_propietario = models.CharField(max_length=255, verbose_name="Curso Propietario")
     pensum_propietario = models.CharField(max_length=255, verbose_name="Pensum Propietario")
     semestre_asignar = models.CharField(max_length=255, verbose_name="Semestre a asignar")
-    microcurriculo = models.ForeignKey(Microcurriculum_2,verbose_name="Microcurriculo",on_delete=models.PROTECT)
+    microcurriculo = models.ForeignKey(Microcurriculum_2,verbose_name="Microcurriculo",on_delete=models.SET_NULL,null=True)
+    archivo = models.FileField(upload_to="files/",verbose_name="Comentarios")
     usuario = models.CharField(max_length=255, verbose_name="Usuario que realizo la peticion")
+    coordinador = models.CharField(max_length=255, verbose_name="Coordinador que estudio la peticion")
+    original = models.CharField(max_length=255, verbose_name="Microcurriculo Original")
+    tipo = models.CharField(max_length=255, verbose_name="Tipo")
+    created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creacion")
+    updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de actualizacion")
+
     class Meta:
         verbose_name = "Solicitud"
         verbose_name_plural = "Solicitudes"
@@ -200,3 +209,24 @@ class Semestres(models.Model):
     
     def __str__(self):
         return str(self.descripcion)    
+
+class Versiones(models.Model):
+    id = models.AutoField(primary_key=True)
+    version = models.FileField(upload_to="versions/",verbose_name="Versiones")
+    id_microcurriculos = models.ForeignKey(Microcurriculum,verbose_name="Microcurriculo final",on_delete=models.PROTECT,null=True)
+    id_microcurriculos_2 = models.ForeignKey(Microcurriculum_2,verbose_name="Microcurriculo fantasma",on_delete=models.SET_NULL,null=True)
+    accion = models.CharField(max_length=255, verbose_name="Accion")
+    comentarios = models.FileField(upload_to="files/",verbose_name="Comentarios",null=True)
+    usuario = models.CharField(max_length=255, verbose_name="Usuario que realizo la peticion")
+    coordinador = models.CharField(max_length=255, verbose_name="Coordinador que analizo la peticion")
+    created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creacion")
+    updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de actualizacion")
+    
+    class Meta:
+        verbose_name = "Version"
+        verbose_name_plural = "Versiones"
+        ordering = ["id"]
+    
+    def __str__(self):
+        return str(self.id)
+        

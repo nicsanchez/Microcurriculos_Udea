@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load auth_extras %}
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous"></script>
+<script LANGUAGE="JavaScript">
+function abrir(id) {
+    var file = document.getElementById(id);
+    file.dispatchEvent(new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: true
+    }));
+}
+function texto(elem, id_text) {
+    var texts = document.getElementById(id_text);
+    if(elem.files.length != 0) {
+        texts.innerText = elem.files[0].name;
+    }
+}
+</script>        
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Peticiones realizadas</title>
+    <style type="text/css" media="screen">
+        A:link {color: blue; font-size: 12pt; text-decoration: none }
+        A:hover {color: blue; font-size: 12pt; text-decoration: none }
+        A:visited {color: blue; font-size: 12pt; text-decoration: none }
+        table{border-collapse: collapse; text-align: center; border: black 2px solid;}
+        td{border: black 2px dashed;}
+        tr{border: black 2px dashed;}
+        .td1{background: #c3c3c3;}
+    </style>
+    <style type="text/css" media="screen">
+        .isDisabled{
+            color: currentColor;
+            cursor: not-allowed;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .isActivated{
+            color: blue;
+            font-size: 12pt;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<h1>Peticiones realizadas</h1>
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        <table>
+            {% csrf_token %}
+            <tr class="td1">
+                <td><strong>Solicitud</strong></td>
+                <td><strong>Estado</strong></td>
+                <td><strong>Descripcion</strong></td>
+                <td><strong>Curso Destino</strong></td>
+                <td><strong>Pensum Destino</strong></td>
+                <td><strong>Curso Propietario</strong></td>
+                <td><strong>Pensum Propietario</strong></td>
+                <td><strong>Semestre</strong></td>
+                <td><strong>Microcurriculo</strong></td>
+                <td><strong>Comparacion de versiones</strong></td>
+                <td><strong>Comentarios</strong></td>
+                {% if request.user|has_group:"Coordinador" %}
+                    <td><strong>Usuario que realizo la solicitud</strong></td>
+                {% elif request.user|has_group:"Editor" %}
+                    <td><strong>Usuario que estudio la solicitud</strong></td>
+                {% endif %}
+                <td><strong>Fecha de creacion</strong></td>    
+                <td><strong>Ultima modifiacion</strong></td>    
+                <td><strong>Acciones</strong></td>    
+            </tr>
+            {% for solicitud in solicitudes %}
+            {% if solicitud.tipo == "Abierto" %}
+                <tr>
+                    <input type="hidden" id="original{{solicitud.microcurriculo.id}}" name="original{{solicitud.microcurriculo.id}}" value="{{solicitud.original}}">
+                    <input type="hidden" id="id_s{{solicitud.microcurriculo.id}}" name="id_s{{solicitud.microcurriculo.id}}" value="{{solicitud.id}}">
+                    <td id="soli{{solicitud.microcurriculo.id}}" name="soli{{solicitud.microcurriculo.id}}">{{solicitud.soli}}</td>
+                    <td id="estado{{solicitud.microcurriculo.id}}" name="estado{{solicitud.microcurriculo.id}}">{{solicitud.estado}}</td>
+                    <td id="descripcion{{solicitud.microcurriculo.id}}" name="descripcion{{solicitud.microcurriculo.id}}">{{solicitud.descripcion}}</td>
+                    <td id="curso_d{{solicitud.microcurriculo.id}}" name="curso_d{{solicitud.microcurriculo.id}}">{{solicitud.curso_destino}}</td>
+                    <td id="pensum_d{{solicitud.microcurriculo.id}}" name="pensum_d{{solicitud.microcurriculo.id}}">{{solicitud.pensum_destino}}</td>
+                    <td id="curso_p{{solicitud.microcurriculo.id}}" name="curso_p{{solicitud.microcurriculo.id}}">{{solicitud.curso_propietario}}</td>
+                    <td id="pensum_p{{solicitud.microcurriculo.id}}" name="pensum_p{{solicitud.microcurriculo.id}}">{{solicitud.pensum_propietario}}</td>
+                    <td id="semestre{{solicitud.microcurriculo.id}}" name="semestre{{solicitud.microcurriculo.id}}">{{solicitud.semestre_asignar}}</td>
+                    <td><a href="javascript:micro({{solicitud.microcurriculo.id}})">Visualizar Microcurriculo</a></td>
+                    <td><a href="javascript:comparacion({{solicitud.microcurriculo.id}})">Visualizar Comparacion</a></td>
+                    {% if request.user|has_group:"Coordinador" %}    
+                        {% if solicitud.estado == "Revision" %}
+                            <td>
+                                <button type="button" onclick="abrir('file{{solicitud.microcurriculo.id}}')" id="boton{{solicitud.microcurriculo.id}}">Examinar..</button>
+                                <input id="file{{solicitud.microcurriculo.id}}" name="file{{solicitud.microcurriculo.id}}" type="file" style="display:none;" onchange='texto(this,"text{{solicitud.microcurriculo.id}}")'></a>
+                                <span id="text{{solicitud.microcurriculo.id}}">Subir Archivo</span>
+                            </td>
+                        {% else %}
+                            <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
+                        {% endif %}
+                        <td id="user{{solicitud.microcurriculo.id}}" name="user{{solicitud.microcurriculo.id}}">{{solicitud.usuario}}</td>
+                        <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
+                        <td id="date{{solicitud.microcurriculo.id}}" name="date{{solicitud.microcurriculo.id}}">{{solicitud.updated}}</td>
+                        {% if solicitud.estado == "Revision" %}
+                        <td>
+                            <a href="javascript:aceptar({{solicitud.microcurriculo.id}})" class="isActivated">Aceptar</a>
+                            <a href="javascript:rechazar({{solicitud.microcurriculo.id}})" class="isActivated">Rechazar</a>
+                        </td>
+                        {% else %}
+                        <td>
+                            <a href="" class="isDisabled">Aceptar</a>
+                            <a href="" class="isDisabled">Rechazar</a>
+                        </td>
+                        {% endif %}
+                    {% elif request.user|has_group:"Editor" %}
+                        {% if solicitud.archivo %}
+                            <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
+                        {% else %}
+                            <td>No hay archivo adjunto</td>
+                        {% endif %}
+                        <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
+                        <td id="date{{solicitud.microcurriculo.id}}" name="date{{solicitud.microcurriculo.id}}">{{solicitud.updated}}</td>
+                        {% if solicitud.coordinador %}
+                            <td id="coord{{solicitud.microcurriculo.id}}" name="coord{{solicitud.microcurriculo.id}}">{{solicitud.coordinador}}</td>
+                        {% else %}
+                            <td>Ningun coordinador </td>
+                        {% endif %}
+                        {% if solicitud.estado == "Revision" %}
+                        <td>
+                            {% if solicitud.soli == "Asignar" %}
+                                <a href="" class="isDisabled">Cerrar</a>
+                            {% else %}
+                                <a href="" class="isDisabled">Editar</a>
+                                <a href="" class="isDisabled">Enviar</a>
+                            {% endif %}
+                        </td>
+                        {% else %}
+                        <td>
+                            {% if solicitud.soli == "Asignar" %}
+                                <a href="javascript:cerrar({{solicitud.microcurriculo.id}})" class="isActivated">Cerrar</a>
+                            {% else %}
+                                <a href="javascript:editar({{solicitud.microcurriculo.id}})" class="isActivated">Editar</a>
+                                <a href="javascript:revisar({{solicitud.microcurriculo.id}})" class="isActivated">Enviar</a>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    {% endif %}      
+                </tr>        
+            {% endif %}
+            {% endfor %}
+        </table>
+    </form>    
+</body>
+</html>
+<script lenguague="javascript">
+function micro(n){
+    let url = "{% url 'peticiones' %}";
+    var id=String(n);
+    var solicitud=$('#soli'+id).text();
+    var curso=$('#curso_d'+id).text();
+    var pensum=$('#pensum_d'+id).text();
+    var semestre=$('#semestre'+id).text();
+    var original=$('#original'+id).val();
+    var tipo=$('#soli'+id).text();
+    if(solicitud=='Editar'){
+        var caso='visualizarPDF2'
+    }
+    else{
+        var caso='visualizarPDF'
+    }    
+    const postData={
+        'caso': caso,
+        'curso': curso,
+        'pensum': pensum,
+        'id_micro': id,
+        'vigencia': semestre,
+        'original': original,
+        'tipo': tipo,
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+    };
+    $.post(url, postData, function(response){
+        window.open("data:application/pdf;base64, " + response);
+    });
+}
+function comparacion(n){
+    let url = "{% url 'peticiones' %}";
+    var id=String(n);
+    var solicitud=$('#soli'+id).text();
+    var curso=$('#curso_d'+id).text();
+    var pensum=$('#pensum_d'+id).text();
+    var semestre=$('#semestre'+id).text();
+    var caso='comparacion'
+    const postData={
+        'caso': caso,
+        'curso': curso,
+        'pensum': pensum,
+        'id_micro': id,
+        'vigencia': semestre,
+        'tipo': solicitud,
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+    };
+    $.post(url, postData, function(response){
+        if(response=="False"){
+            alert("No hay versiones a comparar");
+        }
+        else{
+            window.open("data:application/pdf;base64, " + response);
+        }
+    });
+}
+function revisar(n){
+    let url = "{% url 'peticiones' %}";
+    var id=String(n);
+    var caso='revisar';
+    const postData={
+        'caso': caso,
+        'id_micro': id,
+        'curso_d': $('#curso_d'+id).text(),
+        'pensum_d':$('#pensum_d'+id).text(),
+        'semestre':$('#semestre'+id).text(),
+        'id_s':$('#id_s'+id).val(),
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+    };
+    $.post(url, postData, function(response){
+        if(response=="True"){
+            alert("No hay cambios en la ultima version");
+        }
+        else{
+            alert("Se ha procesado correctamente su solicitud");
+            pagina="{% url 'nucleo' %}"
+            $(location).attr('href',pagina);
+        }
+    });
+}
+function rechazar(n){
+    id=String(n);
+    if($('#file'+id).prop("files")[0]){
+        let url = "{% url 'peticiones' %}";
+        var id=String(n);
+        var id_s=$('#id_s'+id).val();
+        var archivo=$('#file'+id).prop("files")[0];
+        var caso='rechazar';
+        var fileb64="";
+        getBase64FromFile(archivo, function(base64){
+            fileb64=base64;
+            const postData={
+                'caso': caso,
+                'id_s': id_s,
+                'archivo': fileb64,
+                csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+            };
+            console.log(fileb64)
+            $.post(url, postData, function(response){
+                alert(response)
+                if(response=="Se ha enviado su revision satisfactoriamente al editor"){
+                    pagina="{% url 'nucleo' %}"
+                    $(location).attr('href',pagina);
+                }
+            });
+        });
+    }
+    else{
+        alert("Debe adjuntar archivo en la seccion de comentarios");
+    }
+}
+function cerrar(n){
+    let url = "{% url 'peticiones' %}";
+    var id=String(n);
+    var id_s=$('#id_s'+id).val();
+    var caso='cerrar';
+    const postData={
+        'caso': caso,
+        'id_s': id_s,
+        'id_m': id,
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+    };
+    $.post(url, postData, function(response){
+        alert(response)
+        pagina="{% url 'nucleo' %}"
+        $(location).attr('href',pagina);
+    });
+}
+function aceptar(n){
+    let url = "{% url 'peticiones' %}";
+    var id=String(n);
+    var id_s=$('#id_s'+id).val();
+    var caso='aceptar';
+    const postData={
+        'caso': caso,
+        'id_s': id_s,
+        'id_m': id,
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+    };
+    $.post(url, postData, function(response){
+        alert(response)
+        pagina="{% url 'nucleo' %}"
+        $(location).attr('href',pagina);
+    });
+}
+function getBase64FromFile(img, callback){
+    let fileReader = new FileReader();
+    fileReader.addEventListener('load', function(evt){
+        callback(fileReader.result);
+    });
+    fileReader.readAsDataURL(img);
+};
+function editar(n){
+    id=String(n);
+    var v_p=$('#pensum_d'+id).text();
+    var curso_sel=$('#curso_d'+id).text();
+    var semestre=$('#semestre'+id).text();
+    var vigencia="editar"+id;
+    var caso="editar"
+    var nombres = 'v_p,curso_sel,semestre,vigencia,caso'
+    let url="{% url 'curso' %}";
+    pagina = "{% url 'core' %}";
+    pagina +="?";
+    nomVec = nombres.split(",");
+    for (i=0; i<nomVec.length; i++)
+        pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+    pagina = pagina.substring(0,pagina.length-1);
+    $(location).attr('href',pagina);
+};
+
+</script>

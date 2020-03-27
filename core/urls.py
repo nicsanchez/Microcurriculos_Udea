@@ -1,6 +1,8 @@
 from django.urls import path
 #el punto quiere decir que de este directorio
 from . import views 
+from django.conf import settings
+
 
 urlpatterns = [
     path('crear/',views.core,name='core'),
@@ -15,5 +17,9 @@ urlpatterns = [
     path('nuevo3/',views.nuevo3,name="nuevo3"),
     path('nuevo4/',views.nuevo4,name="nuevo4"),
     path('logout/',views.logout,name="logout"),
-    path('login/',views.login,name="login")
+    path('login/',views.login,name="login"),
+    path('peticiones/',views.peticiones,name="peticiones")
 ]
+if settings.DEBUG:
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

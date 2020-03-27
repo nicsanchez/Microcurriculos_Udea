@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Microcurriculum,Unity,Evaluation,Curso,Programa,Curso_asignado,Curso_programado,Semestres,Microcurriculum_2,Unity_2,Evaluation_2,Solicitud
+from .models import Microcurriculum,Unity,Evaluation,Curso,Programa,Curso_asignado,Curso_programado,Semestres,Microcurriculum_2,Unity_2,Evaluation_2,Solicitud,Versiones
 
 # Register your models here.
 class MicrocurriculumAdmin(admin.ModelAdmin):
@@ -18,7 +18,7 @@ class Evaluation2Admin(admin.ModelAdmin):
     list_display = ('id','id_microcurriculos','actividad','porcentaje','fecha')
 
 class SolicitudAdmin(admin.ModelAdmin):
-    list_display = ('id','soli','descripcion','curso_destino','pensum_destino','curso_propietario','pensum_propietario','semestre_asignar','microcurriculo','usuario')
+    list_display = ('id','soli','estado','descripcion','curso_destino','pensum_destino','curso_propietario','pensum_propietario','semestre_asignar','microcurriculo','archivo','usuario','coordinador','original','tipo','created','updated')
 
 class EvaluationAdmin(admin.ModelAdmin):
     list_display = ('id','id_microcurriculos','actividad','porcentaje','fecha')
@@ -38,6 +38,9 @@ class Curso_programadoAdmin(admin.ModelAdmin):
 class SemestresAdmin(admin.ModelAdmin):
     list_display = ('id','descripcion')
 
+class VersionesAdmin(admin.ModelAdmin):
+    list_display = ('id','version','id_microcurriculos','id_microcurriculos_2','accion','comentarios','usuario','coordinador','created','updated')
+
 admin.site.register(Microcurriculum,MicrocurriculumAdmin)
 admin.site.register(Microcurriculum_2,Microcurriculum2Admin)
 admin.site.register(Unity,UnityAdmin)
@@ -50,3 +53,4 @@ admin.site.register(Curso_asignado,Curso_asignadoAdmin)
 admin.site.register(Curso_programado,Curso_programadoAdmin)
 admin.site.register(Semestres,SemestresAdmin)
 admin.site.register(Solicitud,SolicitudAdmin)
+admin.site.register(Versiones,VersionesAdmin)
