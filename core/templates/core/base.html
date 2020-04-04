@@ -354,8 +354,11 @@ $(document).ready(function(){
                 if(response == "true"){
                     $(location).attr('href',pagina); 
                 }
-                else{
+                else if(response=="false"){
                     alert('Existe un microcurriculo asociado al semestre escogido');    
+                }
+                else if(response=="false1"){
+                    alert('Existe una solicitud en proceso en el semestre seleccionado');    
                 }
             });
         }
@@ -675,7 +678,56 @@ $(document).ready(function(){
     });
     //Asignar el microcurriculo seleccionado del mismo curso
     $("#renovar_micro").on('click', function (e){
+        e.preventDefault();$("#curso_sec").on('click', function (e){
         e.preventDefault();
+        var v_p = $('#version_pensum').val();
+        var v_p2 = $('#version_pensum2').val();
+        var pensum = v_p +' /pencur- ' + v_p2 ;
+        var curso_sel = $('#curso').val();
+        var curso_sel2 = $('#curso2').val();
+        var cursos = curso_sel + ' /cursel- ' + curso_sel2 ;
+        var semestre = $('#semestre').val();
+        var nombres = 'pensum,cursos,semestre';
+        let url="{% url 'curso' %}";
+        const postData={
+            'pensum': v_p ,
+            'curso': curso_sel,
+			'semestre' : semestre,
+            'caso':"verificacion",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        pagina = "{% url 'nuevo3' %}";
+        pagina +="?";
+        nomVec = nombres.split(",");
+        for (i=0; i<nomVec.length; i++)
+            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+        pagina = pagina.substring(0,pagina.length-1);
+        if(v_p2 != "Seleccione" && curso_sel2 != "Seleccione" && v_p != "Seleccione" && curso_sel != "Seleccione" && semestre != "Seleccione"){
+            $.post(url, postData, function(response){
+                if(response == "true"){
+                    $(location).attr('href',pagina); 
+                }
+                else{
+                    alert('Existe un microcurriculo asociado al semestre escogido');    
+                }
+            });
+        }
+        else if (v_p == "Seleccione"){
+            alert("Seleccione la version del pensum correspondiente al curso ");
+        }
+        else if (curso_sel == "Seleccione"){
+            alert("Seleccione el curso al cual creará el microcurriculo");
+        }
+        else if (semestre == "Seleccione"){
+            alert("Seleccione el semestre al cual asignará el microcurriculo");
+        }
+        else if (v_p2 == "Seleccione"){
+            alert("Seleccione la version del pensum correspondiente al curso del cual pertenece el microcurriculo");
+        }
+        else if (curso_sel2 == "Seleccione"){
+            alert("Seleccione el curso propietario del microcurriculo");
+        }
+    });
         var cadVariables = location.search.substring(1,location.search.length);
         var arrVariables = cadVariables.split("&");
         let url = "{% url 'curso' %}";

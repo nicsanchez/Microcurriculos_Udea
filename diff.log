@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.6.3)  24 MAR 2020 23:43
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.6.3)  4 APR 2020 04:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1039,128 +1039,105 @@ Package babel Info: Redefining spanish shorthand "?
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 247.
-Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 247.
-Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 247.
-Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 247.
-Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 247.
-Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 247.
-Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 247.
-Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 247.
-Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 247.
-Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 247.
-Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 247.
-Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 247.
- [2]
-Underfull \hbox (badness 10000) in paragraph at lines 278--292
+Underfull \hbox (badness 10000) in paragraph at lines 214--252
 
  []
 
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 292.
+(babel)             in language  on input line 258.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 292.
+(babel)             in language  on input line 258.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 292.
+(babel)             in language  on input line 258.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 292.
+(babel)             in language  on input line 258.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 292.
+(babel)             in language  on input line 258.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 292.
+(babel)             in language  on input line 258.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 292.
+(babel)             in language  on input line 258.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 292.
+(babel)             in language  on input line 258.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 292.
+(babel)             in language  on input line 258.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 292.
+(babel)             in language  on input line 258.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 292.
+(babel)             in language  on input line 258.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 292.
-[3] 
+(babel)             in language  on input line 258.
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 261--276
+
+ []
+
+
 AED: lastpage setting LastPage
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 311.
-[4]
+(babel)             in language  on input line 297.
+[3]
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 311.
+(babel)             in language  on input line 297.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 311.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 311.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 311.
+(babel)             in language  on input line 297.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 297.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 297.
  (./diff.aux
 LaTeX Info: Redefining \. on input line 23.
 LaTeX Info: Redefining \% on input line 23.
 )
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 311.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 311.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 297.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 297.
 Package rerunfilecheck Info: File `diff.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
- 9959 strings out of 492982
- 137444 string characters out of 6134897
- 273451 words of memory out of 5000000
+ 9958 strings out of 492982
+ 137438 string characters out of 6134897
+ 273467 words of memory out of 5000000
  13311 multiletter control sequences out of 15000+600000
  38660 words of font info for 72 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  35i,12n,43p,1128b,423s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on diff.pdf (4 pages, 46225 bytes).
+e/texmf-dist/fonts/type1/public/amsfonts/latxfont/lasy6.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/urw/palatino/uplr8a.pfb>
+Output written on diff.pdf (3 pages, 48130 bytes).
 PDF statistics:
- 52 PDF objects out of 1000 (max. 8388607)
- 43 compressed objects within 1 object stream
- 19 named destinations out of 1000 (max. 500000)
+ 51 PDF objects out of 1000 (max. 8388607)
+ 42 compressed objects within 1 object stream
+ 18 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

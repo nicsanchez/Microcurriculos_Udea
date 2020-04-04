@@ -582,8 +582,118 @@ def peticiones(request):
                             version_final.id_microcurriculos=id_microcurriculo
                             version_final.save(update_fields=['id_microcurriculos'])
                             micro_aso.delete()
-                            return HttpResponse("Se ha procesado la solicitud")        
-  
+                            return HttpResponse("Se ha procesado la solicitud")
+                        elif(solicitud.soli=="Editar"):
+                            curso_es=solicitud.curso_destino
+                            version_pensum=solicitud.pensum_destino
+                            cursoglobal = Curso.objects.get(nombre=curso_es)
+                            id_cursoglobal = cursoglobal.id
+                            curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=version_pensum)
+                            curso_prog = Curso_programado.objects.get(id_curso_asignado=curso_asig.id,semestre=solicitud.semestre_asignar)
+                            microcurriculos = Microcurriculum.objects.get(id=curso_prog.id_microcurriculos.id)
+                            microcurriculos.descripcion_general=micro.descripcion_general
+                            microcurriculos.proposito=micro.proposito
+                            microcurriculos.objetivo_general=micro.objetivo_general
+                            microcurriculos.objetivo_especifico=micro.objetivo_especifico
+                            microcurriculos.contenido_resumido=micro.contenido_resumido
+                            microcurriculos.actividades_asis_oblig=micro.actividades_asis_oblig
+                            microcurriculos.bibliografia_basica=micro.bibliografia_basica
+                            microcurriculos.bibliografia_complementaria=micro.bibliografia_complementaria
+                            microcurriculos.metodologia=micro.metodologia
+                            microcurriculos.save(update_fields=['descripcion_general','proposito','objetivo_general','objetivo_especifico','contenido_resumido','actividades_asis_oblig','bibliografia_basica','bibliografia_complementaria','metodologia'])
+                            id_microcurriculo = int(microcurriculos.id)
+                            eval_micro2=Evaluation.objects.filter(id_microcurriculos=id_microcurriculo)
+                            evaluations=[]
+                            for evaluacion in eval_micro:
+                                temporal={}
+                                temporal['actividad']=evaluacion.actividad
+                                temporal['porcentaje']=evaluacion.porcentaje
+                                temporal['fecha']=evaluacion.fecha
+                                evaluations.append(temporal)
+                                evaluacion.delete()
+                            contador=0    
+                            cont_eval=len(evaluations)
+                            while (contador<cont_eval):
+                                if(contador<len(eval_micro2)):
+                                    for evaluacion in eval_micro2:
+                                        if(contador<cont_eval):
+                                            evaluacion.actividad=evaluations[contador]['actividad']
+                                            evaluacion.porcentaje=evaluations[contador]['porcentaje']
+                                            evaluacion.fecha=evaluations[contador]['fecha']
+                                            evaluacion.save(update_fields=['actividad','porcentaje','fecha'])
+                                        else:
+                                            evaluacion.delete()
+                                        contador=contador+1
+                                else:
+                                    actividad=evaluations[contador]['actividad']
+                                    porcentaje=evaluations[contador]['porcentaje']
+                                    fecha=evaluations[contador]['fecha']
+                                    insert = Evaluation(id_microcurriculos=microcurriculos,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
+                                    insert.save()
+                                    contador=contador+1
+                            unity_micro2=Unity.objects.filter(id_microcurriculos=id_microcurriculo)        
+                            unities=[]
+                            for unidad in unity_micro:
+                                temporal={}
+                                temporal['tema']=unidad.tema
+                                temporal['subtema']=unidad.subtema
+                                temporal['num_semanas']=unidad.num_semanas
+                                unities.append(temporal)
+                                unidad.delete()
+                            contador=0  
+                            cont_unit=len(unities)
+                            while (contador<cont_unit):
+                                if(contador<len(unity_micro2)):
+                                    for unidad in unity_micro2:
+                                        if(contador<cont_unit):
+                                            unidad.tema=unities[contador]['tema']
+                                            unidad.subtema=unities[contador]['subtema']
+                                            unidad.num_semanas=unities[contador]['num_semanas']
+                                            unidad.save(update_fields=['tema','subtema','num_semanas'])
+                                        else:
+                                            unidad.delete()
+                                        contador=contador+1
+                                else:
+                                    tema=unities[contador]['tema']
+                                    subtema=unities[contador]['subtema']
+                                    semanas=unities[contador]['num_semanas']
+                                    insert = Unity(id_microcurriculos=microcurriculos,tema=tema,subtema=subtema,num_semanas=semanas)
+                                    insert.save()
+                                    contador=contador+1
+                            version=Versiones.objects.filter(id_microcurriculos_2=micro_aso)
+                            ids = []
+                            for versiones in version:
+                                a = int(versiones.id)
+                                ids.append(a)
+                            version_final = Versiones.objects.get(id=max(ids))
+                            version_final.id_microcurriculos=microcurriculos
+                            version_final.save(update_fields=['id_microcurriculos'])
+                            micro_aso.delete()
+                            return HttpResponse("Se ha procesado la solicitud")            
+                        elif(solicitud.soli=="Asignar"):
+                            curso_es=solicitud.curso_destino
+                            version_pensum=solicitud.pensum_destino
+                            cursoglobal = Curso.objects.get(nombre=curso_es)
+                            id_cursoglobal = cursoglobal.id
+                            curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=version_pensum)
+                            id_microcurriculo=id_microcurriculo = Microcurriculum.objects.get(id=int(solicitud.original))
+                            for unidad in unity_micro:
+                                unidad.delete()
+                            for evaluacion in eval_micro:
+                                evaluacion.delete()
+                            insert2 = Curso_programado(id_microcurriculos=id_microcurriculo,id_curso_asignado=curso_asig,semestre=solicitud.semestre_asignar)
+                            insert2.save()
+                            version=Versiones.objects.filter(id_microcurriculos_2=micro_aso)
+                            ids = []
+                            for versiones in version:
+                                a = int(versiones.id)
+                                ids.append(a)
+                            version_final = Versiones.objects.get(id=max(ids))
+                            version_final.id_microcurriculos=id_microcurriculo
+                            version_final.save(update_fields=['id_microcurriculos'])
+                            micro_aso.delete()
+                            return HttpResponse("Se ha procesado la solicitud")
+
                 elif request.POST['caso']=='revisar':
                     if (str(request.user.groups.all()[0])=='Editor'):
                         micro=int(request.POST['id_micro'])
@@ -1237,6 +1347,7 @@ def core(request):
                     elif request.POST['caso']=="ultimo":
                         pensum = request.POST['pensum']
                         nombre_c = request.POST['curso']
+                        semestre=""
                         cursoglobal = Curso.objects.get(nombre=nombre_c)
                         id_cursoglobal = cursoglobal.id
                         curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
@@ -1317,10 +1428,17 @@ def curso(request):
                 id_cursoglobal = cursoglobal.id
                 curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
                 try:
+                    #Verificar si hay un microcurriculo programado en el semestre a solicitud
                     curso_asociado = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
                     return HttpResponse("false")
                 except:
-                    return HttpResponse("true")
+                    #Verificar si hay una solicitud abierta asociada al curso y semestre escogidos.
+                    try:
+                        soli=Solicitud.objects.get(curso_destino=str(nombre_c),pensum_destino=str(pensum),semestre_asignar=str(semestre),tipo="Abierto")
+                        return HttpResponse("false1")
+                    except:
+                        #Si retorna true puede hacer la solicitud
+                        return HttpResponse("true")
             elif(request.POST['caso']=="editar"):
                 pensum = request.POST['pensum']
                 semestre = request.POST['semestre']
