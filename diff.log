@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.6.3)  4 APR 2020 04:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.6.3)  15 APR 2020 23:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1039,93 +1039,93 @@ Package babel Info: Redefining spanish shorthand "?
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 214--252
+Underfull \hbox (badness 10000) in paragraph at lines 214--260
 
  []
 
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 258.
+(babel)             in language  on input line 266.
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 261--276
+Underfull \hbox (badness 10000) in paragraph at lines 269--280
 
  []
 
 
 AED: lastpage setting LastPage
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 [3]
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 297.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 297.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 297.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 297.
+(babel)             in language  on input line 299.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 299.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 299.
  (./diff.aux
 LaTeX Info: Redefining \. on input line 23.
 LaTeX Info: Redefining \% on input line 23.
 )
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 297.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 297.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 299.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 299.
 Package rerunfilecheck Info: File `diff.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
  9958 strings out of 492982
  137438 string characters out of 6134897
- 273467 words of memory out of 5000000
+ 272467 words of memory out of 5000000
  13311 multiletter control sequences out of 15000+600000
  38660 words of font info for 72 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1134,7 +1134,7 @@ Here is how much of TeX's memory you used:
 e/texmf-dist/fonts/type1/public/amsfonts/latxfont/lasy6.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on diff.pdf (3 pages, 48130 bytes).
+Output written on diff.pdf (3 pages, 47995 bytes).
 PDF statistics:
  51 PDF objects out of 1000 (max. 8388607)
  42 compressed objects within 1 object stream

@@ -198,9 +198,11 @@ $(document).ready(function(){
                     let curso_prog = JSON.parse(response);
                     $("#vigencia").empty();
                     $("#vigencia").append(`<option>Seleccione</option>`);
-                    //console.log(curso_prog)
-                    for(var i=0; i<curso_prog.data.length;i++){
-                        $("#vigencia").append(`<option>${curso_prog.data[i]}</option>`);
+                    console.log(curso_prog.data)
+                    if(curso_prog.data[0]!="Vacio"){
+                        for(var i=0; i<curso_prog.data.length;i++){
+                            $("#vigencia").append(`<option>${curso_prog.data[i]}</option>`);
+                        };
                     };
                 });   
             }        
@@ -231,9 +233,11 @@ $(document).ready(function(){
                 let curso_prog = JSON.parse(response);
                 $("#vigencia").empty();
                 $("#vigencia").append(`<option>Seleccione</option>`);
-                //console.log(curso_prog)
-                for(var i=0; i<curso_prog.data.length;i++){
-                    $("#vigencia").append(`<option>${curso_prog.data[i]}</option>`);
+                console.log(curso_prog.data)
+                if(curso_prog.data[0]!="Vacio"){
+                    for(var i=0; i<curso_prog.data.length;i++){
+                        $("#vigencia").append(`<option>${curso_prog.data[i]}</option>`);
+                    };
                 };
             }); 
         }
@@ -262,9 +266,11 @@ $(document).ready(function(){
                 let curso_prog = JSON.parse(response);
                 $("#vigencia").empty();
                 $("#vigencia").append(`<option>Seleccione</option>`);
-                //console.log(curso_prog)
-                for(var i=0; i<curso_prog.data.length;i++){
-                    $("#vigencia").append(`<option>${curso_prog.data[i]}</option>`);
+                console.log(curso_prog.data)
+                if(curso_prog.data[0]!="Vacio"){
+                    for(var i=0; i<curso_prog.data.length;i++){
+                        $("#vigencia").append(`<option>${curso_prog.data[i]}</option>`);
+                    };
                 };
             });
         } 

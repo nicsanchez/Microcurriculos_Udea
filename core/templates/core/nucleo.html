@@ -36,7 +36,7 @@
         Eres un <b>{{request.user.groups.all.0}}</b> de la aplicacion.
     </p>
     <h1>Menu</h1>
-    {% if request.user|has_group:"Editor" or request.user|has_group:"Coordinador" %}
+    {% if request.user|has_group:"Editor"%}
         <tr>
             <td><a href="{% url 'crear2' %}" id="crear_micro">Crear un microcurriculo</a></td> 
         </tr>

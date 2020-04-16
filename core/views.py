@@ -37,9 +37,6 @@ def login(request):
 def peticiones(request):
     if request.user.is_authenticated:
         if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):
-            '''if request.is_ajax:
-                a=request
-                print(a)'''
             if request.method == "POST":
                 if request.POST['caso']=='visualizarPDF':
                     nombre_c = request.POST['curso']
@@ -811,7 +808,7 @@ def peticiones(request):
 
 def nuevo1(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):    
+        if (str(request.user.groups.all()[0])=='Editor'):    
             semestres = Semestres.objects.all()
             return render(request, "core/nuevo1.html",{'semestres':semestres})
         else:
@@ -820,7 +817,7 @@ def nuevo1(request):
 
 def nuevo2(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):    
+        if (str(request.user.groups.all()[0])=='Editor'):    
             semestres = Semestres.objects.all()
             return render(request, "core/nuevo2.html",{'semestres':semestres})
         return redirect('/nucleo')    
@@ -828,7 +825,7 @@ def nuevo2(request):
 
 def nuevo3(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):    
+        if (str(request.user.groups.all()[0])=='Editor'):    
             semestres = Semestres.objects.all()
             return render(request, "core/nuevo3.html",{'semestres':semestres})    
         else:
@@ -836,7 +833,7 @@ def nuevo3(request):
     return redirect('/login')
 def nuevo4(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):            
+        if (str(request.user.groups.all()[0])=='Editor'):            
             semestres = Semestres.objects.all()
             return render(request, "core/nuevo4.html",{'semestres':semestres})        
         else:
@@ -850,7 +847,7 @@ def visualizar(request):
 
 def editar(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):
+        if (str(request.user.groups.all()[0])=='Editor'):
             semestres = Semestres.objects.all()
             return render(request, "core/editar.html",{'semestres':semestres})
         else:
@@ -859,7 +856,7 @@ def editar(request):
 
 def crear2(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):    
+        if (str(request.user.groups.all()[0])=='Editor'):    
             if request.method == "POST":
                 if request.POST['caso']=="confirmacion":
                     pensum = request.POST['pensum']
@@ -955,7 +952,7 @@ def nucleo(request):
 
 def core(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):    
+        if (str(request.user.groups.all()[0])=='Editor'):    
             if request.method == "POST":
                 if request.POST['caso']=="nuevo" or request.POST['caso']=="editar":
                     descripcion_gen = request.POST['descripcion_general']
@@ -1004,6 +1001,7 @@ def core(request):
                             mensaje = 'Ya hay un microcurriculo asignado en el semestre seleccionado'
                             return render(request, "core/nucleo.html",{'mensaje': mensaje})
                         except:
+                            '''
                             if (str(request.user.groups.all()[0])=='Coordinador'): 
                                 #Se inserta en la base de datos real para el Coordinador y se asigna al curso escogido
                                 insert = Microcurriculum(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
@@ -1021,7 +1019,8 @@ def core(request):
                                 id_microcurriculo = Microcurriculum.objects.get(id=max(ids))  
                                 insert2 = Curso_programado(id_microcurriculos=id_microcurriculo,id_curso_asignado=curso_asig,semestre=semestre)
                                 insert2.save()
-                            elif(str(request.user.groups.all()[0])=='Editor'):
+                            '''
+                            if(str(request.user.groups.all()[0])=='Editor'):
                                 #Se inserta en la base de datos fantasma para el Editor
                                 insert = Microcurriculum_2(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
                                 insert.save()
@@ -1052,9 +1051,11 @@ def core(request):
                                     subtemai=request.POST['subtemauni'+num+num2]
                                     subtema=subtema+" /subin- "+subtemai
                                 semana=request.POST['semanas'+num]
+                                '''
                                 if (str(request.user.groups.all()[0])=='Coordinador'): 
                                     insert = Unity(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana)
-                                elif (str(request.user.groups.all()[0])=='Editor'):
+                                '''
+                                if (str(request.user.groups.all()[0])=='Editor'):
                                     insert = Unity_2(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana) 
                                 insert.save()
                             for i in range(1,cantidad_evaluaciones+1):
@@ -1062,14 +1063,17 @@ def core(request):
                                 actividad=request.POST['actividad'+num]
                                 porcentaje=request.POST['porcentaje'+num]
                                 fecha=request.POST['fecha'+num]
+                                '''
                                 if (str(request.user.groups.all()[0])=='Coordinador'): 
                                     insert = Evaluation(id_microcurriculos=id_microcurriculo,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
-                                elif (str(request.user.groups.all()[0])=='Editor'):
+                                '''
+                                if (str(request.user.groups.all()[0])=='Editor'):
                                     insert = Evaluation_2(id_microcurriculos=id_microcurriculo,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
                                 insert.save()
                             mensaje = 'Se ha agregado un nuevo registro de microcurriculo con éxito'
                             return render(request, "core/nucleo.html",{'mensaje': mensaje})  
                     elif request.POST['caso']=="editar":
+                        '''
                         if(str(request.user.groups.all()[0])=='Coordinador'):
                             pensum = int(request.POST['version_p'])
                             nombre_c = request.POST['curso_es']
@@ -1143,7 +1147,8 @@ def core(request):
                                     insert = Unity(id_microcurriculos=micro_aso,tema=tema,subtema=subtema,num_semanas=semana)
                                     insert.save()
                                     contador=contador+1
-                        elif(str(request.user.groups.all()[0])=='Editor'):
+                        '''
+                        if(str(request.user.groups.all()[0])=='Editor'):
                             if(request.POST['vigencia_es'][0:6]!="editar"):
                                 #Creo un nuevo registro en la base de datos fantasma para luego comparar las ediciones realizadas
                                 insert = Microcurriculum_2(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
@@ -1467,124 +1472,130 @@ def curso(request):
                 lista_ids = []
                 lista_semestres = []
                 lista_comunes = []
-                if(hasta_u >= desde_u):
-                    for Curso_prog in Cursos_prog:
-                        semestre_u = int(Curso_prog.semestre.replace("-", ""))
-                        if(semestre_u >= desde_u and semestre_u <= hasta_u):
-                            lista_ids.append(str(Curso_prog.id_microcurriculos))
-                            lista_semestres.append(str(Curso_prog.semestre))
-                    lista_comunes=[[k]*v for k, v in collections.Counter(lista_ids).items()]
-                    x1=0
-                    x2=len(lista_comunes[0])-1
-                    a=[]
-                    b=[]
-                    semestres = Semestres.objects.all()
-                    x3=0
-                    x4=0
-                    x5=0
-                    x6=0
-                    string2=[]
-                    string3=[]
-                    for semestre in semestres:
-                        b.append(str(semestre.descripcion))
-                    for i in range(1,len(lista_comunes)+1):
-                        a.clear()
-                        string2.clear()
-                        string3.clear()
-                        if(i==len(lista_comunes)):
-                            for j in range(x1,x2+1):
-                                a.append(lista_semestres[j])
-                            a=sorted(a)
-                            if(len(a)==1):
-                                string2.append(a[0])
-                            else:
-                                x5=0
-                                x6=0    
-                                for k in range(0,len(a)-1):
-                                    x3=0
-                                    x4=0
-                                    for l in range(0,len(b)):
-                                        if(a[k]==b[l]):
-                                            x3=l
-                                        elif(a[k+1]==b[l]):
-                                            x4=l      
-                                    if(x4-x3==1):
-                                        x6=x6+1
-                                        s=' a '
-                                    elif(k==0):
-                                        x5=k+1
-                                        x6=k+1
-                                        string2.append(a[0])
-                                        s=" a "     
-                                    else:
-                                        if(len(a)==2):
-                                            x5=k
-                                            x6=k+1
-                                            s=' , '
-                                        else:    
-                                            x5=k+1
-                                            x6=k+1
+                if(len(Cursos_prog)!=0):
+                    if(hasta_u >= desde_u):
+                        for Curso_prog in Cursos_prog:
+                            semestre_u = int(Curso_prog.semestre.replace("-", ""))
+                            if(semestre_u >= desde_u and semestre_u <= hasta_u):
+                                lista_ids.append(str(Curso_prog.id_microcurriculos))
+                                lista_semestres.append(str(Curso_prog.semestre))
+                        lista_comunes=[[k]*v for k, v in collections.Counter(lista_ids).items()]
+                        x1=0
+                        x2=len(lista_comunes[0])-1
+                        a=[]
+                        b=[]
+                        semestres = Semestres.objects.all()
+                        x3=0
+                        x4=0
+                        x5=0
+                        x6=0
+                        string2=[]
+                        string3=[]
+                        for semestre in semestres:
+                            b.append(str(semestre.descripcion))
+                        for i in range(1,len(lista_comunes)+1):
+                            a.clear()
+                            string2.clear()
+                            string3.clear()
+                            if(i==len(lista_comunes)):
+                                for j in range(x1,x2+1):
+                                    a.append(lista_semestres[j])
+                                a=sorted(a)
+                                if(len(a)==1):
+                                    string2.append(a[0])
+                                else:
+                                    x5=0
+                                    x6=0    
+                                    for k in range(0,len(a)-1):
+                                        x3=0
+                                        x4=0
+                                        for l in range(0,len(b)):
+                                            if(a[k]==b[l]):
+                                                x3=l
+                                            elif(a[k+1]==b[l]):
+                                                x4=l      
+                                        if(x4-x3==1):
+                                            x6=x6+1
                                             s=' a '
-                                    if(a[x5]==a[x6]):
-                                        string2.append(a[x5])
-                                    else:
-                                        string2.append(a[x5]+s+a[x6])    
-                        else:
-                            for j in range(x1,x2+1):
-                                a.append(lista_semestres[j])
-                            a=sorted(a)
-                            if(len(a)==1):
-                                string2.append(a[0])
-                            else:
-                                x5=0
-                                x6=0    
-                                for k in range(0,len(a)-1):
-                                    x3=0
-                                    x4=0
-                                    for l in range(0,len(b)):
-                                        if(a[k]==b[l]):
-                                            x3=l
-                                        elif(a[k+1]==b[l]):
-                                            x4=l      
-                                    if(x4-x3==1):
-                                        x6=x6+1
-                                        s=' a '
-                                    else:
-                                        if(len(a)==2):
-                                            x5=k
-                                            x6=k+1
-                                            s=' , '
                                         elif(k==0):
                                             x5=k+1
                                             x6=k+1
                                             string2.append(a[0])
-                                            s=" a " 
-                                        else:    
-                                            x5=k+1
-                                            x6=k+1
-                                            s=' a '    
-                                    if(a[x5]==a[x6]):
-                                        string2.append(a[x5])
-                                    else:
-                                        string2.append(a[x5]+s+a[x6])
-                            x1=x1+len(lista_comunes[i-1])
-                            x2=x2+len(lista_comunes[i])
-                        for p in range(0,len(string2)):
-                            string3.append(string2[p])
-                        aux=0
-                        print(string3)
-                        for h in range(0,len(string2)-1):
-                            if(string2[h][0:6]==string2[h+1][0:6]):
-                                string3.pop(h-aux)
-                                aux=aux+1
-                        cadena=string3[0]
-                        for z in range(1,len(string3)):
-                            cadena=cadena+' , '+string3[z]
-                        print(cadena)
-                        lista_cursos_prog_json.append(cadena)
+                                            s=" a "     
+                                        else:
+                                            if(len(a)==2):
+                                                x5=k
+                                                x6=k+1
+                                                s=' , '
+                                            else:    
+                                                x5=k+1
+                                                x6=k+1
+                                                s=' a '
+                                        if(a[x5]==a[x6]):
+                                            string2.append(a[x5])
+                                        else:
+                                            string2.append(a[x5]+s+a[x6])    
+                            else:
+                                for j in range(x1,x2+1):
+                                    a.append(lista_semestres[j])
+                                a=sorted(a)
+                                if(len(a)==1):
+                                    string2.append(a[0])
+                                else:
+                                    x5=0
+                                    x6=0    
+                                    for k in range(0,len(a)-1):
+                                        x3=0
+                                        x4=0
+                                        for l in range(0,len(b)):
+                                            if(a[k]==b[l]):
+                                                x3=l
+                                            elif(a[k+1]==b[l]):
+                                                x4=l      
+                                        if(x4-x3==1):
+                                            x6=x6+1
+                                            s=' a '
+                                        else:
+                                            if(len(a)==2):
+                                                x5=k
+                                                x6=k+1
+                                                s=' , '
+                                            elif(k==0):
+                                                x5=k+1
+                                                x6=k+1
+                                                string2.append(a[0])
+                                                s=" a " 
+                                            else:    
+                                                x5=k+1
+                                                x6=k+1
+                                                s=' a '    
+                                        if(a[x5]==a[x6]):
+                                            string2.append(a[x5])
+                                        else:
+                                            string2.append(a[x5]+s+a[x6])
+                                x1=x1+len(lista_comunes[i-1])
+                                x2=x2+len(lista_comunes[i])
+                            for p in range(0,len(string2)):
+                                string3.append(string2[p])
+                            aux=0
+                            print(string3)
+                            for h in range(0,len(string2)-1):
+                                if(string2[h][0:6]==string2[h+1][0:6]):
+                                    string3.pop(h-aux)
+                                    aux=aux+1
+                            cadena=string3[0]
+                            for z in range(1,len(string3)):
+                                cadena=cadena+' , '+string3[z]
+                            print(cadena)
+                            lista_cursos_prog_json.append(cadena)
+                    else:
+                        lista_cursos_prog_json.append("Vacio")
+                else:
+                    lista_cursos_prog_json.append("Vacio")
                 lista_cursos_prog_json = sorted(lista_cursos_prog_json)
                 return HttpResponse(json.dumps({"data":lista_cursos_prog_json}))
             elif(request.POST['caso']=="ultimo"):
+                '''
                 if (str(request.user.groups.all()[0])=='Coordinador'): 
                     pensum = request.POST['pensum']
                     nombre_c = request.POST['curso']
@@ -1615,7 +1626,8 @@ def curso(request):
                             insert = Curso_programado(id_microcurriculos=microcurriculo,id_curso_asignado=curso_asig,semestre=semestre)
                             insert.save()
                             return HttpResponse("Se asignó correctamente el ultimo microcurriculo vigente al semestre seleccionado")
-                elif (str(request.user.groups.all()[0])=='Editor'):
+                '''
+                if (str(request.user.groups.all()[0])=='Editor'):
                     pensum_d = request.POST['pensum']
                     curso_d = request.POST['curso']
                     semestre = request.POST['semestre']
@@ -1648,6 +1660,7 @@ def curso(request):
                     insert2.save()
                     return HttpResponse("Se proceso correctamente la solicitud")
             elif(request.POST['caso']=="ultimo2"):
+                '''
                 if (str(request.user.groups.all()[0])=='Coordinador'): 
                     pensums = request.POST['pensums'].split(" /pencur- ")
                     nombre_cs = request.POST['cursos'].split(" /cursel- ")
@@ -1685,7 +1698,8 @@ def curso(request):
                             insert = Curso_programado(id_microcurriculos=microcurriculo,id_curso_asignado=curso_asig2,semestre=semestre)
                             insert.save()
                             return HttpResponse("Se asignó correctamente el ultimo microcurriculo vigente al semestre seleccionado")    
-                elif (str(request.user.groups.all()[0])=='Editor'):
+                '''
+                if (str(request.user.groups.all()[0])=='Editor'):
                     pensums = request.POST['pensums'].split(" /pencur- ")
                     nombre_cs = request.POST['cursos'].split(" /cursel- ")
                     semestre = request.POST['semestre']
@@ -1722,6 +1736,7 @@ def curso(request):
                     insert2.save()
                     return HttpResponse("Se proceso correctamente la solicitud")
             elif(request.POST['caso']=="renovar"):
+                '''
                 if (str(request.user.groups.all()[0])=='Coordinador'):
                     pensum = request.POST['pensum']
                     nombre_c = request.POST['curso']
@@ -1739,7 +1754,8 @@ def curso(request):
                         insert = Curso_programado(id_microcurriculos=micro_aso,id_curso_asignado=curso_asig,semestre=semestre)
                         insert.save()
                         return HttpResponse("Se renovó correctamente el microcurriculo del curso")
-                elif (str(request.user.groups.all()[0])=='Editor'):
+                '''
+                if (str(request.user.groups.all()[0])=='Editor'):
                     pensum = request.POST['pensum']
                     nombre_c = request.POST['curso']
                     vigencia = request.POST['vigencia']
@@ -1763,6 +1779,7 @@ def curso(request):
                     insert2.save()
                     return HttpResponse("Se procesó correctamente su solicitud")
             elif(request.POST['caso']=="renovar2"):
+                '''
                 if (str(request.user.groups.all()[0])=='Coordinador'):
                     pensums = request.POST['pensum'].split(' /pencur- ')
                     cursos = request.POST['curso'].split(' /cursel- ')
@@ -1785,7 +1802,8 @@ def curso(request):
                         insert = Curso_programado(id_microcurriculos=micro_aso,id_curso_asignado=curso_asig,semestre=semestre)
                         insert.save()
                         return HttpResponse("Se renovó correctamente el microcurriculo del curso")        
-                elif (str(request.user.groups.all()[0])=='Editor'):
+                '''
+                if (str(request.user.groups.all()[0])=='Editor'):
                     pensums = request.POST['pensum'].split(' /pencur- ')
                     cursos = request.POST['curso'].split(' /cursel- ')
                     pensum = pensums[0]
