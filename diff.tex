@@ -1,7 +1,7 @@
 % Don't touch this %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL /home/nicolas/CursoDjango/Microcurriculos/Microcurriculos_Udea/salida.tex    Wed Apr 15 23:21:35 2020
-%DIF ADD /home/nicolas/CursoDjango/Microcurriculos/Microcurriculos_Udea/salida2.tex   Wed Apr 15 23:21:36 2020
+%DIF DEL /home/nicolas/CursoDjango/Microcurriculos/Microcurriculos_Udea/salida.tex    Thu Apr 16 19:56:24 2020
+%DIF ADD /home/nicolas/CursoDjango/Microcurriculos/Microcurriculos_Udea/salida2.tex   Thu Apr 16 19:56:24 2020
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{fullpage}
@@ -188,17 +188,17 @@ Siendo los procesadores uno de los diseños más importantes de la electrónica.
 \subsection*{General}
 
 \begin{itemize}
-\item general 1 \item general 2  \DIFaddbegin \item \DIFadd{general 3 
-}\DIFaddend \end{itemize}
+\item general 1 \item general 2  
+\DIFdelbegin %DIFDELCMD < \item %%%
+\item%DIFAUXCMD
+\DIFdel{general 3 
+}\DIFdelend \end{itemize}
 
 \subsection*{Específicos}
 
 \begin{itemize}
 \item especifico 1 \item especifico 2 
-\DIFdelbegin %DIFDELCMD < \item %%%
-\item%DIFAUXCMD
-\DIFdel{especifico 3 
-}\DIFdelend \end{itemize}
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Contenido Resumido}
@@ -220,40 +220,34 @@ Siendo los procesadores uno de los diseños más importantes de la electrónica.
 \end{description}
  \\ 
 \textbf{Semanas} & 5 
-\end{tabular} 
- \\ 
- \begin{tabular}{R{0.16\textwidth} L{0.7\textwidth}} 
- \\ 
-\toprule \textbf{Unidad No. 2} & temas unidad 2 
- \\ 
-\midrule\textbf{Subtemas} & 
-\begin{description}
- \item subtema 1 unidad 2 \DIFdelbegin %DIFDELCMD < \end{description}
-%DIFDELCMD <  \\ 
-%DIFDELCMD < %%%
-\textbf{\DIFdel{Semanas}} %DIFAUXCMD
-%DIFDELCMD < & %%%
-\DIFdel{10 
-}%DIFDELCMD < \end{tabular} 
+\DIFdelbegin %DIFDELCMD < \end{tabular} 
 %DIFDELCMD <  \\ 
 %DIFDELCMD <  \begin{tabular}{R{0.16\textwidth} L{0.7\textwidth}} 
 %DIFDELCMD <  \\ 
 %DIFDELCMD < \toprule %%%
-\textbf{\DIFdel{Unidad No. 3}} %DIFAUXCMD
+\textbf{\DIFdel{Unidad No. 2}} %DIFAUXCMD
 %DIFDELCMD < & %%%
-\DIFdel{temas unidad 3 
+\DIFdel{temas unidad 2 
  }%DIFDELCMD < \\ 
 %DIFDELCMD < \midrule%%%
 \textbf{\DIFdel{Subtemas}} %DIFAUXCMD
 %DIFDELCMD < & 
 %DIFDELCMD < \begin{description}
-%DIFDELCMD <  %%%
-\DIFdelend \item subtema \DIFdelbegin \DIFdel{1 unidad 3 
-}\DIFdelend \DIFaddbegin \DIFadd{2 unidad 2 
-}\DIFaddend \end{description}
- \\ 
-\textbf{Semanas} & 10 
-\end{tabular} 
+\begin{description}%DIFAUXCMD
+%DIFDELCMD <  \item %%%
+\item%DIFAUXCMD
+\DIFdel{subtema 1 unidad 2 }%DIFDELCMD < \item %%%
+\item%DIFAUXCMD
+\DIFdel{subtema 2 unidad 2 
+}
+\end{description}%DIFAUXCMD
+%DIFDELCMD < \end{description}
+%DIFDELCMD <  \\ 
+%DIFDELCMD < %%%
+\textbf{\DIFdel{Semanas}} %DIFAUXCMD
+%DIFDELCMD < & %%%
+\DIFdel{10 
+}\DIFdelend \end{tabular} 
  \\ 
 
 
@@ -269,7 +263,7 @@ El contenido del curso será presentado en clase mediante exposiciones regulares
 	\textbf{Actividad} & \textbf{Porcentaje} & \textbf{Fecha} \\
 	\\
 	\midrule
-	actividad evaluacion 3 & 23 & 2020-04-30 \DIFaddbegin \\ \DIFadd{actividad evaluacion 2 }& \DIFadd{24 }& \DIFadd{2020-04-15 }\DIFaddend \\ 
+	actividad evaluacion 3 & 23 & 2020-04-30 \\ actividad evaluacion 2 & 24 & 2020-04-15 \\ 
 	\\
 	\midrule
 \end{tabular}

@@ -100,9 +100,11 @@
         newInput1 = document.createElement("input");
         newInput1.type="text";
         newInput1.name=n_1;
+        newInput1.required="true";
         newInput2 = document.createElement("input");
         newInput2.type="number";
         newInput2.name=n_2;
+        newInput2.required="true";
         newInput3 = document.createElement("input");
         if(tipo=="Unidad"){
             newInput3.type="text";
@@ -111,6 +113,7 @@
             newInput3.type="date";
         }
         newInput3.name=n_3;
+        newInput3.required="true";
         newNode = document.createElement("tr");
         newNode.appendChild(document.createElement("h4"));
         newNode.appendChild(document.createElement("tr"));
@@ -135,9 +138,11 @@
         newInput1 = document.createElement("input");
         newInput1.type="text";
         newInput1.name=n_1;
+        newInput1.required="true";
         newInput2 = document.createElement("input");
         newInput2.type="number";
         newInput2.name=n_2;
+        newInput2.required="true";
         //contador subtemas
         newInput3 = document.createElement("input");
         newInput3.type="hidden";
@@ -204,6 +209,7 @@
         newInput1 = document.createElement("input");
         newInput1.type="text";
         newInput1.name=n_1;
+        newInput1.required="True";
         newNode = document.createElement("tr");
         newNode.appendChild(document.createElement("td"));
         newNode.appendChild(document.createElement("td"));
@@ -325,6 +331,13 @@
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.js"></script>
         
+
+{% if mensaje1 %}
+    <script>
+        alert('{{ mensaje1 }}');
+        window.history.back();
+    </script>
+{% endif %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -556,8 +569,8 @@ $(document).ready(function(){
                     unidcon=subtemas[i].split(" /subin- ").length-1
                     $('<table id="tbunid'+i+'"></table>').insertBefore("#cant_unid");
                     titulo='<h4>Unidad '+i+':</h4>'
-                    temasi='<tr><td>Temas :</td><td><input type="text" name="temas'+i+'" value="'+temas[i]+'"></td></tr>';
-                    semanasi='<tr><td># de semanas :</td><td><input type="number" name="semanas'+i+'" value="'+semanas[i]+'"></td></tr>';
+                    temasi='<tr><td>Temas :</td><td><input type="text" required="True" name="temas'+i+'" value="'+temas[i]+'"></td></tr>';
+                    semanasi='<tr><td># de semanas :</td><td><input type="number" required="True" name="semanas'+i+'" value="'+semanas[i]+'"></td></tr>';
                     contadori='<tr><td><input type="hidden" id="subtemas'+i+'" name="subtemas'+i+'" value="'+unidcon+'"></td></tr>';
                     subt='<tr><td>Subtemas :</td></tr>';
                     control='<tr id="nodosub'+i+'"><td id="agregarsub'+i+'"><a id="agregarsubtema'+i+'" href="javascript:newsubt('+i+')">Agregar un subtema</a></td></tr>';
@@ -569,7 +582,7 @@ $(document).ready(function(){
                     if(unidcon>0){
                         sub=subtemas[i].split(" /subin- ")
                         for(var j=1;j<unidcon+1;j++){
-                            subtemai='<tr><td>Subtema '+j+':</td><td><input type="text" name="subtemauni'+i+''+j+'" value="'+sub[j]+'"></td></tr>';
+                            subtemai='<tr><td>Subtema '+j+':</td><td><input type="text" required="True" name="subtemauni'+i+''+j+'" value="'+sub[j]+'"></td></tr>';
                             $(subtemai).insertBefore("#nodosub"+i);
                         }
                         elimi='<a id="eliminarsubt'+i+'" href="javascript:eliminari('+i+')">Borrar el último subtema</a>'
@@ -587,9 +600,9 @@ $(document).ready(function(){
                 for(var i=1;i<cont_eval+1;i++){
                     $('<tr id="treval'+i+'"></tr>').insertBefore("#cant_eval");
                     titulo='<h4>Evaluacion '+i+':</h4>'
-                    actividadi='<tr><td>Actividad :</td><td><input type="text" name="actividad'+i+'" value="'+activ[i]+'"></td></tr>';
-                    porcentajei='<tr><td>Porcentaje :</td><td><input type="number" name="porcentaje'+i+'" value="'+porcen[i]+'"></td></tr>';
-                    fechai='<tr><td>Fecha :</td><td><input type="date" name="fecha'+i+'" value="'+fech[i]+'"></td></tr>';
+                    actividadi='<tr><td>Actividad :</td><td><input type="text" required="True" name="actividad'+i+'" value="'+activ[i]+'"></td></tr>';
+                    porcentajei='<tr><td>Porcentaje :</td><td><input type="number" required="True" name="porcentaje'+i+'" value="'+porcen[i]+'"></td></tr>';
+                    fechai='<tr><td>Fecha :</td><td><input type="date" required="True" name="fecha'+i+'" value="'+fech[i]+'"></td></tr>';
                     contenido=actividadi+porcentajei+fechai;
                     $('#treval'+i).append(titulo);
                     $('#treval'+i).append(contenido);
@@ -611,6 +624,7 @@ $(document).ready(function(){
             newInput1 = document.createElement("input");
             newInput1.type="text";
             newInput1.name=n_1;
+            newInput1.required="True";
             newNode = document.createElement("tr");
             newNode.appendChild(document.createElement("td"));
             newNode.appendChild(document.createElement("td"));

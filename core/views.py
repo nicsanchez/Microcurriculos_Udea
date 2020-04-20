@@ -955,224 +955,117 @@ def core(request):
         if (str(request.user.groups.all()[0])=='Editor'):    
             if request.method == "POST":
                 if request.POST['caso']=="nuevo" or request.POST['caso']=="editar":
-                    descripcion_gen = request.POST['descripcion_general']
-                    proposito = request.POST['proposito']
-                    metodologia = request.POST['metodologia'] 
-                    act_asis_oblig = request.POST['actividades_asis_oblig']
-                    semestre = request.POST['semestre_es']        
-                    cantidad_generales = int(request.POST["contadorgeneral"])
-                    cantidad_especificos = int(request.POST["contadorespecifico"])
-                    cantidad_resumido = int(request.POST["contadoresumido"])
-                    cantidad_basicas = int(request.POST["contadorbasica"])
-                    cantidad_complementarias = int(request.POST["contadorcomple"])
-                    obj_gen = ""
-                    obj_esp = ""
-                    cont_resu = ""
-                    bibliografia_bas = ""
-                    bibliografia_comp = ""
-                    for i in range(1,cantidad_generales+1):
+                    if(int(request.POST["contadorgeneral"])==0):
+                        mensaje = 'No hay objetivos generales'
+                        return render(request, "core/index.html",{'mensaje1': mensaje})                     
+                    elif(int(request.POST["contadorespecifico"])==0):
+                        mensaje = 'No hay objetivos especificos'
+                        return render(request, "core/index.html",{'mensaje1': mensaje})
+                    elif(int(request.POST["contadoresumido"])==0):
+                        mensaje = 'No hay items del contenido resumido'
+                        return render(request, "core/index.html",{'mensaje1': mensaje})
+                    elif(int(request.POST["contadorbasica"])==0):
+                        mensaje = 'No hay bibliografia basica'
+                        return render(request, "core/index.html",{'mensaje1': mensaje})
+                    elif(int(request.POST["contadorcomple"])==0):
+                        mensaje = 'No hay bibliografia complementaria'
+                        return render(request, "core/index.html",{'mensaje1': mensaje})
+                    elif(int(request.POST["contadorunidad"])==0):
+                        mensaje = 'No hay unidades'
+                        return render(request, "core/index.html",{'mensaje1': mensaje})
+                    elif(int(request.POST["contadorevaluacion"])==0):
+                        mensaje = 'No hay evaluaciones'
+                        return render(request, "core/index.html",{'mensaje1': mensaje})
+                    for i in range(1,int(request.POST["contadorunidad"])+1):
                         num=str(i)
-                        objetivo=request.POST['general'+num]   
-                        obj_gen=obj_gen+" /objgen- "+objetivo
-                    for i in range(1,cantidad_especificos+1):
-                        num=str(i)
-                        objetivo=request.POST['especifico'+num]   
-                        obj_esp=obj_esp+" /objesp- "+objetivo
-                    for i in range(1,cantidad_resumido+1):
-                        num=str(i)
-                        objetivo=request.POST['item'+num]   
-                        cont_resu=cont_resu+" /contresu- "+objetivo
-                    for i in range(1,cantidad_basicas+1):
-                        num=str(i)
-                        objetivo=request.POST['basica'+num]   
-                        bibliografia_bas=bibliografia_bas+" /biblibas- "+objetivo
-                    for i in range(1,cantidad_complementarias+1):
-                        num=str(i)
-                        objetivo=request.POST['complementaria'+num]   
-                        bibliografia_comp=bibliografia_comp+" /biblicom- "+objetivo
-                    if request.POST['caso']=="nuevo":
-                        try:
-                            version_pensum = int(request.POST['version_p'])
-                            curso_es = request.POST['curso_es']
-                            cursoglobal = Curso.objects.get(nombre=curso_es)
-                            id_cursoglobal = cursoglobal.id
-                            curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=version_pensum)
-                            curso_asociado2 = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
-                            mensaje = 'Ya hay un microcurriculo asignado en el semestre seleccionado'
-                            return render(request, "core/nucleo.html",{'mensaje': mensaje})
-                        except:
-                            '''
-                            if (str(request.user.groups.all()[0])=='Coordinador'): 
-                                #Se inserta en la base de datos real para el Coordinador y se asigna al curso escogido
-                                insert = Microcurriculum(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
-                                insert.save()
+                        if(int(request.POST['subtemas'+num])==0):
+                            mensaje = 'No tiene subtemas en la unidad '+num
+                            return render(request, "core/index.html",{'mensaje1': mensaje})
+                    else:
+                        descripcion_gen = request.POST['descripcion_general']
+                        proposito = request.POST['proposito']
+                        metodologia = request.POST['metodologia'] 
+                        act_asis_oblig = request.POST['actividades_asis_oblig']
+                        semestre = request.POST['semestre_es']        
+                        cantidad_generales = int(request.POST["contadorgeneral"])
+                        cantidad_especificos = int(request.POST["contadorespecifico"])
+                        cantidad_resumido = int(request.POST["contadoresumido"])
+                        cantidad_basicas = int(request.POST["contadorbasica"])
+                        cantidad_complementarias = int(request.POST["contadorcomple"])
+                        obj_gen = ""
+                        obj_esp = ""
+                        cont_resu = ""
+                        bibliografia_bas = ""
+                        bibliografia_comp = ""
+                        for i in range(1,cantidad_generales+1):
+                            num=str(i)
+                            objetivo=request.POST['general'+num]   
+                            obj_gen=obj_gen+" /objgen- "+objetivo
+                        for i in range(1,cantidad_especificos+1):
+                            num=str(i)
+                            objetivo=request.POST['especifico'+num]   
+                            obj_esp=obj_esp+" /objesp- "+objetivo
+                        for i in range(1,cantidad_resumido+1):
+                            num=str(i)
+                            objetivo=request.POST['item'+num]   
+                            cont_resu=cont_resu+" /contresu- "+objetivo
+                        for i in range(1,cantidad_basicas+1):
+                            num=str(i)
+                            objetivo=request.POST['basica'+num]   
+                            bibliografia_bas=bibliografia_bas+" /biblibas- "+objetivo
+                        for i in range(1,cantidad_complementarias+1):
+                            num=str(i)
+                            objetivo=request.POST['complementaria'+num]   
+                            bibliografia_comp=bibliografia_comp+" /biblicom- "+objetivo
+                        if request.POST['caso']=="nuevo":
+                            try:
                                 version_pensum = int(request.POST['version_p'])
                                 curso_es = request.POST['curso_es']
                                 cursoglobal = Curso.objects.get(nombre=curso_es)
                                 id_cursoglobal = cursoglobal.id
                                 curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=version_pensum)
-                                microcurriculos = Microcurriculum.objects.filter(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
-                                ids = []
-                                for micro in microcurriculos:
-                                    a = int(micro.id)
-                                    ids.append(a)
-                                id_microcurriculo = Microcurriculum.objects.get(id=max(ids))  
-                                insert2 = Curso_programado(id_microcurriculos=id_microcurriculo,id_curso_asignado=curso_asig,semestre=semestre)
-                                insert2.save()
-                            '''
-                            if(str(request.user.groups.all()[0])=='Editor'):
-                                #Se inserta en la base de datos fantasma para el Editor
-                                insert = Microcurriculum_2(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
-                                insert.save()
-                                microcurriculos = Microcurriculum_2.objects.filter(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
-                                ids = []
-                                for micro in microcurriculos:
-                                    a = int(micro.id)
-                                    ids.append(a)
-                                id_microcurriculo = Microcurriculum_2.objects.get(id=max(ids))
-                                descripcion=request.POST['Descripcion']
-                                curso_d=request.POST['curso_es']
-                                pensum_d=request.POST['version_p']
-                                curso_p=request.POST['curso_es2']
-                                pensum_p=request.POST['version_p2']
-                                semestre=request.POST['semestre_es']
-                                user_p=str(request.user.first_name)+' '+str(request.user.last_name)
-                                insert2=Solicitud(soli='Crear',estado='Revision',descripcion=descripcion,curso_destino=curso_d,pensum_destino=pensum_d,curso_propietario=curso_p,pensum_propietario=pensum_p,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p,original="nuevo",tipo="Abierto")
-                                insert2.save()
-                            cantidad_unidades = int(request.POST["contadorunidad"])
-                            cantidad_evaluaciones = int(request.POST["contadorevaluacion"])
-                            for i in range(1,cantidad_unidades+1):
-                                num=str(i)
-                                tema=request.POST['temas'+num]
-                                contador=int(request.POST['subtemas'+num])
-                                subtema=""
-                                for j in range(1,contador+1):
-                                    num2=str(j)
-                                    subtemai=request.POST['subtemauni'+num+num2]
-                                    subtema=subtema+" /subin- "+subtemai
-                                semana=request.POST['semanas'+num]
+                                curso_asociado2 = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
+                                mensaje = 'Ya hay un microcurriculo asignado en el semestre seleccionado'
+                                return render(request, "core/nucleo.html",{'mensaje': mensaje})
+                            except:
                                 '''
                                 if (str(request.user.groups.all()[0])=='Coordinador'): 
-                                    insert = Unity(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana)
-                                '''
-                                if (str(request.user.groups.all()[0])=='Editor'):
-                                    insert = Unity_2(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana) 
-                                insert.save()
-                            for i in range(1,cantidad_evaluaciones+1):
-                                num=str(i)
-                                actividad=request.POST['actividad'+num]
-                                porcentaje=request.POST['porcentaje'+num]
-                                fecha=request.POST['fecha'+num]
-                                '''
-                                if (str(request.user.groups.all()[0])=='Coordinador'): 
-                                    insert = Evaluation(id_microcurriculos=id_microcurriculo,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
-                                '''
-                                if (str(request.user.groups.all()[0])=='Editor'):
-                                    insert = Evaluation_2(id_microcurriculos=id_microcurriculo,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
-                                insert.save()
-                            mensaje = 'Se ha agregado un nuevo registro de microcurriculo con éxito'
-                            return render(request, "core/nucleo.html",{'mensaje': mensaje})  
-                    elif request.POST['caso']=="editar":
-                        '''
-                        if(str(request.user.groups.all()[0])=='Coordinador'):
-                            pensum = int(request.POST['version_p'])
-                            nombre_c = request.POST['curso_es']
-                            vigencia =request.POST['vigencia_es']
-                            semestre = vigencia[0:6]
-                            cursoglobal=Curso.objects.get(nombre=nombre_c)
-                            id_cursoglobal = cursoglobal.id
-                            curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
-                            curso_asociado = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
-                            micro_aso = Microcurriculum.objects.get(id=curso_asociado.id_microcurriculos.id)
-                            micro_aso.descripcion_general=descripcion_gen
-                            micro_aso.proposito=proposito
-                            micro_aso.objetivo_general=obj_gen
-                            micro_aso.objetivo_especifico=obj_esp
-                            micro_aso.contenido_resumido=cont_resu
-                            micro_aso.actividades_asis_oblig=act_asis_oblig
-                            micro_aso.bibliografia_basica=bibliografia_bas
-                            micro_aso.bibliografia_complementaria=bibliografia_comp
-                            micro_aso.metodologia=metodologia
-                            micro_aso.save(update_fields=['descripcion_general','proposito','objetivo_general','objetivo_especifico','contenido_resumido','actividades_asis_oblig','bibliografia_basica','bibliografia_complementaria','metodologia'])
-                            eval_micro=Evaluation.objects.filter(id_microcurriculos=curso_asociado.id_microcurriculos.id)
-                            contador=1
-                            cont_eval=int(request.POST['contadorevaluacion'])
-                            while (contador<cont_eval+1):
-                                if(contador<=len(eval_micro)):
-                                    for evaluacion in eval_micro:
-                                        if(contador<cont_eval+1):
-                                            evaluacion.actividad=request.POST['actividad'+str(contador)]
-                                            evaluacion.porcentaje=request.POST['porcentaje'+str(contador)]
-                                            evaluacion.fecha=request.POST['fecha'+str(contador)]
-                                            evaluacion.save(update_fields=['actividad','porcentaje','fecha'])
-                                        else:
-                                            evaluacion.delete()
-                                        contador=contador+1
-                                else:
-                                    actividad=request.POST['actividad'+str(contador)]
-                                    porcentaje=request.POST['porcentaje'+str(contador)]
-                                    fecha=request.POST['fecha'+str(contador)]
-                                    insert = Evaluation(id_microcurriculos=micro_aso,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
+                                    #Se inserta en la base de datos real para el Coordinador y se asigna al curso escogido
+                                    insert = Microcurriculum(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
                                     insert.save()
-                                    contador=contador+1   
-                            contador=1
-                            cont_uni=int(request.POST['contadorunidad'])
-                            unid_micro=Unity.objects.filter(id_microcurriculos=curso_asociado.id_microcurriculos.id)
-                            while(contador<cont_uni+1):
-                                if(contador<=len(unid_micro)):
-                                    for unidad in unid_micro:
-                                        if(contador<cont_uni+1):
-                                            unidad.tema=request.POST['temas'+str(contador)]
-                                            unidad.num_semanas=request.POST['semanas'+str(contador)]
-                                            contador2=int(request.POST['subtemas'+str(contador)])
-                                            subtema=""
-                                            for j in range(1,contador2+1):
-                                                num2=str(j)
-                                                subtemai=request.POST['subtemauni'+str(contador)+num2]
-                                                subtema=subtema+" /subin- "+subtemai
-                                            unidad.subtema=subtema
-                                            unidad.save(update_fields=['tema','subtema','num_semanas'])
-                                        else:
-                                            unidad.delete()
-                                        contador=contador+1        
-                                else:
-                                    tema=request.POST['temas'+str(contador)]
-                                    semana=request.POST['semanas'+str(contador)]
-                                    contador2=int(request.POST['subtemas'+str(contador)])
-                                    subtema=""
-                                    for j in range(1,contador2+1):
-                                        num2=str(j)
-                                        subtemai=request.POST['subtemauni'+str(contador)+num2]
-                                        subtema=subtema+" /subin- "+subtemai
-                                    insert = Unity(id_microcurriculos=micro_aso,tema=tema,subtema=subtema,num_semanas=semana)
+                                    version_pensum = int(request.POST['version_p'])
+                                    curso_es = request.POST['curso_es']
+                                    cursoglobal = Curso.objects.get(nombre=curso_es)
+                                    id_cursoglobal = cursoglobal.id
+                                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=version_pensum)
+                                    microcurriculos = Microcurriculum.objects.filter(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
+                                    ids = []
+                                    for micro in microcurriculos:
+                                        a = int(micro.id)
+                                        ids.append(a)
+                                    id_microcurriculo = Microcurriculum.objects.get(id=max(ids))  
+                                    insert2 = Curso_programado(id_microcurriculos=id_microcurriculo,id_curso_asignado=curso_asig,semestre=semestre)
+                                    insert2.save()
+                                '''
+                                if(str(request.user.groups.all()[0])=='Editor'):
+                                    #Se inserta en la base de datos fantasma para el Editor
+                                    insert = Microcurriculum_2(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
                                     insert.save()
-                                    contador=contador+1
-                        '''
-                        if(str(request.user.groups.all()[0])=='Editor'):
-                            if(request.POST['vigencia_es'][0:6]!="editar"):
-                                #Creo un nuevo registro en la base de datos fantasma para luego comparar las ediciones realizadas
-                                insert = Microcurriculum_2(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
-                                insert.save()
-                                microcurriculos = Microcurriculum_2.objects.filter(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
-                                ids = []
-                                for micro in microcurriculos:
-                                    a = int(micro.id)
-                                    ids.append(a)
-                                id_microcurriculo = Microcurriculum_2.objects.get(id=max(ids))
-                                descripcion=request.POST['Descripcion']
-                                curso_d=request.POST['curso_es']
-                                pensum_d=request.POST['version_p']
-                                curso_p=request.POST['curso_es2']
-                                pensum_p=request.POST['version_p2']
-                                semestre=request.POST['vigencia_es']
-                                semestre1=semestre[0:6]
-                                cursoglobal=Curso.objects.get(nombre=curso_d)
-                                id_cursoglobal = cursoglobal.id
-                                curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum_d)
-                                curso_asociado = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre1)
-                                user_p=str(request.user.first_name)+' '+str(request.user.last_name)
-                                insert2=Solicitud(soli='Editar',estado="Revision",descripcion=descripcion,curso_destino=curso_d,pensum_destino=pensum_d,curso_propietario=curso_p,pensum_propietario=pensum_p,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p,original=curso_asociado.id_microcurriculos.id,tipo="Abierto")
-                                insert2.save()
+                                    microcurriculos = Microcurriculum_2.objects.filter(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
+                                    ids = []
+                                    for micro in microcurriculos:
+                                        a = int(micro.id)
+                                        ids.append(a)
+                                    id_microcurriculo = Microcurriculum_2.objects.get(id=max(ids))
+                                    descripcion=request.POST['Descripcion']
+                                    curso_d=request.POST['curso_es']
+                                    pensum_d=request.POST['version_p']
+                                    curso_p=request.POST['curso_es2']
+                                    pensum_p=request.POST['version_p2']
+                                    semestre=request.POST['semestre_es']
+                                    user_p=str(request.user.first_name)+' '+str(request.user.last_name)
+                                    insert2=Solicitud(soli='Crear',estado='Revision',descripcion=descripcion,curso_destino=curso_d,pensum_destino=pensum_d,curso_propietario=curso_p,pensum_propietario=pensum_p,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p,original="nuevo",tipo="Abierto")
+                                    insert2.save()
                                 cantidad_unidades = int(request.POST["contadorunidad"])
                                 cantidad_evaluaciones = int(request.POST["contadorevaluacion"])
                                 for i in range(1,cantidad_unidades+1):
@@ -1185,25 +1078,39 @@ def core(request):
                                         subtemai=request.POST['subtemauni'+num+num2]
                                         subtema=subtema+" /subin- "+subtemai
                                     semana=request.POST['semanas'+num]
-                                    insert = Unity_2(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana) 
+                                    '''
+                                    if (str(request.user.groups.all()[0])=='Coordinador'): 
+                                        insert = Unity(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana)
+                                    '''
+                                    if (str(request.user.groups.all()[0])=='Editor'):
+                                        insert = Unity_2(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana) 
                                     insert.save()
                                 for i in range(1,cantidad_evaluaciones+1):
                                     num=str(i)
                                     actividad=request.POST['actividad'+num]
                                     porcentaje=request.POST['porcentaje'+num]
                                     fecha=request.POST['fecha'+num]
-                                    insert = Evaluation_2(id_microcurriculos=id_microcurriculo,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
+                                    '''
+                                    if (str(request.user.groups.all()[0])=='Coordinador'): 
+                                        insert = Evaluation(id_microcurriculos=id_microcurriculo,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
+                                    '''
+                                    if (str(request.user.groups.all()[0])=='Editor'):
+                                        insert = Evaluation_2(id_microcurriculos=id_microcurriculo,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
                                     insert.save()
-                            else:
-                                #Funcion para procesar ediciones del panel de solcitudes del usuario editor
+                                mensaje = 'Se ha agregado un nuevo registro de microcurriculo con éxito'
+                                return render(request, "core/nucleo.html",{'mensaje': mensaje})  
+                        elif request.POST['caso']=="editar":
+                            '''
+                            if(str(request.user.groups.all()[0])=='Coordinador'):
                                 pensum = int(request.POST['version_p'])
                                 nombre_c = request.POST['curso_es']
                                 vigencia =request.POST['vigencia_es']
+                                semestre = vigencia[0:6]
                                 cursoglobal=Curso.objects.get(nombre=nombre_c)
                                 id_cursoglobal = cursoglobal.id
                                 curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
-                                id_soli=vigencia.split("editar")[1]
-                                micro_aso = Microcurriculum_2.objects.get(id=int(id_soli))
+                                curso_asociado = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre)
+                                micro_aso = Microcurriculum.objects.get(id=curso_asociado.id_microcurriculos.id)
                                 micro_aso.descripcion_general=descripcion_gen
                                 micro_aso.proposito=proposito
                                 micro_aso.objetivo_general=obj_gen
@@ -1214,7 +1121,7 @@ def core(request):
                                 micro_aso.bibliografia_complementaria=bibliografia_comp
                                 micro_aso.metodologia=metodologia
                                 micro_aso.save(update_fields=['descripcion_general','proposito','objetivo_general','objetivo_especifico','contenido_resumido','actividades_asis_oblig','bibliografia_basica','bibliografia_complementaria','metodologia'])
-                                eval_micro=Evaluation_2.objects.filter(id_microcurriculos=int(id_soli))
+                                eval_micro=Evaluation.objects.filter(id_microcurriculos=curso_asociado.id_microcurriculos.id)
                                 contador=1
                                 cont_eval=int(request.POST['contadorevaluacion'])
                                 while (contador<cont_eval+1):
@@ -1232,12 +1139,12 @@ def core(request):
                                         actividad=request.POST['actividad'+str(contador)]
                                         porcentaje=request.POST['porcentaje'+str(contador)]
                                         fecha=request.POST['fecha'+str(contador)]
-                                        insert = Evaluation_2(id_microcurriculos=micro_aso,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
+                                        insert = Evaluation(id_microcurriculos=micro_aso,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
                                         insert.save()
                                         contador=contador+1   
                                 contador=1
                                 cont_uni=int(request.POST['contadorunidad'])
-                                unid_micro=Unity_2.objects.filter(id_microcurriculos=int(id_soli))
+                                unid_micro=Unity.objects.filter(id_microcurriculos=curso_asociado.id_microcurriculos.id)
                                 while(contador<cont_uni+1):
                                     if(contador<=len(unid_micro)):
                                         for unidad in unid_micro:
@@ -1264,11 +1171,131 @@ def core(request):
                                             num2=str(j)
                                             subtemai=request.POST['subtemauni'+str(contador)+num2]
                                             subtema=subtema+" /subin- "+subtemai
-                                        insert = Unity_2(id_microcurriculos=micro_aso,tema=tema,subtema=subtema,num_semanas=semana)
+                                        insert = Unity(id_microcurriculos=micro_aso,tema=tema,subtema=subtema,num_semanas=semana)
                                         insert.save()
                                         contador=contador+1
-                            mensaje = 'Se proceso correctamente la solicitud'
-                        return render(request, "core/nucleo.html",{'mensaje': mensaje})  
+                            '''
+                            if(str(request.user.groups.all()[0])=='Editor'):
+                                if(request.POST['vigencia_es'][0:6]!="editar"):
+                                    #Creo un nuevo registro en la base de datos fantasma para luego comparar las ediciones realizadas
+                                    insert = Microcurriculum_2(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
+                                    insert.save()
+                                    microcurriculos = Microcurriculum_2.objects.filter(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
+                                    ids = []
+                                    for micro in microcurriculos:
+                                        a = int(micro.id)
+                                        ids.append(a)
+                                    id_microcurriculo = Microcurriculum_2.objects.get(id=max(ids))
+                                    descripcion=request.POST['Descripcion']
+                                    curso_d=request.POST['curso_es']
+                                    pensum_d=request.POST['version_p']
+                                    curso_p=request.POST['curso_es2']
+                                    pensum_p=request.POST['version_p2']
+                                    semestre=request.POST['vigencia_es']
+                                    semestre1=semestre[0:6]
+                                    cursoglobal=Curso.objects.get(nombre=curso_d)
+                                    id_cursoglobal = cursoglobal.id
+                                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum_d)
+                                    curso_asociado = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre1)
+                                    user_p=str(request.user.first_name)+' '+str(request.user.last_name)
+                                    insert2=Solicitud(soli='Editar',estado="Revision",descripcion=descripcion,curso_destino=curso_d,pensum_destino=pensum_d,curso_propietario=curso_p,pensum_propietario=pensum_p,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p,original=curso_asociado.id_microcurriculos.id,tipo="Abierto")
+                                    insert2.save()
+                                    cantidad_unidades = int(request.POST["contadorunidad"])
+                                    cantidad_evaluaciones = int(request.POST["contadorevaluacion"])
+                                    for i in range(1,cantidad_unidades+1):
+                                        num=str(i)
+                                        tema=request.POST['temas'+num]
+                                        contador=int(request.POST['subtemas'+num])
+                                        subtema=""
+                                        for j in range(1,contador+1):
+                                            num2=str(j)
+                                            subtemai=request.POST['subtemauni'+num+num2]
+                                            subtema=subtema+" /subin- "+subtemai
+                                        semana=request.POST['semanas'+num]
+                                        insert = Unity_2(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana) 
+                                        insert.save()
+                                    for i in range(1,cantidad_evaluaciones+1):
+                                        num=str(i)
+                                        actividad=request.POST['actividad'+num]
+                                        porcentaje=request.POST['porcentaje'+num]
+                                        fecha=request.POST['fecha'+num]
+                                        insert = Evaluation_2(id_microcurriculos=id_microcurriculo,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
+                                        insert.save()
+                                else:
+                                    #Funcion para procesar ediciones del panel de solcitudes del usuario editor
+                                    pensum = int(request.POST['version_p'])
+                                    nombre_c = request.POST['curso_es']
+                                    vigencia =request.POST['vigencia_es']
+                                    cursoglobal=Curso.objects.get(nombre=nombre_c)
+                                    id_cursoglobal = cursoglobal.id
+                                    curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
+                                    id_soli=vigencia.split("editar")[1]
+                                    micro_aso = Microcurriculum_2.objects.get(id=int(id_soli))
+                                    micro_aso.descripcion_general=descripcion_gen
+                                    micro_aso.proposito=proposito
+                                    micro_aso.objetivo_general=obj_gen
+                                    micro_aso.objetivo_especifico=obj_esp
+                                    micro_aso.contenido_resumido=cont_resu
+                                    micro_aso.actividades_asis_oblig=act_asis_oblig
+                                    micro_aso.bibliografia_basica=bibliografia_bas
+                                    micro_aso.bibliografia_complementaria=bibliografia_comp
+                                    micro_aso.metodologia=metodologia
+                                    micro_aso.save(update_fields=['descripcion_general','proposito','objetivo_general','objetivo_especifico','contenido_resumido','actividades_asis_oblig','bibliografia_basica','bibliografia_complementaria','metodologia'])
+                                    eval_micro=Evaluation_2.objects.filter(id_microcurriculos=int(id_soli))
+                                    contador=1
+                                    cont_eval=int(request.POST['contadorevaluacion'])
+                                    while (contador<cont_eval+1):
+                                        if(contador<=len(eval_micro)):
+                                            for evaluacion in eval_micro:
+                                                if(contador<cont_eval+1):
+                                                    evaluacion.actividad=request.POST['actividad'+str(contador)]
+                                                    evaluacion.porcentaje=request.POST['porcentaje'+str(contador)]
+                                                    evaluacion.fecha=request.POST['fecha'+str(contador)]
+                                                    evaluacion.save(update_fields=['actividad','porcentaje','fecha'])
+                                                else:
+                                                    evaluacion.delete()
+                                                contador=contador+1
+                                        else:
+                                            actividad=request.POST['actividad'+str(contador)]
+                                            porcentaje=request.POST['porcentaje'+str(contador)]
+                                            fecha=request.POST['fecha'+str(contador)]
+                                            insert = Evaluation_2(id_microcurriculos=micro_aso,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
+                                            insert.save()
+                                            contador=contador+1   
+                                    contador=1
+                                    cont_uni=int(request.POST['contadorunidad'])
+                                    unid_micro=Unity_2.objects.filter(id_microcurriculos=int(id_soli))
+                                    while(contador<cont_uni+1):
+                                        if(contador<=len(unid_micro)):
+                                            for unidad in unid_micro:
+                                                if(contador<cont_uni+1):
+                                                    unidad.tema=request.POST['temas'+str(contador)]
+                                                    unidad.num_semanas=request.POST['semanas'+str(contador)]
+                                                    contador2=int(request.POST['subtemas'+str(contador)])
+                                                    subtema=""
+                                                    for j in range(1,contador2+1):
+                                                        num2=str(j)
+                                                        subtemai=request.POST['subtemauni'+str(contador)+num2]
+                                                        subtema=subtema+" /subin- "+subtemai
+                                                    unidad.subtema=subtema
+                                                    unidad.save(update_fields=['tema','subtema','num_semanas'])
+                                                else:
+                                                    unidad.delete()
+                                                contador=contador+1        
+                                        else:
+                                            tema=request.POST['temas'+str(contador)]
+                                            semana=request.POST['semanas'+str(contador)]
+                                            contador2=int(request.POST['subtemas'+str(contador)])
+                                            subtema=""
+                                            for j in range(1,contador2+1):
+                                                num2=str(j)
+                                                subtemai=request.POST['subtemauni'+str(contador)+num2]
+                                                subtema=subtema+" /subin- "+subtemai
+                                            insert = Unity_2(id_microcurriculos=micro_aso,tema=tema,subtema=subtema,num_semanas=semana)
+                                            insert.save()
+                                            contador=contador+1
+                                mensaje = 'Se proceso correctamente la solicitud'
+                            return render(request, "core/nucleo.html",{'mensaje': mensaje})  
                 elif request.POST['caso']=="nuevopdf":
                     pensum = request.POST['pensum']
                     nombre_c = request.POST['curso']

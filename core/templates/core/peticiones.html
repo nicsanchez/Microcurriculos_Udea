@@ -77,78 +77,152 @@ function texto(elem, id_text) {
                 <td><strong>Acciones</strong></td>    
             </tr>
             {% for solicitud in solicitudes %}
-            {% if solicitud.tipo == "Abierto" %}
-                <tr>
-                    <input type="hidden" id="original{{solicitud.microcurriculo.id}}" name="original{{solicitud.microcurriculo.id}}" value="{{solicitud.original}}">
-                    <input type="hidden" id="id_s{{solicitud.microcurriculo.id}}" name="id_s{{solicitud.microcurriculo.id}}" value="{{solicitud.id}}">
-                    <td id="soli{{solicitud.microcurriculo.id}}" name="soli{{solicitud.microcurriculo.id}}">{{solicitud.soli}}</td>
-                    <td id="estado{{solicitud.microcurriculo.id}}" name="estado{{solicitud.microcurriculo.id}}">{{solicitud.estado}}</td>
-                    <td id="descripcion{{solicitud.microcurriculo.id}}" name="descripcion{{solicitud.microcurriculo.id}}">{{solicitud.descripcion}}</td>
-                    <td id="curso_d{{solicitud.microcurriculo.id}}" name="curso_d{{solicitud.microcurriculo.id}}">{{solicitud.curso_destino}}</td>
-                    <td id="pensum_d{{solicitud.microcurriculo.id}}" name="pensum_d{{solicitud.microcurriculo.id}}">{{solicitud.pensum_destino}}</td>
-                    <td id="curso_p{{solicitud.microcurriculo.id}}" name="curso_p{{solicitud.microcurriculo.id}}">{{solicitud.curso_propietario}}</td>
-                    <td id="pensum_p{{solicitud.microcurriculo.id}}" name="pensum_p{{solicitud.microcurriculo.id}}">{{solicitud.pensum_propietario}}</td>
-                    <td id="semestre{{solicitud.microcurriculo.id}}" name="semestre{{solicitud.microcurriculo.id}}">{{solicitud.semestre_asignar}}</td>
-                    <td><a href="javascript:micro({{solicitud.microcurriculo.id}})">Visualizar Microcurriculo</a></td>
-                    <td><a href="javascript:comparacion({{solicitud.microcurriculo.id}})">Visualizar Comparacion</a></td>
-                    {% if request.user|has_group:"Coordinador" %}    
-                        {% if solicitud.estado == "Revision" %}
+            {% if solicitud.tipo == "Abierto"%}
+                {% if request.user|has_group:"Coordinador" %}
+                    <tr>
+                        <input type="hidden" id="original{{solicitud.microcurriculo.id}}" name="original{{solicitud.microcurriculo.id}}" value="{{solicitud.original}}">
+                        <input type="hidden" id="id_s{{solicitud.microcurriculo.id}}" name="id_s{{solicitud.microcurriculo.id}}" value="{{solicitud.id}}">
+                        <td id="soli{{solicitud.microcurriculo.id}}" name="soli{{solicitud.microcurriculo.id}}">{{solicitud.soli}}</td>
+                        <td id="estado{{solicitud.microcurriculo.id}}" name="estado{{solicitud.microcurriculo.id}}">{{solicitud.estado}}</td>
+                        <td id="descripcion{{solicitud.microcurriculo.id}}" name="descripcion{{solicitud.microcurriculo.id}}">{{solicitud.descripcion}}</td>
+                        <td id="curso_d{{solicitud.microcurriculo.id}}" name="curso_d{{solicitud.microcurriculo.id}}">{{solicitud.curso_destino}}</td>
+                        <td id="pensum_d{{solicitud.microcurriculo.id}}" name="pensum_d{{solicitud.microcurriculo.id}}">{{solicitud.pensum_destino}}</td>
+                        <td id="curso_p{{solicitud.microcurriculo.id}}" name="curso_p{{solicitud.microcurriculo.id}}">{{solicitud.curso_propietario}}</td>
+                        <td id="pensum_p{{solicitud.microcurriculo.id}}" name="pensum_p{{solicitud.microcurriculo.id}}">{{solicitud.pensum_propietario}}</td>
+                        <td id="semestre{{solicitud.microcurriculo.id}}" name="semestre{{solicitud.microcurriculo.id}}">{{solicitud.semestre_asignar}}</td>
+                        <td><a href="javascript:micro({{solicitud.microcurriculo.id}})">Visualizar Microcurriculo</a></td>
+                        <td><a href="javascript:comparacion({{solicitud.microcurriculo.id}})">Visualizar Comparacion</a></td>
+                        {% if request.user|has_group:"Coordinador" %}    
+                            {% if solicitud.estado == "Revision" %}
+                                <td>
+                                    <button type="button" onclick="abrir('file{{solicitud.microcurriculo.id}}')" id="boton{{solicitud.microcurriculo.id}}">Examinar..</button>
+                                    <input id="file{{solicitud.microcurriculo.id}}" name="file{{solicitud.microcurriculo.id}}" type="file" style="display:none;" onchange='texto(this,"text{{solicitud.microcurriculo.id}}")'></a>
+                                    <span id="text{{solicitud.microcurriculo.id}}">Subir Archivo</span>
+                                </td>
+                            {% else %}
+                                <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
+                            {% endif %}
+                            <td id="user{{solicitud.microcurriculo.id}}" name="user{{solicitud.microcurriculo.id}}">{{solicitud.usuario}}</td>
+                            <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
+                            <td id="date{{solicitud.microcurriculo.id}}" name="date{{solicitud.microcurriculo.id}}">{{solicitud.updated}}</td>
+                            {% if solicitud.estado == "Revision" %}
                             <td>
-                                <button type="button" onclick="abrir('file{{solicitud.microcurriculo.id}}')" id="boton{{solicitud.microcurriculo.id}}">Examinar..</button>
-                                <input id="file{{solicitud.microcurriculo.id}}" name="file{{solicitud.microcurriculo.id}}" type="file" style="display:none;" onchange='texto(this,"text{{solicitud.microcurriculo.id}}")'></a>
-                                <span id="text{{solicitud.microcurriculo.id}}">Subir Archivo</span>
+                                <a href="javascript:aceptar({{solicitud.microcurriculo.id}})" class="isActivated">Aceptar</a>
+                                <a href="javascript:rechazar({{solicitud.microcurriculo.id}})" class="isActivated">Rechazar</a>
                             </td>
-                        {% else %}
-                            <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
-                        {% endif %}
-                        <td id="user{{solicitud.microcurriculo.id}}" name="user{{solicitud.microcurriculo.id}}">{{solicitud.usuario}}</td>
-                        <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
-                        <td id="date{{solicitud.microcurriculo.id}}" name="date{{solicitud.microcurriculo.id}}">{{solicitud.updated}}</td>
-                        {% if solicitud.estado == "Revision" %}
-                        <td>
-                            <a href="javascript:aceptar({{solicitud.microcurriculo.id}})" class="isActivated">Aceptar</a>
-                            <a href="javascript:rechazar({{solicitud.microcurriculo.id}})" class="isActivated">Rechazar</a>
-                        </td>
-                        {% else %}
-                        <td>
-                            <a href="" class="isDisabled">Aceptar</a>
-                            <a href="" class="isDisabled">Rechazar</a>
-                        </td>
-                        {% endif %}
-                    {% elif request.user|has_group:"Editor" %}
-                        {% if solicitud.archivo %}
-                            <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
-                        {% else %}
-                            <td>No hay archivo adjunto</td>
-                        {% endif %}
-                        <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
-                        <td id="date{{solicitud.microcurriculo.id}}" name="date{{solicitud.microcurriculo.id}}">{{solicitud.updated}}</td>
-                        {% if solicitud.coordinador %}
-                            <td id="coord{{solicitud.microcurriculo.id}}" name="coord{{solicitud.microcurriculo.id}}">{{solicitud.coordinador}}</td>
-                        {% else %}
-                            <td>Ningun coordinador </td>
-                        {% endif %}
-                        {% if solicitud.estado == "Revision" %}
-                        <td>
-                            {% if solicitud.soli == "Asignar" %}
-                                <a href="" class="isDisabled">Cerrar</a>
                             {% else %}
-                                <a href="" class="isDisabled">Editar</a>
-                                <a href="" class="isDisabled">Enviar</a>
+                            <td>
+                                <a href="" class="isDisabled">Aceptar</a>
+                                <a href="" class="isDisabled">Rechazar</a>
+                            </td>
                             {% endif %}
-                        </td>
-                        {% else %}
-                        <td>
-                            {% if solicitud.soli == "Asignar" %}
-                                <a href="javascript:cerrar({{solicitud.microcurriculo.id}})" class="isActivated">Cerrar</a>
+                        {% elif request.user|has_group:"Editor" %}
+                            {% if solicitud.archivo %}
+                                <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
                             {% else %}
-                                <a href="javascript:editar({{solicitud.microcurriculo.id}})" class="isActivated">Editar</a>
-                                <a href="javascript:revisar({{solicitud.microcurriculo.id}})" class="isActivated">Enviar</a>
+                                <td>No hay archivo adjunto</td>
                             {% endif %}
-                        </td>
-                        {% endif %}
-                    {% endif %}      
-                </tr>        
+                            <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
+                            <td id="date{{solicitud.microcurriculo.id}}" name="date{{solicitud.microcurriculo.id}}">{{solicitud.updated}}</td>
+                            {% if solicitud.coordinador %}
+                                <td id="coord{{solicitud.microcurriculo.id}}" name="coord{{solicitud.microcurriculo.id}}">{{solicitud.coordinador}}</td>
+                            {% else %}
+                                <td>Ningun coordinador </td>
+                            {% endif %}
+                            {% if solicitud.estado == "Revision" %}
+                            <td>
+                                {% if solicitud.soli == "Asignar" %}
+                                    <a href="" class="isDisabled">Cerrar</a>
+                                {% else %}
+                                    <a href="" class="isDisabled">Editar</a>
+                                    <a href="" class="isDisabled">Enviar</a>
+                                {% endif %}
+                            </td>
+                            {% else %}
+                            <td>
+                                {% if solicitud.soli == "Asignar" %}
+                                    <a href="javascript:cerrar({{solicitud.microcurriculo.id}})" class="isActivated">Cerrar</a>
+                                {% else %}
+                                    <a href="javascript:editar({{solicitud.microcurriculo.id}})" class="isActivated">Editar</a>
+                                    <a href="javascript:revisar({{solicitud.microcurriculo.id}})" class="isActivated">Enviar</a>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                        {% endif %}      
+                    </tr>
+                {% elif request.user|has_group:"Editor" and  solicitud.usuario == request.user.first_name|add:" "|add:request.user.last_name%}
+                    <tr>
+                        <input type="hidden" id="original{{solicitud.microcurriculo.id}}" name="original{{solicitud.microcurriculo.id}}" value="{{solicitud.original}}">
+                        <input type="hidden" id="id_s{{solicitud.microcurriculo.id}}" name="id_s{{solicitud.microcurriculo.id}}" value="{{solicitud.id}}">
+                        <td id="soli{{solicitud.microcurriculo.id}}" name="soli{{solicitud.microcurriculo.id}}">{{solicitud.soli}}</td>
+                        <td id="estado{{solicitud.microcurriculo.id}}" name="estado{{solicitud.microcurriculo.id}}">{{solicitud.estado}}</td>
+                        <td id="descripcion{{solicitud.microcurriculo.id}}" name="descripcion{{solicitud.microcurriculo.id}}">{{solicitud.descripcion}}</td>
+                        <td id="curso_d{{solicitud.microcurriculo.id}}" name="curso_d{{solicitud.microcurriculo.id}}">{{solicitud.curso_destino}}</td>
+                        <td id="pensum_d{{solicitud.microcurriculo.id}}" name="pensum_d{{solicitud.microcurriculo.id}}">{{solicitud.pensum_destino}}</td>
+                        <td id="curso_p{{solicitud.microcurriculo.id}}" name="curso_p{{solicitud.microcurriculo.id}}">{{solicitud.curso_propietario}}</td>
+                        <td id="pensum_p{{solicitud.microcurriculo.id}}" name="pensum_p{{solicitud.microcurriculo.id}}">{{solicitud.pensum_propietario}}</td>
+                        <td id="semestre{{solicitud.microcurriculo.id}}" name="semestre{{solicitud.microcurriculo.id}}">{{solicitud.semestre_asignar}}</td>
+                        <td><a href="javascript:micro({{solicitud.microcurriculo.id}})">Visualizar Microcurriculo</a></td>
+                        <td><a href="javascript:comparacion({{solicitud.microcurriculo.id}})">Visualizar Comparacion</a></td>
+                        {% if request.user|has_group:"Coordinador" %}    
+                            {% if solicitud.estado == "Revision" %}
+                                <td>
+                                    <button type="button" onclick="abrir('file{{solicitud.microcurriculo.id}}')" id="boton{{solicitud.microcurriculo.id}}">Examinar..</button>
+                                    <input id="file{{solicitud.microcurriculo.id}}" name="file{{solicitud.microcurriculo.id}}" type="file" style="display:none;" onchange='texto(this,"text{{solicitud.microcurriculo.id}}")'></a>
+                                    <span id="text{{solicitud.microcurriculo.id}}">Subir Archivo</span>
+                                </td>
+                            {% else %}
+                                <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
+                            {% endif %}
+                            <td id="user{{solicitud.microcurriculo.id}}" name="user{{solicitud.microcurriculo.id}}">{{solicitud.usuario}}</td>
+                            <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
+                            <td id="date{{solicitud.microcurriculo.id}}" name="date{{solicitud.microcurriculo.id}}">{{solicitud.updated}}</td>
+                            {% if solicitud.estado == "Revision" %}
+                            <td>
+                                <a href="javascript:aceptar({{solicitud.microcurriculo.id}})" class="isActivated">Aceptar</a>
+                                <a href="javascript:rechazar({{solicitud.microcurriculo.id}})" class="isActivated">Rechazar</a>
+                            </td>
+                            {% else %}
+                            <td>
+                                <a href="" class="isDisabled">Aceptar</a>
+                                <a href="" class="isDisabled">Rechazar</a>
+                            </td>
+                            {% endif %}
+                        {% elif request.user|has_group:"Editor" %}
+                            {% if solicitud.archivo %}
+                                <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
+                            {% else %}
+                                <td>No hay archivo adjunto</td>
+                            {% endif %}
+                            <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
+                            <td id="date{{solicitud.microcurriculo.id}}" name="date{{solicitud.microcurriculo.id}}">{{solicitud.updated}}</td>
+                            {% if solicitud.coordinador %}
+                                <td id="coord{{solicitud.microcurriculo.id}}" name="coord{{solicitud.microcurriculo.id}}">{{solicitud.coordinador}}</td>
+                            {% else %}
+                                <td>Ningun coordinador </td>
+                            {% endif %}
+                            {% if solicitud.estado == "Revision" %}
+                            <td>
+                                {% if solicitud.soli == "Asignar" %}
+                                    <a href="" class="isDisabled">Cerrar</a>
+                                {% else %}
+                                    <a href="" class="isDisabled">Editar</a>
+                                    <a href="" class="isDisabled">Enviar</a>
+                                {% endif %}
+                            </td>
+                            {% else %}
+                            <td>
+                                {% if solicitud.soli == "Asignar" %}
+                                    <a href="javascript:cerrar({{solicitud.microcurriculo.id}})" class="isActivated">Cerrar</a>
+                                {% else %}
+                                    <a href="javascript:editar({{solicitud.microcurriculo.id}})" class="isActivated">Editar</a>
+                                    <a href="javascript:revisar({{solicitud.microcurriculo.id}})" class="isActivated">Enviar</a>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                        {% endif %}      
+                    </tr>
+                {% endif %}
             {% endif %}
             {% endfor %}
         </table>
