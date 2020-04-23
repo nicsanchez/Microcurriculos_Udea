@@ -95,9 +95,16 @@ function texto(elem, id_text) {
                         {% if request.user|has_group:"Coordinador" %}    
                             {% if solicitud.estado == "Revision" %}
                                 <td>
-                                    <button type="button" onclick="abrir('file{{solicitud.microcurriculo.id}}')" id="boton{{solicitud.microcurriculo.id}}">Examinar..</button>
-                                    <input id="file{{solicitud.microcurriculo.id}}" name="file{{solicitud.microcurriculo.id}}" type="file" style="display:none;" onchange='texto(this,"text{{solicitud.microcurriculo.id}}")'></a>
-                                    <span id="text{{solicitud.microcurriculo.id}}">Subir Archivo</span>
+                                    <table> 
+                                        {% if solicitud.archivo %}
+                                            <tr><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></tr>
+                                        {% endif %} 
+                                        <tr>
+                                            <button type="button" onclick="abrir('file{{solicitud.microcurriculo.id}}')" id="boton{{solicitud.microcurriculo.id}}">Examinar..</button>
+                                            <input id="file{{solicitud.microcurriculo.id}}" name="file{{solicitud.microcurriculo.id}}" type="file" style="display:none;" onchange='texto(this,"text{{solicitud.microcurriculo.id}}")'></a>
+                                            <span id="text{{solicitud.microcurriculo.id}}">Subir Archivo</span>
+                                        </tr>
+                                    </table>
                                 </td>
                             {% else %}
                                 <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>

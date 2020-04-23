@@ -586,7 +586,7 @@ def peticiones(request):
                             cursoglobal = Curso.objects.get(nombre=curso_es)
                             id_cursoglobal = cursoglobal.id
                             curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=version_pensum)
-                            curso_prog = Curso_programado.objects.get(id_curso_asignado=curso_asig.id,semestre=solicitud.semestre_asignar)
+                            curso_prog = Curso_programado.objects.get(id_curso_asignado=curso_asig.id,semestre=str(solicitud.semestre_asignar)[0:6])
                             microcurriculos = Microcurriculum.objects.get(id=curso_prog.id_microcurriculos.id)
                             microcurriculos.descripcion_general=micro.descripcion_general
                             microcurriculos.proposito=micro.proposito
@@ -1453,6 +1453,7 @@ def curso(request):
                     lista_cursos_json.append(s)
                 return HttpResponse(json.dumps({"data":lista_cursos_json}))
             elif(request.POST['caso']=="verificacion"):
+                #Subrutina en la que se verifica si hay un curso asignado y hay una peticion crear o asignar en curso
                 pensum = request.POST['pensum']
                 semestre = request.POST['semestre']
                 nombre_c = request.POST['curso']
@@ -1471,6 +1472,17 @@ def curso(request):
                     except:
                         #Si retorna true puede hacer la solicitud
                         return HttpResponse("true")
+            elif(request.POST['caso']=="verificacion2"):
+                #Subrutina para verificar si hay una peticion editar en progreso
+                vigencias = request.POST['vigencia']
+                pensum = request.POST['pensum_p']
+                curso = request.POST['curso_p']
+                try:
+                    soli=Solicitud.objects.get(soli="Editar",curso_propietario=str(curso),pensum_propietario=str(pensum),semestre_asignar=str(vigencias),tipo="Abierto")
+                    return HttpResponse("false")
+                except:
+                    #Si retorna true puede hacer la solicitud
+                    return HttpResponse("true")         
             elif(request.POST['caso']=="editar"):
                 pensum = request.POST['pensum']
                 semestre = request.POST['semestre']

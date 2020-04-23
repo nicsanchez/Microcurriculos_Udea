@@ -278,21 +278,39 @@ $(document).ready(function(){
     //Editar un microcurriculo
     $("#editar_micro").on('click', function (e){
         e.preventDefault();
+        let url = "{% url 'curso' %}";
         var v_p = $('#version_pensum').val();
         var curso_sel = $('#curso').val();
         var semestre = $('#vigencia').val();
         var vigencia = $('#vigencia').val();
         var caso = "editar";
         var nombres = 'v_p,curso_sel,semestre,vigencia,caso';
-        pagina = "{% url 'core' %}";
-        pagina +="?";
-        nomVec = nombres.split(",");
-        for (i=0; i<nomVec.length; i++)
-            pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
-        pagina = pagina.substring(0,pagina.length-1);
+        const postData={
+            'vigencia': vigencia,
+            'curso_p': curso_sel,
+            'pensum_p': v_p,
+            'caso':"verificacion2",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
         if(v_p != "Seleccione" && curso_sel != "Seleccione" && semestre != "Seleccione" && vigencia != "Seleccione"){
-            $(location).attr('href',pagina);
-        }
+            var x=confirm("¿Esta seguro que desee editar el microcurriculo seleccionado?")
+            if(x){
+                pagina = "{% url 'core' %}";
+                pagina +="?";
+                nomVec = nombres.split(",");
+                for (i=0; i<nomVec.length; i++)
+                    pagina += nomVec[i] + "=" + escape(eval(nomVec[i]))+"&";
+                pagina = pagina.substring(0,pagina.length-1);
+                $.post(url, postData, function(response){
+                    if(response == "true"){
+                        $(location).attr('href',pagina); 
+                    }
+                    else if(response=="false"){
+                        alert('Existe una solicitud en proceso en el semestre seleccionado');    
+                    }
+                });
+            };
+        } 
         else if (v_p == "Seleccione"){
             alert("Seleccione la version del pensum correspondiente al curso ");
         }
@@ -301,7 +319,7 @@ $(document).ready(function(){
         }
         else if (vigencia == "Seleccione"){
             alert("Seleccione la vigencia del microcurriculo a editar");
-        }
+        }       
     });
     //Visualizar un microcurrriculo
     $("#nuevo_pdf").on('click', function (e){

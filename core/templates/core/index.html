@@ -236,6 +236,11 @@
             document.getElementById("evalManagment").appendChild(newClose);
         }
     }
+    function pregunta(){
+        if (confirm('¿Estas seguro de enviar este formulario?')){
+        document.formulario.submit()
+        }
+    } 
     function newUnity(){
         cont ++;
         document.getElementById("c_u").value=cont;
@@ -351,7 +356,7 @@
 </head>
 <h1>Asignar un nuevo microcurriculo</h1>
 <body>
-    <form action="{% url 'core' %}" method="POST">
+    <form action="{% url 'core' %}" method="POST" name="formulario">
         {% csrf_token %}
         <input type="hidden" id="caso" name="caso" value="nuevo">
         <input type="hidden" id="c_u" name="contadorunidad" value="0">
@@ -444,7 +449,7 @@
                 <td colspan="2"><CENTER id="evalManagment"><a HREF="javascript:newEval();">Agregar una Evaluacion</a>&nbsp;</CENTER></td>
             </tr>
             <tr>
-                <td><input type="submit" value="Enviar"></td>
+                <td><input type=button onclick="pregunta()" value="Enviar"></td>
             </tr>       
         </table> 
         <table>
