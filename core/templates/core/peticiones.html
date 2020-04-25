@@ -92,70 +92,38 @@ function texto(elem, id_text) {
                         <td id="semestre{{solicitud.microcurriculo.id}}" name="semestre{{solicitud.microcurriculo.id}}">{{solicitud.semestre_asignar}}</td>
                         <td><a href="javascript:micro({{solicitud.microcurriculo.id}})">Visualizar Microcurriculo</a></td>
                         <td><a href="javascript:comparacion({{solicitud.microcurriculo.id}})">Visualizar Comparacion</a></td>
-                        {% if request.user|has_group:"Coordinador" %}    
-                            {% if solicitud.estado == "Revision" %}
-                                <td>
-                                    <table> 
-                                        {% if solicitud.archivo %}
-                                            <tr><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></tr>
-                                        {% endif %} 
-                                        <tr>
-                                            <button type="button" onclick="abrir('file{{solicitud.microcurriculo.id}}')" id="boton{{solicitud.microcurriculo.id}}">Examinar..</button>
-                                            <input id="file{{solicitud.microcurriculo.id}}" name="file{{solicitud.microcurriculo.id}}" type="file" style="display:none;" onchange='texto(this,"text{{solicitud.microcurriculo.id}}")'></a>
-                                            <span id="text{{solicitud.microcurriculo.id}}">Subir Archivo</span>
-                                        </tr>
-                                    </table>
-                                </td>
-                            {% else %}
-                                <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
-                            {% endif %}
-                            <td id="user{{solicitud.microcurriculo.id}}" name="user{{solicitud.microcurriculo.id}}">{{solicitud.usuario}}</td>
-                            <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
-                            <td id="date{{solicitud.microcurriculo.id}}" name="date{{solicitud.microcurriculo.id}}">{{solicitud.updated}}</td>
-                            {% if solicitud.estado == "Revision" %}
+                        {% if solicitud.estado == "Revision" %}
                             <td>
-                                <a href="javascript:aceptar({{solicitud.microcurriculo.id}})" class="isActivated">Aceptar</a>
-                                <a href="javascript:rechazar({{solicitud.microcurriculo.id}})" class="isActivated">Rechazar</a>
+                                <table> 
+                                    {% if solicitud.archivo %}
+                                        <tr><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></tr>
+                                    {% endif %} 
+                                    <tr>
+                                        <button type="button" onclick="abrir('file{{solicitud.microcurriculo.id}}')" id="boton{{solicitud.microcurriculo.id}}">Examinar..</button>
+                                        <input id="file{{solicitud.microcurriculo.id}}" name="file{{solicitud.microcurriculo.id}}" type="file" style="display:none;" onchange='texto(this,"text{{solicitud.microcurriculo.id}}")'></a>
+                                        <span id="text{{solicitud.microcurriculo.id}}">Subir Archivo</span>
+                                    </tr>
+                                </table>
                             </td>
-                            {% else %}
-                            <td>
-                                <a href="" class="isDisabled">Aceptar</a>
-                                <a href="" class="isDisabled">Rechazar</a>
-                            </td>
-                            {% endif %}
-                        {% elif request.user|has_group:"Editor" %}
-                            {% if solicitud.archivo %}
-                                <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
-                            {% else %}
-                                <td>No hay archivo adjunto</td>
-                            {% endif %}
-                            <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
-                            <td id="date{{solicitud.microcurriculo.id}}" name="date{{solicitud.microcurriculo.id}}">{{solicitud.updated}}</td>
-                            {% if solicitud.coordinador %}
-                                <td id="coord{{solicitud.microcurriculo.id}}" name="coord{{solicitud.microcurriculo.id}}">{{solicitud.coordinador}}</td>
-                            {% else %}
-                                <td>Ningun coordinador </td>
-                            {% endif %}
-                            {% if solicitud.estado == "Revision" %}
-                            <td>
-                                {% if solicitud.soli == "Asignar" %}
-                                    <a href="" class="isDisabled">Cerrar</a>
-                                {% else %}
-                                    <a href="" class="isDisabled">Editar</a>
-                                    <a href="" class="isDisabled">Enviar</a>
-                                {% endif %}
-                            </td>
-                            {% else %}
-                            <td>
-                                {% if solicitud.soli == "Asignar" %}
-                                    <a href="javascript:cerrar({{solicitud.microcurriculo.id}})" class="isActivated">Cerrar</a>
-                                {% else %}
-                                    <a href="javascript:editar({{solicitud.microcurriculo.id}})" class="isActivated">Editar</a>
-                                    <a href="javascript:revisar({{solicitud.microcurriculo.id}})" class="isActivated">Enviar</a>
-                                {% endif %}
-                            </td>
-                            {% endif %}
-                        {% endif %}      
+                        {% else %}
+                            <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
+                        {% endif %}
+                        <td id="user{{solicitud.microcurriculo.id}}" name="user{{solicitud.microcurriculo.id}}">{{solicitud.usuario}}</td>
+                        <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
+                        <td id="date{{solicitud.microcurriculo.id}}" name="date{{solicitud.microcurriculo.id}}">{{solicitud.updated}}</td>
+                        {% if solicitud.estado == "Revision" %}
+                        <td>
+                            <a href="javascript:aceptar({{solicitud.microcurriculo.id}})" class="isActivated">Aceptar</a>
+                            <a href="javascript:rechazar({{solicitud.microcurriculo.id}})" class="isActivated">Rechazar</a>
+                            <a href="javascript:cerrar({{solicitud.microcurriculo.id}})" class="isActivated">Cerrar</a>
+                        </td>
+                        {% else %}
+                        <td>
+                            <a href="" class="isDisabled">Aceptar</a>
+                            <a href="" class="isDisabled">Rechazar</a>
+                            <a href="" class="isDisabled">Cerrar</a>
+                        </td>
+                        {% endif %}  
                     </tr>
                 {% elif request.user|has_group:"Editor" and  solicitud.usuario == request.user.first_name|add:" "|add:request.user.last_name%}
                     <tr>
@@ -317,35 +285,37 @@ function revisar(n){
     });
 }
 function rechazar(n){
-    id=String(n);
-    if($('#file'+id).prop("files")[0]){
-        let url = "{% url 'peticiones' %}";
-        var id=String(n);
-        var id_s=$('#id_s'+id).val();
-        var archivo=$('#file'+id).prop("files")[0];
-        var caso='rechazar';
-        var fileb64="";
-        getBase64FromFile(archivo, function(base64){
-            fileb64=base64;
-            const postData={
-                'caso': caso,
-                'id_s': id_s,
-                'archivo': fileb64,
-                csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
-            };
-            console.log(fileb64)
-            $.post(url, postData, function(response){
-                alert(response)
-                if(response=="Se ha enviado su revision satisfactoriamente al editor"){
-                    pagina="{% url 'nucleo' %}"
-                    $(location).attr('href',pagina);
-                }
+    if(confirm("¿Esta seguro de rechazar la solicitud?")){
+        id=String(n);
+        if($('#file'+id).prop("files")[0]){
+            let url = "{% url 'peticiones' %}";
+            var id=String(n);
+            var id_s=$('#id_s'+id).val();
+            var archivo=$('#file'+id).prop("files")[0];
+            var caso='rechazar';
+            var fileb64="";
+            getBase64FromFile(archivo, function(base64){
+                fileb64=base64;
+                const postData={
+                    'caso': caso,
+                    'id_s': id_s,
+                    'archivo': fileb64,
+                    csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                };
+                console.log(fileb64)
+                $.post(url, postData, function(response){
+                    alert(response)
+                    if(response=="Se ha enviado su revision satisfactoriamente al editor"){
+                        pagina="{% url 'nucleo' %}"
+                        $(location).attr('href',pagina);
+                    }
+                });
             });
-        });
-    }
-    else{
-        alert("Debe adjuntar archivo en la seccion de comentarios");
-    }
+        }
+        else{
+            alert("Debe adjuntar archivo en la seccion de comentarios");
+        }
+    }    
 }
 function cerrar(n){
     let url = "{% url 'peticiones' %}";
@@ -358,11 +328,13 @@ function cerrar(n){
         'id_m': id,
         csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
     };
-    $.post(url, postData, function(response){
-        alert(response)
-        pagina="{% url 'nucleo' %}"
-        $(location).attr('href',pagina);
-    });
+    if(confirm("¿Esta seguro de cerrar la solicitud?")){
+        $.post(url, postData, function(response){
+            alert(response)
+            pagina="{% url 'nucleo' %}"
+            $(location).attr('href',pagina);
+        });
+    }    
 }
 function aceptar(n){
     let url = "{% url 'peticiones' %}";
@@ -375,11 +347,13 @@ function aceptar(n){
         'id_m': id,
         csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
     };
-    $.post(url, postData, function(response){
-        alert(response)
-        pagina="{% url 'nucleo' %}"
-        $(location).attr('href',pagina);
-    });
+    if(confirm("¿Esta seguro de aceptar la solicitud?")){
+        $.post(url, postData, function(response){
+            alert(response)
+            pagina="{% url 'nucleo' %}"
+            $(location).attr('href',pagina);
+        });
+    }
 }
 function getBase64FromFile(img, callback){
     let fileReader = new FileReader();

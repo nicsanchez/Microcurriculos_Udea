@@ -437,11 +437,11 @@ def peticiones(request):
                         insert.save()
                         return HttpResponse("Se ha enviado su revision satisfactoriamente al editor")
                 elif request.POST['caso']=='cerrar':
-                    if (str(request.user.groups.all()[0])=='Editor'):
+                    if (str(request.user.groups.all()[0])=='Coordinador'):
                         id_s=request.POST['id_s']
                         id_m=request.POST['id_m']
                         solicitud=Solicitud.objects.get(id=id_s)
-                        solicitud.estado="Revision"
+                        solicitud.estado="Rechazado"
                         solicitud.tipo="Cerrado"
                         solicitud.microcurriculo=None
                         solicitud.save(update_fields=['estado','tipo','microcurriculo'])
@@ -450,7 +450,7 @@ def peticiones(request):
                         for evaluacion in eval_micro:
                             evaluacion.delete()
                         unity_micro=Unity_2.objects.filter(id_microcurriculos=micro.id)
-                        for unidad in eval_micro:
+                        for unidad in unity_micro:
                             unidad.delete()
                         micro.delete()
                         return HttpResponse("Se ha cerrado la solicitud")
