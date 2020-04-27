@@ -115,6 +115,7 @@ class Solicitud(models.Model):
     curso_propietario = models.CharField(max_length=255, verbose_name="Curso Propietario")
     pensum_propietario = models.CharField(max_length=255, verbose_name="Pensum Propietario")
     semestre_asignar = models.CharField(max_length=255, verbose_name="Semestre a asignar")
+    vigencias_original = models.CharField(max_length=255, verbose_name="Vigencia Original",null=True)
     microcurriculo = models.ForeignKey(Microcurriculum_2,verbose_name="Microcurriculo",on_delete=models.SET_NULL,null=True)
     archivo = models.FileField(upload_to="files/",verbose_name="Comentarios")
     usuario = models.CharField(max_length=255, verbose_name="Usuario que realizo la peticion")

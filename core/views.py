@@ -1064,7 +1064,7 @@ def core(request):
                                     pensum_p=request.POST['version_p2']
                                     semestre=request.POST['semestre_es']
                                     user_p=str(request.user.first_name)+' '+str(request.user.last_name)
-                                    insert2=Solicitud(soli='Crear',estado='Revision',descripcion=descripcion,curso_destino=curso_d,pensum_destino=pensum_d,curso_propietario=curso_p,pensum_propietario=pensum_p,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p,original="nuevo",tipo="Abierto")
+                                    insert2=Solicitud(soli='Crear',estado='Revision',descripcion=descripcion,curso_destino=curso_d,pensum_destino=pensum_d,curso_propietario=curso_p,pensum_propietario=pensum_p,semestre_asignar=semestre,vigencias_original="No Aplica",microcurriculo=id_microcurriculo,usuario=user_p,original="nuevo",tipo="Abierto")
                                     insert2.save()
                                 cantidad_unidades = int(request.POST["contadorunidad"])
                                 cantidad_evaluaciones = int(request.POST["contadorevaluacion"])
@@ -1198,7 +1198,7 @@ def core(request):
                                     curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum_d)
                                     curso_asociado = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=semestre1)
                                     user_p=str(request.user.first_name)+' '+str(request.user.last_name)
-                                    insert2=Solicitud(soli='Editar',estado="Revision",descripcion=descripcion,curso_destino=curso_d,pensum_destino=pensum_d,curso_propietario=curso_p,pensum_propietario=pensum_p,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p,original=curso_asociado.id_microcurriculos.id,tipo="Abierto")
+                                    insert2=Solicitud(soli='Editar',estado="Revision",descripcion=descripcion,curso_destino=curso_d,pensum_destino=pensum_d,curso_propietario=curso_p,pensum_propietario=pensum_p,semestre_asignar=semestre,vigencias_original=semestre,microcurriculo=id_microcurriculo,usuario=user_p,original=curso_asociado.id_microcurriculos.id,tipo="Abierto")
                                     insert2.save()
                                     cantidad_unidades = int(request.POST["contadorunidad"])
                                     cantidad_evaluaciones = int(request.POST["contadorevaluacion"])
@@ -1686,7 +1686,8 @@ def curso(request):
                     lista = sorted(lista,reverse=True)
                     Cursos_prog = Curso_programado.objects.get(id_curso_asignado=id_cursoasig,semestre=lista[0])
                     id_ultimo = Cursos_prog.id
-                    microcurriculo = Microcurriculum.objects.get(id=Cursos_prog.id_microcurriculos.id)    
+                    microcurriculo = Microcurriculum.objects.get(id=Cursos_prog.id_microcurriculos.id)
+
                     insert = Microcurriculum_2(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
                     insert.save()
                     microcurriculos = Microcurriculum_2.objects.filter(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
@@ -1804,6 +1805,11 @@ def curso(request):
                     curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
                     curso_asociados = Curso_programado.objects.get(id_curso_asignado=curso_asig,semestre=vigencia[0:6])
                     microcurriculo = Microcurriculum.objects.get(id=curso_asociados.id_microcurriculos.id)
+                                        
+                    asignaciones=organizador_vigencias(curso_asig,microcurriculo)
+                    #print(asignaciones)
+                    return HttpResponse(asignaciones)
+                    '''
                     insert = Microcurriculum_2(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
                     insert.save()
                     microcurriculos = Microcurriculum_2.objects.filter(descripcion_general=microcurriculo.descripcion_general,proposito=microcurriculo.proposito,objetivo_general=microcurriculo.objetivo_general,objetivo_especifico=microcurriculo.objetivo_especifico,contenido_resumido=microcurriculo.contenido_resumido,actividades_asis_oblig=microcurriculo.actividades_asis_oblig,bibliografia_basica=microcurriculo.bibliografia_basica,bibliografia_complementaria=microcurriculo.bibliografia_complementaria,metodologia=microcurriculo.metodologia)
@@ -1817,6 +1823,7 @@ def curso(request):
                     insert2 = Solicitud(soli='Asignar',estado='Revision',descripcion=descripcion,curso_destino=nombre_c,pensum_destino=pensum,curso_propietario=nombre_c,pensum_propietario=pensum,semestre_asignar=semestre,microcurriculo=id_microcurriculo,usuario=user_p,original=microcurriculo.id,tipo="Abierto")
                     insert2.save()
                     return HttpResponse("Se procesó correctamente su solicitud")
+                    '''
             elif(request.POST['caso']=="renovar2"):
                 '''
                 if (str(request.user.groups.all()[0])=='Coordinador'):
@@ -2289,3 +2296,51 @@ def procesos(cadena1,request):
     cadena2=cadena2.replace('\n','\\\\')
     cadena2=cadena2.replace('&','\&')
     return cadena2
+
+def organizador_vigencias(curso_asig,microcurriculo):
+    #Funcion para encontrar las vigencias de un microcurriculo,le entra un curso asignado y un microcurriculo
+    asignaciones=Curso_programado.objects.filter(id_curso_asignado=curso_asig,id_microcurriculos=microcurriculo).order_by('semestre')
+    cadena=[]
+    lista=[]
+    for asignacion in asignaciones:
+        lista.append(asignacion.semestre)
+    semestres = Semestres.objects.all().order_by('descripcion')
+    orden=[]
+    for semestre in semestres:
+        orden.append(semestre.descripcion)
+    if(len(lista)>1):    
+        xs=0
+        for i in range(0,len(lista)-1):
+            x1=orden.index(lista[i])
+            x2=orden.index(lista[i+1])
+            #Los dos semestres a contiguos no son seguidos
+            if(abs(x2-x1)!=1):
+                #El micro estuvo activo solo un semestre
+                if(xs==0):
+                    cadena.append(str(lista[i]))
+                    #Si esta en el penultimo y no son continuos entonces el micro estuvo activo semestrei y semestre ultimo
+                    if(i==len(lista)-2):
+                        cadena.append(str(lista[i+1]))
+                #Se puede decir que el micro estuvo activo de un semestre(i-xs) a un semestrei    
+                else:
+                    cadena.append(str(lista[i-xs])+' a '+str(lista[i]))
+                    xs=0
+                    #Si esta en el penultimo y no son continuos entonces el micro estuvo activo desde semestre(i-xs) hasta semestrei y semestre ultimo
+                    if(i==len(lista)-2):
+                        cadena.append(str(lista[i+1]))
+            #Los dos semestres contiguos son seguidos
+            else:
+                xs+=1
+                #Si esta en el penultimo y son continuos entonces el micro estuvo activo desde semestre(ultimo-xs) hasta el ultimo en la lista
+                if(i==len(lista)-2):
+                    cadena.append(str(lista[(i+1)-xs])+' a '+str(lista[i+1]))
+    else:
+        cadena=lista
+    #Se genera la cadena con las vigencias
+    vigencias=""
+    for i in range(0,len(cadena)):
+        if(i==len(cadena)-1):
+            vigencias+=str(cadena[i])
+        else:            
+            vigencias+=str(cadena[i])+", "    
+    return vigencias    
