@@ -61,9 +61,10 @@ function texto(elem, id_text) {
                 <td><strong>Descripcion</strong></td>
                 <td><strong>Curso Destino</strong></td>
                 <td><strong>Pensum Destino</strong></td>
+                <td><strong>Semestre Destino</strong></td>
                 <td><strong>Curso Propietario</strong></td>
                 <td><strong>Pensum Propietario</strong></td>
-                <td><strong>Semestre</strong></td>
+                <td><strong>Vigencia Propietario</strong></td>
                 <td><strong>Microcurriculo</strong></td>
                 <td><strong>Comparacion de versiones</strong></td>
                 <td><strong>Comentarios</strong></td>
@@ -87,9 +88,10 @@ function texto(elem, id_text) {
                         <td id="descripcion{{solicitud.microcurriculo.id}}" name="descripcion{{solicitud.microcurriculo.id}}">{{solicitud.descripcion}}</td>
                         <td id="curso_d{{solicitud.microcurriculo.id}}" name="curso_d{{solicitud.microcurriculo.id}}">{{solicitud.curso_destino}}</td>
                         <td id="pensum_d{{solicitud.microcurriculo.id}}" name="pensum_d{{solicitud.microcurriculo.id}}">{{solicitud.pensum_destino}}</td>
+                        <td id="semestre{{solicitud.microcurriculo.id}}" name="semestre{{solicitud.microcurriculo.id}}">{{solicitud.semestre_asignar}}</td>
                         <td id="curso_p{{solicitud.microcurriculo.id}}" name="curso_p{{solicitud.microcurriculo.id}}">{{solicitud.curso_propietario}}</td>
                         <td id="pensum_p{{solicitud.microcurriculo.id}}" name="pensum_p{{solicitud.microcurriculo.id}}">{{solicitud.pensum_propietario}}</td>
-                        <td id="semestre{{solicitud.microcurriculo.id}}" name="semestre{{solicitud.microcurriculo.id}}">{{solicitud.semestre_asignar}}</td>
+                        <td id="vigencia{{solicitud.microcurriculo.id}}" name="vigencia{{solicitud.microcurriculo.id}}">{{solicitud.vigencias_original}}</td>
                         <td><a href="javascript:micro({{solicitud.microcurriculo.id}})">Visualizar Microcurriculo</a></td>
                         <td><a href="javascript:comparacion({{solicitud.microcurriculo.id}})">Visualizar Comparacion</a></td>
                         {% if solicitud.estado == "Revision" %}
@@ -134,9 +136,10 @@ function texto(elem, id_text) {
                         <td id="descripcion{{solicitud.microcurriculo.id}}" name="descripcion{{solicitud.microcurriculo.id}}">{{solicitud.descripcion}}</td>
                         <td id="curso_d{{solicitud.microcurriculo.id}}" name="curso_d{{solicitud.microcurriculo.id}}">{{solicitud.curso_destino}}</td>
                         <td id="pensum_d{{solicitud.microcurriculo.id}}" name="pensum_d{{solicitud.microcurriculo.id}}">{{solicitud.pensum_destino}}</td>
+                        <td id="semestre{{solicitud.microcurriculo.id}}" name="semestre{{solicitud.microcurriculo.id}}">{{solicitud.semestre_asignar}}</td>
                         <td id="curso_p{{solicitud.microcurriculo.id}}" name="curso_p{{solicitud.microcurriculo.id}}">{{solicitud.curso_propietario}}</td>
                         <td id="pensum_p{{solicitud.microcurriculo.id}}" name="pensum_p{{solicitud.microcurriculo.id}}">{{solicitud.pensum_propietario}}</td>
-                        <td id="semestre{{solicitud.microcurriculo.id}}" name="semestre{{solicitud.microcurriculo.id}}">{{solicitud.semestre_asignar}}</td>
+                        <td id="vigencia{{solicitud.microcurriculo.id}}" name="vigencia{{solicitud.microcurriculo.id}}">{{solicitud.vigencias_original}}</td>
                         <td><a href="javascript:micro({{solicitud.microcurriculo.id}})">Visualizar Microcurriculo</a></td>
                         <td><a href="javascript:comparacion({{solicitud.microcurriculo.id}})">Visualizar Comparacion</a></td>
                         {% if request.user|has_group:"Coordinador" %}    

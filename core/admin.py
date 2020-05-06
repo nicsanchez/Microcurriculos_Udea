@@ -18,7 +18,7 @@ class Evaluation2Admin(admin.ModelAdmin):
     list_display = ('id','id_microcurriculos','actividad','porcentaje','fecha')
 
 class SolicitudAdmin(admin.ModelAdmin):
-    list_display = ('id','soli','estado','descripcion','curso_destino','pensum_destino','curso_propietario','pensum_propietario','semestre_asignar','microcurriculo','archivo','usuario','coordinador','original','tipo','created','updated')
+    list_display = ('id','soli','estado','descripcion','curso_destino','pensum_destino','curso_propietario','pensum_propietario','semestre_asignar','vigencias_original','microcurriculo','archivo','usuario','coordinador','original','tipo','created','updated')
 
 class EvaluationAdmin(admin.ModelAdmin):
     list_display = ('id','id_microcurriculos','actividad','porcentaje','fecha')

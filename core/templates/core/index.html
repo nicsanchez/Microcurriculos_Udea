@@ -359,6 +359,7 @@
     <form action="{% url 'core' %}" method="POST" name="formulario">
         {% csrf_token %}
         <input type="hidden" id="caso" name="caso" value="nuevo">
+        <input type="hidden" id="id_o" name="id_origen" value="nuevo">
         <input type="hidden" id="c_u" name="contadorunidad" value="0">
         <input type="hidden" id="c_e" name="contadorevaluacion" value="0">
         <input type="hidden" id="c_g" name="contadorgeneral" value="0">
@@ -548,6 +549,7 @@ $(document).ready(function(){
         };
         $.post(url, postData, function(response){
             var micro=JSON.parse(response);
+            $("#id_o").val(micro.id);
             $("#des_gen").val(micro.des_gen);
             $("#propos").val(micro.proposito);
             $("#metodo").val(micro.metodologia);
