@@ -444,7 +444,7 @@ def peticiones(request):
                         solicitud.estado="Rechazado"
                         solicitud.tipo="Cerrado"
                         solicitud.microcurriculo=None
-                        solicitud.save(update_fields=['estado','tipo','microcurriculo'])
+                        solicitud.save(update_fields=['estado','tipo','microcurriculo','updated'])
                         micro=Microcurriculum_2.objects.get(id=int(id_m))
                         eval_micro=Evaluation_2.objects.filter(id_microcurriculos=micro.id)
                         for evaluacion in eval_micro:
@@ -463,7 +463,7 @@ def peticiones(request):
                         solicitud.estado="Final"
                         solicitud.tipo="Cerrado"
                         solicitud.coordinador=user_p
-                        solicitud.save(update_fields=['estado','tipo','coordinador'])
+                        solicitud.save(update_fields=['estado','tipo','coordinador','updated'])
                         nombre_c = solicitud.curso_destino
                         pensum = solicitud.pensum_destino
                         nombre_p = solicitud.curso_propietario
@@ -577,7 +577,7 @@ def peticiones(request):
                                 ids.append(a)
                             version_final = Versiones.objects.get(id=max(ids))
                             version_final.id_microcurriculos=id_microcurriculo
-                            version_final.save(update_fields=['id_microcurriculos'])
+                            version_final.save(update_fields=['id_microcurriculos','updated'])
                             micro_aso.delete()
                             return HttpResponse("Se ha procesado la solicitud")
                         elif(solicitud.soli=="Editar"):
@@ -664,7 +664,7 @@ def peticiones(request):
                                 ids.append(a)
                             version_final = Versiones.objects.get(id=max(ids))
                             version_final.id_microcurriculos=microcurriculos
-                            version_final.save(update_fields=['id_microcurriculos'])
+                            version_final.save(update_fields=['id_microcurriculos','updated'])
                             micro_aso.delete()
                             return HttpResponse("Se ha procesado la solicitud")            
                         elif(solicitud.soli=="Asignar"):
@@ -687,10 +687,9 @@ def peticiones(request):
                                 ids.append(a)
                             version_final = Versiones.objects.get(id=max(ids))
                             version_final.id_microcurriculos=id_microcurriculo
-                            version_final.save(update_fields=['id_microcurriculos'])
+                            version_final.save(update_fields=['id_microcurriculos','updated'])
                             micro_aso.delete()
                             return HttpResponse("Se ha procesado la solicitud")
-
                 elif request.POST['caso']=='revisar':
                     if (str(request.user.groups.all()[0])=='Editor'):
                         micro=int(request.POST['id_micro'])
@@ -798,10 +797,15 @@ def peticiones(request):
                             id_s=request.POST["id_s"]
                             sol=Solicitud.objects.get(id=int(id_s))
                             sol.estado="Revision"
-                            sol.save(update_fields=['estado'])
+                            sol.save(update_fields=['estado','updated'])
                             return HttpResponse(y)
-            peticion=Solicitud.objects.all()  
-            return render(request, "core/peticiones.html",{'solicitudes':peticion})    
+            peticion=Solicitud.objects.all().order_by('-updated')
+            if (str(request.user.groups.all()[0])=='Coordinador'):
+                Rechazados=Solicitud.objects.filter(tipo="Cerrado").order_by('-updated')[:4]
+            elif(str(request.user.groups.all()[0])=='Editor'):
+                name=request.user.first_name+" "+request.user.last_name
+                Rechazados=Solicitud.objects.filter(usuario=name,tipo="Cerrado").order_by('-updated')[:4]
+            return render(request, "core/peticiones.html",{'solicitudes':peticion,'Rechazados':Rechazados})    
         else:
             return redirect('/nucleo')    
     return redirect('/login')
@@ -1712,6 +1716,14 @@ def curso(request):
                     id_microcurriculo = Microcurriculum_2.objects.get(id=max(ids))
                     insert2 = Solicitud(soli='Asignar',estado="Revision",descripcion=descripcion,curso_destino=curso_d,pensum_destino=pensum_d,curso_propietario=curso_d,pensum_propietario=pensum_d,semestre_asignar=semestre,vigencias_original=asignaciones,microcurriculo=id_microcurriculo,usuario=user_p,original=microcurriculo.id,tipo="Abierto")
                     insert2.save()
+                    eval_micro=Evaluation.objects.filter(id_microcurriculos=microcurriculo)
+                    unity_micro=Unity.objects.filter(id_microcurriculos=microcurriculo)
+                    for unidad in unity_micro:
+                        insert = Unity_2(id_microcurriculos=id_microcurriculo,tema=unidad.tema,subtema=unidad.subtema,num_semanas=unidad.num_semanas)
+                        insert.save()
+                    for evaluacion in eval_micro:
+                        insert = Evaluation_2(id_microcurriculos=id_microcurriculo,actividad=evaluacion.actividad,porcentaje=evaluacion.porcentaje,fecha=evaluacion.fecha)
+                        insert.save()
                     return HttpResponse("Se proceso correctamente la solicitud")
             elif(request.POST['caso']=="ultimo2"):
                 '''
@@ -1789,6 +1801,14 @@ def curso(request):
                     user_p=str(request.user.first_name)+' '+str(request.user.last_name)
                     insert2 = Solicitud(soli='Asignar',estado="Revision",descripcion=descripcion,curso_destino=nombre_c2,pensum_destino=pensum2,curso_propietario=nombre_c,pensum_propietario=pensum,semestre_asignar=semestre,vigencias_original=asignaciones,microcurriculo=id_microcurriculo,usuario=user_p,original=microcurriculo.id,tipo="Abierto")
                     insert2.save()
+                    eval_micro=Evaluation.objects.filter(id_microcurriculos=microcurriculo)
+                    unity_micro=Unity.objects.filter(id_microcurriculos=microcurriculo)
+                    for unidad in unity_micro:
+                        insert = Unity_2(id_microcurriculos=id_microcurriculo,tema=unidad.tema,subtema=unidad.subtema,num_semanas=unidad.num_semanas)
+                        insert.save()
+                    for evaluacion in eval_micro:
+                        insert = Evaluation_2(id_microcurriculos=id_microcurriculo,actividad=evaluacion.actividad,porcentaje=evaluacion.porcentaje,fecha=evaluacion.fecha)
+                        insert.save()
                     return HttpResponse("Se proceso correctamente la solicitud")
             elif(request.POST['caso']=="renovar"):
                 '''
@@ -1834,6 +1854,14 @@ def curso(request):
                     user_p=str(request.user.first_name)+' '+str(request.user.last_name)
                     insert2 = Solicitud(soli='Asignar',estado='Revision',descripcion=descripcion,curso_destino=nombre_c,pensum_destino=pensum,curso_propietario=nombre_c,pensum_propietario=pensum,semestre_asignar=semestre,vigencias_original=asignaciones,microcurriculo=id_microcurriculo,usuario=user_p,original=microcurriculo.id,tipo="Abierto")
                     insert2.save()
+                    eval_micro=Evaluation.objects.filter(id_microcurriculos=microcurriculo)
+                    unity_micro=Unity.objects.filter(id_microcurriculos=microcurriculo)
+                    for unidad in unity_micro:
+                        insert = Unity_2(id_microcurriculos=id_microcurriculo,tema=unidad.tema,subtema=unidad.subtema,num_semanas=unidad.num_semanas)
+                        insert.save()
+                    for evaluacion in eval_micro:
+                        insert = Evaluation_2(id_microcurriculos=id_microcurriculo,actividad=evaluacion.actividad,porcentaje=evaluacion.porcentaje,fecha=evaluacion.fecha)
+                        insert.save()
                     return HttpResponse("Se procesó correctamente su solicitud")
             elif(request.POST['caso']=="renovar2"):
                 '''
@@ -1885,6 +1913,14 @@ def curso(request):
                     user_p=str(request.user.first_name)+' '+str(request.user.last_name)
                     insert2 = Solicitud(soli='Asignar',estado='Revision',descripcion=descripcion,curso_destino=cursos[1],pensum_destino=pensums[1],curso_propietario=nombre_c,pensum_propietario=pensum,semestre_asignar=semestre,vigencias_original=asignaciones,microcurriculo=id_microcurriculo,usuario=user_p,original=microcurriculo.id,tipo="Abierto")
                     insert2.save()
+                    eval_micro=Evaluation.objects.filter(id_microcurriculos=microcurriculo)
+                    unity_micro=Unity.objects.filter(id_microcurriculos=microcurriculo)
+                    for unidad in unity_micro:
+                        insert = Unity_2(id_microcurriculos=id_microcurriculo,tema=unidad.tema,subtema=unidad.subtema,num_semanas=unidad.num_semanas)
+                        insert.save()
+                    for evaluacion in eval_micro:
+                        insert = Evaluation_2(id_microcurriculos=id_microcurriculo,actividad=evaluacion.actividad,porcentaje=evaluacion.porcentaje,fecha=evaluacion.fecha)
+                        insert.save()
                     return HttpResponse("Se procesó correctamente su solicitud")
             elif(request.POST['caso']=="nuevopdf"):
                 pensum = request.POST['pensum']
