@@ -18,7 +18,8 @@ urlpatterns = [
     path('nuevo4/',views.nuevo4,name="nuevo4"),
     path('logout/',views.logout,name="logout"),
     path('login/',views.login,name="login"),
-    path('peticiones/',views.peticiones,name="peticiones")
+    path('peticiones/',views.peticiones,name="peticiones"),
+    path('rechazados/',views.rechazados,name="rechazados")
 ]
 if settings.DEBUG:
     from django.conf.urls.static import static

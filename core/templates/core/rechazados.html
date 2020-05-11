@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load auth_extras %}
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Peticiones Cerradas</title>
+    <style type="text/css" media="screen">
+        A:link {color: blue; font-size: 12pt; text-decoration: none }
+        A:hover {color: blue; font-size: 12pt; text-decoration: none }
+        A:visited {color: blue; font-size: 12pt; text-decoration: none }
+        table{border-collapse: collapse; text-align: center; border: black 2px solid;}
+        td{border: black 2px dashed;}
+        tr{border: black 2px dashed;}
+        .td1{background: #c3c3c3;}
+    </style>
+</head>
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h1>Peticiones Cerradas</h1>
+        <table>
+            <tr class="td1">
+                <td><strong>Solicitud</strong></td>
+                <td><strong>Estado</strong></td>
+                <td><strong>Descripcion</strong></td>
+                <td><strong>Curso Destino</strong></td>
+                <td><strong>Pensum Destino</strong></td>
+                <td><strong>Semestre Destino</strong></td>
+                <td><strong>Curso Propietario</strong></td>
+                <td><strong>Pensum Propietario</strong></td>
+                <td><strong>Vigencia Propietario</strong></td>
+                {% if request.user|has_group:"Coordinador" %}
+                    <td><strong>Usuario que realizo la solicitud</strong></td>
+                {% elif request.user|has_group:"Editor" %}
+                    <td><strong>Usuario que estudio la solicitud</strong></td>
+                {% endif %}
+                <td><strong>Fecha de creacion</strong></td>    
+                <td><strong>Ultima modifiacion</strong></td>    
+                <td><strong>Acciones</strong></td>
+            </tr>
+            {% for rechazado in Rechazados %}
+                <tr>
+                    <input type="hidden" id="original{{rechazado.microcurriculo.id}}" name="original{{rechazado.microcurriculo.id}}" value="{{rechazado.original}}">
+                    <input type="hidden" id="id_s{{rechazado.microcurriculo.id}}" name="id_s{{rechazado.microcurriculo.id}}" value="{{rechazado.id}}">
+                    <td id="soli{{rechazado.microcurriculo.id}}" name="soli{{rechazado.microcurriculo.id}}">{{rechazado.soli}}</td>
+                    <td id="estado{{rechazado.microcurriculo.id}}" name="estado{{rechazado.microcurriculo.id}}">{{rechazado.estado}}</td>
+                    <td id="descripcion{{rechazado.microcurriculo.id}}" name="descripcion{{rechazado.microcurriculo.id}}">{{rechazado.descripcion}}</td>
+                    <td id="curso_d{{rechazado.microcurriculo.id}}" name="curso_d{{rechazado.microcurriculo.id}}">{{rechazado.curso_destino}}</td>
+                    <td id="pensum_d{{rechazado.microcurriculo.id}}" name="pensum_d{{rechazado.microcurriculo.id}}">{{rechazado.pensum_destino}}</td>
+                    <td id="semestre{{rechazado.microcurriculo.id}}" name="semestre{{rechazado.microcurriculo.id}}">{{rechazado.semestre_asignar}}</td>
+                    <td id="curso_p{{rechazado.microcurriculo.id}}" name="curso_p{{rechazado.microcurriculo.id}}">{{rechazado.curso_propietario}}</td>
+                    <td id="pensum_p{{rechazado.microcurriculo.id}}" name="pensum_p{{rechazado.microcurriculo.id}}">{{rechazado.pensum_propietario}}</td>
+                    <td id="vigencia{{rechazado.microcurriculo.id}}" name="vigencia{{rechazado.microcurriculo.id}}">{{rechazado.vigencias_original}}</td>
+                    {% if request.user|has_group:"Coordinador" %}
+                        <td id="user{{rechazado.microcurriculo.id}}" name="user{{rechazado.microcurriculo.id}}">{{rechazado.usuario}}</td>
+                    {% elif request.user|has_group:"Editor"%}
+                        {% if rechazado.coordinador %}
+                            <td id="coord{{rechazado.microcurriculo.id}}" name="coord{{rechazado.microcurriculo.id}}">{{rechazado.coordinador}}</td>
+                        {% else %}
+                            <td>Ningun coordinador </td>
+                        {% endif %}
+                    {% endif %}    
+                    <td id="date_new{{rechazado.microcurriculo.id}}" name="date_new{{rechazado.microcurriculo.id}}">{{rechazado.created}}</td>
+                    <td id="date{{rechazado.microcurriculo.id}}" name="date{{rechazado.microcurriculo.id}}">{{rechazado.updated}}</td>
+                    
+                </tr>
+            {% endfor %}
+        </table>
+        <a href="{% url 'nucleo' %}" class="isActivated">¿Desea ir al menu?</a>
+        <a href="{% url 'peticiones' %}" class="isActivated">¿Desea volver a las solicitudes activas?</a>                
+    </form>
+</body>
+</html>

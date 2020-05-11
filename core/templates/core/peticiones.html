@@ -248,7 +248,9 @@ function texto(elem, id_text) {
                     {% endif %}    
                 {% endif %}
             {% endfor %}    
-        </table>    
+        </table>
+        <a href="{% url 'rechazados' %}" class="isActivated">¿Desea visualizar todas las solicitudes cerradas?</a>
+        <a href="{% url 'nucleo' %}" class="isActivated">¿Desea volver al menu?</a>
     </form>    
 </body>
 </html>

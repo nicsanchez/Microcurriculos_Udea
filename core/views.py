@@ -21,6 +21,20 @@ from django.core.files.base import ContentFile
 def logout(request):
     do_logout(request)
     return redirect('/login')
+
+def rechazados(request):
+    if request.user.is_authenticated:
+        if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):
+            if (str(request.user.groups.all()[0])=='Coordinador'):
+                Rechazados=Solicitud.objects.filter(tipo="Cerrado").order_by('-updated')
+            elif(str(request.user.groups.all()[0])=='Editor'):
+                name=request.user.first_name+" "+request.user.last_name
+                Rechazados=Solicitud.objects.filter(usuario=name,tipo="Cerrado").order_by('-updated')
+            return render(request, "core/rechazados.html",{'Rechazados':Rechazados})    
+        else:
+            return redirect('/nucleo')    
+    return redirect('/login')
+    
 def login(request):
     form=AuthenticationForm()
     if request.method == 'POST':
@@ -33,6 +47,8 @@ def login(request):
                 do_login(request, user)
                 return redirect('/nucleo')
     return render(request, "core/login.html", {'form': form})                
+
+
 
 def peticiones(request):
     if request.user.is_authenticated:
@@ -801,10 +817,10 @@ def peticiones(request):
                             return HttpResponse(y)
             peticion=Solicitud.objects.all().order_by('-updated')
             if (str(request.user.groups.all()[0])=='Coordinador'):
-                Rechazados=Solicitud.objects.filter(tipo="Cerrado").order_by('-updated')[:4]
+                Rechazados=Solicitud.objects.filter(tipo="Cerrado").order_by('-updated')[:5]
             elif(str(request.user.groups.all()[0])=='Editor'):
                 name=request.user.first_name+" "+request.user.last_name
-                Rechazados=Solicitud.objects.filter(usuario=name,tipo="Cerrado").order_by('-updated')[:4]
+                Rechazados=Solicitud.objects.filter(usuario=name,tipo="Cerrado").order_by('-updated')[:3]
             return render(request, "core/peticiones.html",{'solicitudes':peticion,'Rechazados':Rechazados})    
         else:
             return redirect('/nucleo')    
