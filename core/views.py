@@ -1540,7 +1540,7 @@ def curso(request):
                 id_cursoglobal = cursoglobal.id
                 curso_asig = Curso_asignado.objects.get(id_curso=id_cursoglobal,version_pensum=pensum)
                 id_cursoasig = curso_asig.id
-                Cursos_prog = Curso_programado.objects.filter(id_curso_asignado=id_cursoasig)
+                Cursos_prog = Curso_programado.objects.filter(id_curso_asignado=id_cursoasig).order_by('id_microcurriculos','semestre')
                 lista_cursos_prog_json = []
                 lista_ids = []
                 lista_semestres = []
@@ -1554,113 +1554,12 @@ def curso(request):
                                 lista_semestres.append(str(Curso_prog.semestre))
                         lista_comunes=[[k]*v for k, v in collections.Counter(lista_ids).items()]
                         x1=0
-                        x2=len(lista_comunes[0])-1
-                        a=[]
-                        b=[]
-                        semestres = Semestres.objects.all()
-                        x3=0
-                        x4=0
-                        x5=0
-                        x6=0
-                        string2=[]
-                        string3=[]
-                        for semestre in semestres:
-                            b.append(str(semestre.descripcion))
-                        for i in range(1,len(lista_comunes)+1):
-                            a.clear()
-                            string2.clear()
-                            string3.clear()
-                            if(i==len(lista_comunes)):
-                                for j in range(x1,x2+1):
-                                    a.append(lista_semestres[j])
-                                a=sorted(a)
-                                if(len(a)==1):
-                                    string2.append(a[0])
-                                else:
-                                    x5=0
-                                    x6=0    
-                                    for k in range(0,len(a)-1):
-                                        x3=0
-                                        x4=0
-                                        for l in range(0,len(b)):
-                                            if(a[k]==b[l]):
-                                                x3=l
-                                            elif(a[k+1]==b[l]):
-                                                x4=l      
-                                        if(x4-x3==1):
-                                            x6=x6+1
-                                            s=' a '
-                                        elif(k==0):
-                                            x5=k+1
-                                            x6=k+1
-                                            string2.append(a[0])
-                                            s=" a "     
-                                        else:
-                                            if(len(a)==2):
-                                                x5=k
-                                                x6=k+1
-                                                s=' , '
-                                            else:    
-                                                x5=k+1
-                                                x6=k+1
-                                                s=' a '
-                                        if(a[x5]==a[x6]):
-                                            string2.append(a[x5])
-                                        else:
-                                            string2.append(a[x5]+s+a[x6])    
-                            else:
-                                for j in range(x1,x2+1):
-                                    a.append(lista_semestres[j])
-                                a=sorted(a)
-                                if(len(a)==1):
-                                    string2.append(a[0])
-                                else:
-                                    x5=0
-                                    x6=0    
-                                    for k in range(0,len(a)-1):
-                                        x3=0
-                                        x4=0
-                                        for l in range(0,len(b)):
-                                            if(a[k]==b[l]):
-                                                x3=l
-                                            elif(a[k+1]==b[l]):
-                                                x4=l      
-                                        if(x4-x3==1):
-                                            x6=x6+1
-                                            s=' a '
-                                        else:
-                                            if(len(a)==2):
-                                                x5=k
-                                                x6=k+1
-                                                s=' , '
-                                            elif(k==0):
-                                                x5=k+1
-                                                x6=k+1
-                                                string2.append(a[0])
-                                                s=" a " 
-                                            else:    
-                                                x5=k+1
-                                                x6=k+1
-                                                s=' a '    
-                                        if(a[x5]==a[x6]):
-                                            string2.append(a[x5])
-                                        else:
-                                            string2.append(a[x5]+s+a[x6])
-                                x1=x1+len(lista_comunes[i-1])
-                                x2=x2+len(lista_comunes[i])
-                            for p in range(0,len(string2)):
-                                string3.append(string2[p])
-                            aux=0
-                            print(string3)
-                            for h in range(0,len(string2)-1):
-                                if(string2[h][0:6]==string2[h+1][0:6]):
-                                    string3.pop(h-aux)
-                                    aux=aux+1
-                            cadena=string3[0]
-                            for z in range(1,len(string3)):
-                                cadena=cadena+' , '+string3[z]
-                            print(cadena)
-                            lista_cursos_prog_json.append(cadena)
+                        #Aqui se procesan las vigencias dependiendo del rango de semestres que escoja el usuario
+                        for i in range(0,len(lista_comunes)):
+                            listai=lista_semestres[x1:x1+len(lista_comunes[i])]
+                            vigencia=organizador_vigencias("","","vigencia",listai)
+                            x1+=len(lista_comunes[i])
+                            lista_cursos_prog_json.append(vigencia)
                     else:
                         lista_cursos_prog_json.append("Vacio")
                 else:
@@ -2361,13 +2260,17 @@ def procesos(cadena1,request):
     cadena2=cadena2.replace('&','\&')
     return cadena2
 
-def organizador_vigencias(curso_asig,microcurriculo):
+def organizador_vigencias(curso_asig="",microcurriculo="",caso="Asignaciones",lista1=[]):
     #Funcion para encontrar las vigencias de un microcurriculo,le entra un curso asignado y un microcurriculo
-    asignaciones=Curso_programado.objects.filter(id_curso_asignado=curso_asig,id_microcurriculos=microcurriculo).order_by('semestre')
-    cadena=[]
-    lista=[]
-    for asignacion in asignaciones:
-        lista.append(asignacion.semestre)
+    if(caso=="Asignaciones"):
+        asignaciones=Curso_programado.objects.filter(id_curso_asignado=curso_asig,id_microcurriculos=microcurriculo).order_by('semestre')
+        cadena=[]
+        lista=[]
+        for asignacion in asignaciones:
+            lista.append(asignacion.semestre)
+    else:
+        cadena=[]
+        lista=lista1
     semestres = Semestres.objects.all().order_by('descripcion')
     orden=[]
     for semestre in semestres:
