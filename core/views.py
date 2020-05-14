@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse,get_object_or_404,redirect
-from .models import Microcurriculum,Unity,Evaluation,Curso,Curso_asignado,Curso_programado,Semestres,Microcurriculum_2,Unity_2,Evaluation_2,Solicitud,Versiones
+from .models import Microcurriculum,Unity,Evaluation,Curso,Curso_asignado,Curso_programado,Semestres,Microcurriculum_2,Unity_2,Evaluation_2,Solicitud,Versiones,UserRol
 from django.contrib import messages
 from django.core import serializers
 from django.http import JsonResponse
@@ -25,16 +25,42 @@ def logout(request):
 def rechazados(request):
     if request.user.is_authenticated:
         if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):
-            if (str(request.user.groups.all()[0])=='Coordinador'):
+            if (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Coordinador"):
                 Rechazados=Solicitud.objects.filter(tipo="Cerrado").order_by('-updated')
-            elif(str(request.user.groups.all()[0])=='Editor'):
+            elif(str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                 name=request.user.first_name+" "+request.user.last_name
                 Rechazados=Solicitud.objects.filter(usuario=name,tipo="Cerrado").order_by('-updated')
             return render(request, "core/rechazados.html",{'Rechazados':Rechazados})    
         else:
             return redirect('/nucleo')    
     return redirect('/login')
-    
+
+def choose(request):
+    if request.user.is_authenticated:
+        if(str(request.user.groups.all()[0])=='Coordinador'):
+            if request.method == "POST":
+                rol = request.POST['rol']
+                if(rol=="Seleccione"):
+                    mensaje = 'Seleccione un rol'
+                    return render(request, "core/choose.html",{'mensaje1': mensaje}) 
+                else:
+                    try:
+                        #Si el usuario es antiguo
+                        newrol = UserRol.objects.get(user=request.user)
+                        newrol.rol=rol
+                        newrol.save(update_fields=['rol'])
+                        return redirect('/nucleo')
+                    except:
+                        #Si el usuario es nuevo
+                        newrol = UserRol(user=request.user,rol=rol)
+                        newrol.save()
+                        return redirect('/nucleo')
+            return render(request, "core/choose.html")    
+        else:
+            return redirect('/nucleo')
+    else:
+        return redirect('/login')
+
 def login(request):
     form=AuthenticationForm()
     if request.method == 'POST':
@@ -45,10 +71,11 @@ def login(request):
             user = authenticate(username=username, password=password)     
             if user is not None:
                 do_login(request, user)
-                return redirect('/nucleo')
+                if(str(request.user.groups.all()[0])=='Coordinador'):
+                    return redirect('/choose')
+                elif(str(request.user.groups.all()[0])=='Editor'):
+                    return redirect('/nucleo')
     return render(request, "core/login.html", {'form': form})                
-
-
 
 def peticiones(request):
     if request.user.is_authenticated:
@@ -359,7 +386,7 @@ def peticiones(request):
                         os.chdir("/home/nicolas/CursoDjango/Microcurriculos/Microcurriculos_Udea") 
                         return HttpResponse(a)
                 elif request.POST['caso']=='rechazar':
-                    if (str(request.user.groups.all()[0])=='Coordinador'):
+                    if (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Coordinador"):
                         format1,fileb64=request.POST['archivo'].split(';base64,')
                         ext=format1.split('/')[-1]
                         data = ContentFile(base64.b64decode(fileb64), name='comentarios.' + ext)
@@ -453,7 +480,7 @@ def peticiones(request):
                         insert.save()
                         return HttpResponse("Se ha enviado su revision satisfactoriamente al editor")
                 elif request.POST['caso']=='cerrar':
-                    if (str(request.user.groups.all()[0])=='Coordinador'):
+                    if (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Coordinador"):
                         id_s=request.POST['id_s']
                         id_m=request.POST['id_m']
                         solicitud=Solicitud.objects.get(id=id_s)
@@ -471,7 +498,7 @@ def peticiones(request):
                         micro.delete()
                         return HttpResponse("Se ha cerrado la solicitud")
                 elif request.POST['caso']=='aceptar':
-                    if (str(request.user.groups.all()[0])=='Coordinador'):
+                    if (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Coordinador"):
                         user_p=str(request.user.first_name)+' '+str(request.user.last_name)
                         id_s=request.POST['id_s']
                         id_m=request.POST['id_m']
@@ -707,7 +734,7 @@ def peticiones(request):
                             micro_aso.delete()
                             return HttpResponse("Se ha procesado la solicitud")
                 elif request.POST['caso']=='revisar':
-                    if (str(request.user.groups.all()[0])=='Editor'):
+                    if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                         micro=int(request.POST['id_micro'])
                         versiones = Versiones.objects.filter(id_microcurriculos_2=micro)
                         ids = []
@@ -815,11 +842,12 @@ def peticiones(request):
                             sol.estado="Revision"
                             sol.save(update_fields=['estado','updated'])
                             return HttpResponse(y)
-            peticion=Solicitud.objects.all().order_by('-updated')
-            if (str(request.user.groups.all()[0])=='Coordinador'):
+            if (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Coordinador"):
+                peticion=Solicitud.objects.all().order_by('-updated')
                 Rechazados=Solicitud.objects.filter(tipo="Cerrado").order_by('-updated')[:5]
-            elif(str(request.user.groups.all()[0])=='Editor'):
+            elif(str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                 name=request.user.first_name+" "+request.user.last_name
+                peticion=Solicitud.objects.filter(usuario=name).order_by('-updated')
                 Rechazados=Solicitud.objects.filter(usuario=name,tipo="Cerrado").order_by('-updated')[:3]
             return render(request, "core/peticiones.html",{'solicitudes':peticion,'Rechazados':Rechazados})    
         else:
@@ -828,7 +856,7 @@ def peticiones(request):
 
 def nuevo1(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Editor'):    
+        if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):    
             semestres = Semestres.objects.all()
             return render(request, "core/nuevo1.html",{'semestres':semestres})
         else:
@@ -837,7 +865,7 @@ def nuevo1(request):
 
 def nuevo2(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Editor'):    
+        if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):    
             semestres = Semestres.objects.all()
             return render(request, "core/nuevo2.html",{'semestres':semestres})
         return redirect('/nucleo')    
@@ -845,7 +873,7 @@ def nuevo2(request):
 
 def nuevo3(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Editor'):    
+        if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):    
             semestres = Semestres.objects.all()
             return render(request, "core/nuevo3.html",{'semestres':semestres})    
         else:
@@ -853,7 +881,7 @@ def nuevo3(request):
     return redirect('/login')
 def nuevo4(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Editor'):            
+        if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):            
             semestres = Semestres.objects.all()
             return render(request, "core/nuevo4.html",{'semestres':semestres})        
         else:
@@ -867,7 +895,7 @@ def visualizar(request):
 
 def editar(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Editor'):
+        if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
             semestres = Semestres.objects.all()
             return render(request, "core/editar.html",{'semestres':semestres})
         else:
@@ -876,7 +904,7 @@ def editar(request):
 
 def crear2(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Editor'):    
+        if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):    
             if request.method == "POST":
                 if request.POST['caso']=="confirmacion":
                     pensum = request.POST['pensum']
@@ -972,7 +1000,7 @@ def nucleo(request):
 
 def core(request):
     if request.user.is_authenticated:
-        if (str(request.user.groups.all()[0])=='Editor'):    
+        if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):    
             if request.method == "POST":
                 if request.POST['caso']=="nuevo" or request.POST['caso']=="editar":
                     if(int(request.POST["contadorgeneral"])==0):
@@ -1067,7 +1095,7 @@ def core(request):
                                     insert2 = Curso_programado(id_microcurriculos=id_microcurriculo,id_curso_asignado=curso_asig,semestre=semestre)
                                     insert2.save()
                                 '''
-                                if(str(request.user.groups.all()[0])=='Editor'):
+                                if(str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                                     #Se inserta en la base de datos fantasma para el Editor
                                     insert = Microcurriculum_2(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
                                     insert.save()
@@ -1112,7 +1140,7 @@ def core(request):
                                     if (str(request.user.groups.all()[0])=='Coordinador'): 
                                         insert = Unity(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana)
                                     '''
-                                    if (str(request.user.groups.all()[0])=='Editor'):
+                                    if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                                         insert = Unity_2(id_microcurriculos=id_microcurriculo,tema=tema,subtema=subtema,num_semanas=semana) 
                                     insert.save()
                                 for i in range(1,cantidad_evaluaciones+1):
@@ -1124,7 +1152,7 @@ def core(request):
                                     if (str(request.user.groups.all()[0])=='Coordinador'): 
                                         insert = Evaluation(id_microcurriculos=id_microcurriculo,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
                                     '''
-                                    if (str(request.user.groups.all()[0])=='Editor'):
+                                    if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                                         insert = Evaluation_2(id_microcurriculos=id_microcurriculo,actividad=actividad,porcentaje=porcentaje,fecha=fecha)
                                     insert.save()
                                 mensaje = 'Se ha agregado un nuevo registro de microcurriculo con éxito'
@@ -1205,7 +1233,7 @@ def core(request):
                                         insert.save()
                                         contador=contador+1
                             '''
-                            if(str(request.user.groups.all()[0])=='Editor'):
+                            if(str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                                 if(request.POST['vigencia_es'][0:6]!="editar"):
                                     #Creo un nuevo registro en la base de datos fantasma para luego comparar las ediciones realizadas
                                     insert = Microcurriculum_2(descripcion_general=descripcion_gen,proposito=proposito,objetivo_general=obj_gen,objetivo_especifico=obj_esp,contenido_resumido=cont_resu,actividades_asis_oblig=act_asis_oblig,bibliografia_basica=bibliografia_bas,bibliografia_complementaria=bibliografia_comp,metodologia=metodologia)
@@ -1599,7 +1627,7 @@ def curso(request):
                             insert.save()
                             return HttpResponse("Se asignó correctamente el ultimo microcurriculo vigente al semestre seleccionado")
                 '''
-                if (str(request.user.groups.all()[0])=='Editor'):
+                if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                     pensum_d = request.POST['pensum']
                     curso_d = request.POST['curso']
                     semestre = request.POST['semestre']
@@ -1680,7 +1708,7 @@ def curso(request):
                             insert.save()
                             return HttpResponse("Se asignó correctamente el ultimo microcurriculo vigente al semestre seleccionado")    
                 '''
-                if (str(request.user.groups.all()[0])=='Editor'):
+                if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                     pensums = request.POST['pensums'].split(" /pencur- ")
                     nombre_cs = request.POST['cursos'].split(" /cursel- ")
                     semestre = request.POST['semestre']
@@ -1745,7 +1773,7 @@ def curso(request):
                         insert.save()
                         return HttpResponse("Se renovó correctamente el microcurriculo del curso")
                 '''
-                if (str(request.user.groups.all()[0])=='Editor'):
+                if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                     pensum = request.POST['pensum']
                     nombre_c = request.POST['curso']
                     vigencia = request.POST['vigencia']
@@ -1803,7 +1831,7 @@ def curso(request):
                         insert.save()
                         return HttpResponse("Se renovó correctamente el microcurriculo del curso")        
                 '''
-                if (str(request.user.groups.all()[0])=='Editor'):
+                if (str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                     pensums = request.POST['pensum'].split(' /pencur- ')
                     cursos = request.POST['curso'].split(' /cursel- ')
                     pensum = pensums[0]

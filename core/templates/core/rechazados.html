@@ -36,9 +36,9 @@
                 <td><strong>Curso Propietario</strong></td>
                 <td><strong>Pensum Propietario</strong></td>
                 <td><strong>Vigencia Propietario</strong></td>
-                {% if request.user|has_group:"Coordinador" %}
+                {% if request.user|has_group:"Coordinador" and request.user|has_rol:"Coordinador"%}
                     <td><strong>Usuario que realizo la solicitud</strong></td>
-                {% elif request.user|has_group:"Editor" %}
+                {% elif request.user|has_group:"Editor" or request.user|has_rol:"Editor" %}
                     <td><strong>Usuario que estudio la solicitud</strong></td>
                 {% endif %}
                 <td><strong>Fecha de creacion</strong></td>    
@@ -58,9 +58,9 @@
                     <td id="curso_p{{rechazado.microcurriculo.id}}" name="curso_p{{rechazado.microcurriculo.id}}">{{rechazado.curso_propietario}}</td>
                     <td id="pensum_p{{rechazado.microcurriculo.id}}" name="pensum_p{{rechazado.microcurriculo.id}}">{{rechazado.pensum_propietario}}</td>
                     <td id="vigencia{{rechazado.microcurriculo.id}}" name="vigencia{{rechazado.microcurriculo.id}}">{{rechazado.vigencias_original}}</td>
-                    {% if request.user|has_group:"Coordinador" %}
+                    {% if request.user|has_group:"Coordinador" and request.user|has_rol:"Coordinador"%}
                         <td id="user{{rechazado.microcurriculo.id}}" name="user{{rechazado.microcurriculo.id}}">{{rechazado.usuario}}</td>
-                    {% elif request.user|has_group:"Editor"%}
+                    {% elif request.user|has_group:"Editor" or request.user|has_rol:"Editor" %}
                         {% if rechazado.coordinador %}
                             <td id="coord{{rechazado.microcurriculo.id}}" name="coord{{rechazado.microcurriculo.id}}">{{rechazado.coordinador}}</td>
                         {% else %}

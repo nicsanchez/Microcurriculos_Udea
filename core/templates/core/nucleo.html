@@ -33,10 +33,14 @@
         Bienvenido <b>{{request.user.first_name}}</b> a la aplicacion de Microcurriculos.
     </p>
     <p>
-        Eres un <b>{{request.user.groups.all.0}}</b> de la aplicacion.
+        {% if request.user|has_group:"Coordinador" %}
+             Eres un <b>{{request.user.userrol.rol}}</b> de la aplicacion.
+        {% elif request.user|has_group:"Editor" %}
+            Eres un <b>{{request.user.groups.all.0}}</b> de la aplicacion.
+        {% endif %}
     </p>
     <h1>Menu</h1>
-    {% if request.user|has_group:"Editor"%}
+    {% if request.user|has_group:"Editor" or request.user|has_rol:"Editor" %}
         <tr>
             <td><a href="{% url 'crear2' %}" id="crear_micro">Crear un microcurriculo</a></td> 
         </tr>

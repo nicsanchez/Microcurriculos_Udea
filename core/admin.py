@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Microcurriculum,Unity,Evaluation,Curso,Programa,Curso_asignado,Curso_programado,Semestres,Microcurriculum_2,Unity_2,Evaluation_2,Solicitud,Versiones
+from .models import Microcurriculum,Unity,Evaluation,Curso,Programa,Curso_asignado,Curso_programado,Semestres,Microcurriculum_2,Unity_2,Evaluation_2,Solicitud,Versiones,UserRol
 
 # Register your models here.
 class MicrocurriculumAdmin(admin.ModelAdmin):
@@ -41,6 +41,9 @@ class SemestresAdmin(admin.ModelAdmin):
 class VersionesAdmin(admin.ModelAdmin):
     list_display = ('id','version','id_microcurriculos','id_microcurriculos_2','accion','comentarios','usuario','coordinador','created','updated')
 
+class RolesAdmin(admin.ModelAdmin):
+    list_display = ('user','rol')
+
 admin.site.register(Microcurriculum,MicrocurriculumAdmin)
 admin.site.register(Microcurriculum_2,Microcurriculum2Admin)
 admin.site.register(Unity,UnityAdmin)
@@ -54,3 +57,4 @@ admin.site.register(Curso_programado,Curso_programadoAdmin)
 admin.site.register(Semestres,SemestresAdmin)
 admin.site.register(Solicitud,SolicitudAdmin)
 admin.site.register(Versiones,VersionesAdmin)
+admin.site.register(UserRol,RolesAdmin)

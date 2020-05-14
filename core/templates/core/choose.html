@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous">
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Escoger rol administrativo</title>
+</head>
+{% if mensaje1 %}
+    <script>
+        alert('{{ mensaje1 }}');
+        window.history.back();
+    </script>
+{% endif %}
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <h4>¿Como desea ingresar?</h4>
+        <table>
+            <tr>
+                <select name="rol" id="rol" required="True">
+                <option >Seleccione</option>
+                <option >Coordinador</option>
+                <option >Editor</option>
+            </tr>
+        </table>
+        <table>
+            <button type="submit">Continuar</button>
+        </table>   
+    </form>
+</body>
+</html>    

@@ -19,7 +19,8 @@ urlpatterns = [
     path('logout/',views.logout,name="logout"),
     path('login/',views.login,name="login"),
     path('peticiones/',views.peticiones,name="peticiones"),
-    path('rechazados/',views.rechazados,name="rechazados")
+    path('rechazados/',views.rechazados,name="rechazados"),
+    path('choose/',views.choose,name="choose")
 ]
 if settings.DEBUG:
     from django.conf.urls.static import static

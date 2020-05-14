@@ -68,9 +68,9 @@ function texto(elem, id_text) {
                 <td><strong>Microcurriculo</strong></td>
                 <td><strong>Comparacion de versiones</strong></td>
                 <td><strong>Comentarios</strong></td>
-                {% if request.user|has_group:"Coordinador" %}
+                {% if request.user|has_group:"Coordinador" and request.user|has_rol:"Coordinador"%}
                     <td><strong>Usuario que realizo la solicitud</strong></td>
-                {% elif request.user|has_group:"Editor" %}
+                {% elif request.user|has_group:"Editor" or request.user|has_rol:"Editor" %}
                     <td><strong>Usuario que estudio la solicitud</strong></td>
                 {% endif %}
                 <td><strong>Fecha de creacion</strong></td>    
@@ -79,7 +79,7 @@ function texto(elem, id_text) {
             </tr>
             {% for solicitud in solicitudes %}
                 {% if solicitud.tipo == "Abierto"%}
-                    {% if request.user|has_group:"Coordinador" %}
+                    {% if request.user|has_group:"Coordinador" and request.user|has_rol:"Coordinador"%}
                         <tr>
                             <input type="hidden" id="original{{solicitud.microcurriculo.id}}" name="original{{solicitud.microcurriculo.id}}" value="{{solicitud.original}}">
                             <input type="hidden" id="id_s{{solicitud.microcurriculo.id}}" name="id_s{{solicitud.microcurriculo.id}}" value="{{solicitud.id}}">
@@ -131,7 +131,7 @@ function texto(elem, id_text) {
                             </td>
                             {% endif %}  
                         </tr>
-                    {% elif request.user|has_group:"Editor" and  solicitud.usuario == request.user.first_name|add:" "|add:request.user.last_name%}
+                    {% elif request.user|has_group:"Editor" or request.user|has_rol:"Editor"%}
                         <tr>
                             <input type="hidden" id="original{{solicitud.microcurriculo.id}}" name="original{{solicitud.microcurriculo.id}}" value="{{solicitud.original}}">
                             <input type="hidden" id="id_s{{solicitud.microcurriculo.id}}" name="id_s{{solicitud.microcurriculo.id}}" value="{{solicitud.id}}">
@@ -192,9 +192,9 @@ function texto(elem, id_text) {
                 <td><strong>Curso Propietario</strong></td>
                 <td><strong>Pensum Propietario</strong></td>
                 <td><strong>Vigencia Propietario</strong></td>
-                {% if request.user|has_group:"Coordinador" %}
+                {% if request.user|has_group:"Coordinador" and request.user|has_rol:"Coordinador"%}
                     <td><strong>Usuario que realizo la solicitud</strong></td>
-                {% elif request.user|has_group:"Editor" %}
+                {% elif request.user|has_group:"Editor" or request.user|has_rol:"Editor" %}
                     <td><strong>Usuario que estudio la solicitud</strong></td>
                 {% endif %}
                 <td><strong>Fecha de creacion</strong></td>    
@@ -203,7 +203,7 @@ function texto(elem, id_text) {
             </tr>
             {% for rechazado in Rechazados %}
                 {% if rechazado.tipo == "Cerrado"%}
-                    {% if request.user|has_group:"Coordinador" %}
+                    {% if request.user|has_group:"Coordinador" and request.user|has_rol:"Coordinador"%}
                         <tr>
                             <input type="hidden" id="original{{rechazado.microcurriculo.id}}" name="original{{rechazado.microcurriculo.id}}" value="{{rechazado.original}}">
                             <input type="hidden" id="id_s{{rechazado.microcurriculo.id}}" name="id_s{{rechazado.microcurriculo.id}}" value="{{rechazado.id}}">
@@ -222,7 +222,7 @@ function texto(elem, id_text) {
                             <td id="date{{rechazado.microcurriculo.id}}" name="date{{rechazado.microcurriculo.id}}">{{rechazado.updated}}</td>
                             
                         </tr>
-                    {% elif request.user|has_group:"Editor" and  rechazado.usuario == request.user.first_name|add:" "|add:request.user.last_name%}
+                    {% elif request.user|has_group:"Editor" or request.user|has_rol:"Editor"%}
                         <tr>
                             <input type="hidden" id="original{{rechazado.microcurriculo.id}}" name="original{{rechazado.microcurriculo.id}}" value="{{rechazado.original}}">
                             <input type="hidden" id="id_s{{rechazado.microcurriculo.id}}" name="id_s{{rechazado.microcurriculo.id}}" value="{{rechazado.id}}">
