@@ -106,6 +106,15 @@
         newInput2.name=n_2;
         newInput2.required="true";
         newInput3 = document.createElement("input");
+        newmsj=document.createElement("td")
+        newmsj.id="msj_"+n_1;
+        newmsj.setAttribute('class', 'errores');
+        newmsj2=document.createElement("td")
+        newmsj2.id="msj_"+n_2;
+        newmsj2.setAttribute('class', 'errores');
+        newmsj3=document.createElement("td")
+        newmsj3.id="msj_"+n_3;
+        newmsj3.setAttribute('class', 'errores');
         if(tipo=="Unidad"){
             newInput3.type="text";
         }
@@ -121,17 +130,23 @@
         newNode.appendChild(document.createElement("tr"));
         newNode.childNodes[1].appendChild(document.createElement("td"));
         newNode.childNodes[1].appendChild(document.createElement("td"));
+        newNode.childNodes[1].appendChild(newmsj);
         newNode.childNodes[2].appendChild(document.createElement("td"));
         newNode.childNodes[2].appendChild(document.createElement("td"));
+        newNode.childNodes[2].appendChild(newmsj2);
         newNode.childNodes[3].appendChild(document.createElement("td"));
         newNode.childNodes[3].appendChild(document.createElement("td"));
+        newNode.childNodes[3].appendChild(newmsj3);
         newNode.childNodes[0].appendChild(document.createTextNode(text));
         newNode.childNodes[1].childNodes[0].appendChild(document.createTextNode(input_1))
         newNode.childNodes[1].childNodes[1].appendChild(newInput1);
+        newNode.childNodes[1].childNodes[2].appendChild(document.createTextNode("*Digite este campo"));
         newNode.childNodes[2].childNodes[0].appendChild(document.createTextNode(input_2))
         newNode.childNodes[2].childNodes[1].appendChild(newInput2);
+        newNode.childNodes[2].childNodes[2].appendChild(document.createTextNode("*Digite este campo"));
         newNode.childNodes[3].childNodes[0].appendChild(document.createTextNode(input_3))
         newNode.childNodes[3].childNodes[1].appendChild(newInput3);
+        newNode.childNodes[3].childNodes[2].appendChild(document.createTextNode("*Digite este campo"));
         return newNode;
     }
     function newuni(text,input_1,input_2,input_3,n_1,n_2,n_3,cont){
@@ -153,6 +168,12 @@
         newInput4.id="agresubtema"+cont;
         newInput4.href="javascript:newsubt("+cont+")";
         newInput4.appendChild(document.createTextNode("Agregar un subtema"));
+        newmsj=document.createElement("td")
+        newmsj.id="msj_"+n_1;
+        newmsj.setAttribute('class', 'errores');
+        newmsj2=document.createElement("td")
+        newmsj2.id="msj_"+n_2;
+        newmsj2.setAttribute('class', 'errores');
         newNode = document.createElement("table");
         newNode.appendChild(document.createElement("h4"));
         newNode.appendChild(document.createElement("tr"));
@@ -163,16 +184,20 @@
         newNode.childNodes[1].appendChild(document.createElement("td"));
         newNode.childNodes[2].appendChild(document.createElement("td"));
         newNode.childNodes[2].appendChild(document.createElement("td"));
+        newNode.childNodes[2].appendChild(newmsj);
         newNode.childNodes[3].appendChild(document.createElement("td"));
         newNode.childNodes[3].appendChild(document.createElement("td"));
+        newNode.childNodes[3].appendChild(newmsj2);
         newNode.childNodes[5].appendChild(document.createElement("td"));
         newNode.childNodes[0].appendChild(document.createTextNode(text));
         newNode.childNodes[4].appendChild(document.createTextNode(input_3));
         newNode.childNodes[1].firstChild.appendChild(newInput3);
         newNode.childNodes[2].childNodes[0].appendChild(document.createTextNode(input_1))
         newNode.childNodes[2].childNodes[1].appendChild(newInput1);
+        newNode.childNodes[2].childNodes[2].appendChild(document.createTextNode("*Digite este campo"));
         newNode.childNodes[3].childNodes[0].appendChild(document.createTextNode(input_2))
         newNode.childNodes[3].childNodes[1].appendChild(newInput2);
+        newNode.childNodes[3].childNodes[2].appendChild(document.createTextNode("*Digite este campo"));
         newNode.childNodes[5].firstChild.appendChild(newInput4);
         newNode.childNodes[5].id="nodosub"+cont;
         newNode.childNodes[5].firstChild.id="agregarsub"+cont;
@@ -210,11 +235,16 @@
         newInput1.type="text";
         newInput1.name=n_1;
         newInput1.required="True";
+        newmsj=document.createElement("td")
+        newmsj.id="msj_"+n_1;
+        newmsj.setAttribute('class', 'errores');
         newNode = document.createElement("tr");
         newNode.appendChild(document.createElement("td"));
         newNode.appendChild(document.createElement("td"));
+        newNode.appendChild(newmsj);
         newNode.firstChild.appendChild(document.createTextNode(input_1))
-        newNode.lastChild.appendChild(newInput1);
+        newNode.childNodes[1].appendChild(newInput1);
+        newNode.childNodes[2].appendChild(document.createTextNode("*Digite este campo"));
         return newNode;
     }    
     function newEval(){
@@ -236,11 +266,6 @@
             document.getElementById("evalManagment").appendChild(newClose);
         }
     }
-    function pregunta(){
-        if (confirm('¿Estas seguro de enviar este formulario?')){
-        document.formulario.submit()
-        }
-    } 
     function newUnity(){
         cont ++;
         document.getElementById("c_u").value=cont;
@@ -352,11 +377,21 @@
         A:link {color: blue; font-size: 12pt; text-decoration: none }
         A:hover {color: blue; font-size: 12pt; text-decoration: none }
         A:visited {color: blue; font-size: 12pt; text-decoration: none }
+        .errores{
+            background: White;
+            box-shadow: 0 0 10px rgba(0,0,0,0,0.3);
+            color: black;
+            display: none;
+            font-size: 14px;
+            padding: 10px;
+            position:absolute;
+        }
+    
     </style>
 </head>
 <h1>Asignar un nuevo microcurriculo</h1>
 <body>
-    <form action="{% url 'core' %}" method="POST" name="formulario">
+    <form action="{% url 'core' %}" method="POST" name="formulario" id="formulario">
         {% csrf_token %}
         <input type="hidden" id="caso" name="caso" value="nuevo">
         <input type="hidden" id="id_o" name="id_origen" value="nuevo">
@@ -377,19 +412,25 @@
         <table id="tabla1">
             <tr>
                 <td>Descripcion General : </td>
-                <td><textarea id="des_gen" name="descripcion_general" required="True" rows="1" cols="28" style="font-size:13px"></textarea></td>
+                <td>
+                    <textarea id="des_gen" name="descripcion_general" required="True" rows="1" cols="28" style="font-size:13px"></textarea>
+                <td>
+                <td id="msj_des_gen" class="errores">*Digite este campo</td>     
             </tr>
             <tr>
                 <td>Proposito : </td>
                 <td><textarea id="propos" name="proposito" required="True" rows="1" cols="28" style="font-size:13px"></textarea></td>
+                <td id="msj_propos" class="errores">*Digite este campo</td>     
             </tr>
             <tr>
                 <td>Metodología : </td>
                 <td><textarea id="metodo" name="metodologia" required="True" rows="1" cols="28" style="font-size:13px"></textarea></td>
+                <td id="msj_metodo" class="errores">*Digite este campo</td>     
             </tr>
             <tr>
                 <td>Actividades de Asistencia Obligatoria : </td>
                 <td><textarea id="acti_asis" name="actividades_asis_oblig" required="True" rows="1" cols="28" style="font-size:13px"></textarea></td>
+                <td id="msj_acti_asis" class="errores">*Digite este campo</td>
             </tr>
         </table> 
         <table>
@@ -450,7 +491,7 @@
                 <td colspan="2"><CENTER id="evalManagment"><a HREF="javascript:newEval();">Agregar una Evaluacion</a>&nbsp;</CENTER></td>
             </tr>
             <tr>
-                <td><input type=button onclick="pregunta()" value="Enviar"></td>
+                <td><input type=button id="submit1" value="Enviar"></td>
             </tr>       
         </table> 
         <table>
@@ -576,8 +617,8 @@ $(document).ready(function(){
                     unidcon=subtemas[i].split(" /subin- ").length-1
                     $('<table id="tbunid'+i+'"></table>').insertBefore("#cant_unid");
                     titulo='<h4>Unidad '+i+':</h4>'
-                    temasi='<tr><td>Temas :</td><td><input type="text" required="True" name="temas'+i+'" value="'+temas[i]+'"></td></tr>';
-                    semanasi='<tr><td># de semanas :</td><td><input type="number" required="True" name="semanas'+i+'" value="'+semanas[i]+'"></td></tr>';
+                    temasi='<tr><td>Temas :</td><td><input type="text" required="True" name="temas'+i+'" value="'+temas[i]+'"></td><td id="msj_temas'+i+'" class="errores">*Digite este campo</td></tr>';
+                    semanasi='<tr><td># de semanas :</td><td><input type="number" required="True" name="semanas'+i+'" value="'+semanas[i]+'"></td><td id="msj_semanas'+i+'" class="errores">*Digite este campo</td></tr>';
                     contadori='<tr><td><input type="hidden" id="subtemas'+i+'" name="subtemas'+i+'" value="'+unidcon+'"></td></tr>';
                     subt='<tr><td>Subtemas :</td></tr>';
                     control='<tr id="nodosub'+i+'"><td id="agregarsub'+i+'"><a id="agregarsubtema'+i+'" href="javascript:newsubt('+i+')">Agregar un subtema</a></td></tr>';
@@ -589,7 +630,7 @@ $(document).ready(function(){
                     if(unidcon>0){
                         sub=subtemas[i].split(" /subin- ")
                         for(var j=1;j<unidcon+1;j++){
-                            subtemai='<tr><td>Subtema '+j+':</td><td><input type="text" required="True" name="subtemauni'+i+''+j+'" value="'+sub[j]+'"></td></tr>';
+                            subtemai='<tr><td>Subtema '+j+':</td><td><input type="text" required="True" name="subtemauni'+i+''+j+'" value="'+sub[j]+'"></td><td id="msj_subtemauni'+i+j+'" class="errores">*Digite este campo</td></tr>';
                             $(subtemai).insertBefore("#nodosub"+i);
                         }
                         elimi='<a id="eliminarsubt'+i+'" href="javascript:eliminari('+i+')">Borrar el último subtema</a>'
@@ -607,9 +648,9 @@ $(document).ready(function(){
                 for(var i=1;i<cont_eval+1;i++){
                     $('<tr id="treval'+i+'"></tr>').insertBefore("#cant_eval");
                     titulo='<h4>Evaluacion '+i+':</h4>'
-                    actividadi='<tr><td>Actividad :</td><td><input type="text" required="True" name="actividad'+i+'" value="'+activ[i]+'"></td></tr>';
-                    porcentajei='<tr><td>Porcentaje :</td><td><input type="number" required="True" name="porcentaje'+i+'" value="'+porcen[i]+'"></td></tr>';
-                    fechai='<tr><td>Fecha :</td><td><input type="date" required="True" name="fecha'+i+'" value="'+fech[i]+'"></td></tr>';
+                    actividadi='<tr><td>Actividad :</td><td><input type="text" required="True" name="actividad'+i+'" value="'+activ[i]+'"></td><td id="msj_actividad'+i+'" class="errores">*Digite este campo</td></tr>';
+                    porcentajei='<tr><td>Porcentaje :</td><td><input type="number" required="True" name="porcentaje'+i+'" value="'+porcen[i]+'"></td><td id="msj_porcentaje'+i+'" class="errores">*Digite este campo</td></tr>';
+                    fechai='<tr><td>Fecha :</td><td><input type="date" required="True" name="fecha'+i+'" value="'+fech[i]+'"></td><td id="msj_fecha'+i+'" class="errores">*Digite este campo</td></tr>';
                     contenido=actividadi+porcentajei+fechai;
                     $('#treval'+i).append(titulo);
                     $('#treval'+i).append(contenido);
@@ -632,11 +673,16 @@ $(document).ready(function(){
             newInput1.type="text";
             newInput1.name=n_1;
             newInput1.required="True";
+            newmsj=document.createElement("td")
+            newmsj.id="msj_"+n_1;
+            newmsj.setAttribute('class', 'errores');
             newNode = document.createElement("tr");
             newNode.appendChild(document.createElement("td"));
             newNode.appendChild(document.createElement("td"));
+            newNode.appendChild(newmsj);
             newNode.firstChild.appendChild(document.createTextNode(input_1))
-            newNode.lastChild.appendChild(newInput1);
+            newNode.childNodes[1].appendChild(newInput1);
+            newNode.childNodes[2].appendChild(document.createTextNode("*Digite este campo"));
             return newNode;
         }; 
         function procesamiento(cadena,clave,clave2,id_close,id_top,n_unity,nombre,nombre_href,mensaje_text,tipo){
@@ -693,7 +739,7 @@ $(document).ready(function(){
             }
             return cadena;
         }
-    }
+    };
     function generar_evaluaciones(contador){
         var cadena ='';
         if(parseInt(contador)==0){
@@ -777,7 +823,183 @@ $(document).ready(function(){
             }
             return cadena
         }
+    };
+    //Cuando el usuario desee enviar la informacion al backend se va a ejecutar esta funcion
+    $('#submit1').on("click", function() {
+        if (confirm('¿Estas seguro de enviar este formulario?')){
+            var no_dynamic_field= check_no_dinamic_field("des_gen");
+            var no_dynamic_field2= check_no_dinamic_field("propos");
+            var no_dynamic_field3= check_no_dinamic_field("metodo");
+            var no_dynamic_field4= check_no_dinamic_field("acti_asis");
+            var general=check_simple_dinamic_field("general",$('#c_g').val())
+            var specific=check_simple_dinamic_field("especifico",$('#c_es').val())
+            var resumido=check_simple_dinamic_field("item",$('#c_res').val())
+            var basic=check_simple_dinamic_field("basica",$('#c_bas').val())
+            var comple=check_simple_dinamic_field("complementaria",$('#c_com').val())
+            var evaluations=check_complex_dinamic_field("actividad","porcentaje",$('#c_e').val(),"Evaluacion");
+            var unities=check_complex_dinamic_field("temas","semanas",$('#c_u').val(),"Unidad");
+            check_empty_fields()
+            if(no_dynamic_field && no_dynamic_field2 && no_dynamic_field3 && no_dynamic_field4 && general && specific && resumido && basic && comple && evaluations && unities){
+                console.log("se puede enviar info");
+                document.formulario.submit();
+            };
+        }
+    });
+
+    function check_empty_fields(){
+        var mensaje="";
+        if($('#c_g').val()==0){
+            mensaje+= "*No hay objetivos generales \n";
+        };
+        if($('#c_es').val()==0){
+            mensaje+= "*No hay objetivos especificos \n";
+        };
+        if($('#c_res').val()==0){
+            mensaje+= "*No hay items en el contenido resumido \n";
+        };
+        if($('#c_bas').val()==0){
+            mensaje+= "*No hay bibliografia basica \n";
+        };
+        if($('#c_com').val()==0){
+            mensaje+= "*No hay bibliografia complementaria \n";
+        };
+        if($('#c_u').val()==0){
+            mensaje+= "*No hay unidades \n";
+        }
+        else{ 
+            counter=$('#c_u').val();
+            for (var i = 1; i <= counter; i++) {
+                pos=i.toString();
+                counteri=$('#subtemas'+pos).val();
+                //Si el contador de subtemas de cada unidad esta vacio se debe notificar al usuario
+                if(counteri==0){
+                    mensaje+= "*No hay subtemas en la unidad "+pos+"\n";
+                };
+            }
+        };
+        if($('#c_e').val()==0){
+            mensaje+= "*No hay evaluaciones \n";
+        };
+        if(mensaje!=""){
+            alert(mensaje);
+        };
     }
+
+    //Funcion para revisar los textarea simples
+    function check_no_dinamic_field(key){
+        //Si el campo está vacio se muestra msj de error y se retorna false
+        if(checkTextarea("#"+key)==false){
+            $("#msj_"+key).fadeIn();
+            return false;
+        }
+        //Si el campo está lleno se quita el msj de error y se retorna true
+        else{
+            $("#msj_"+key).fadeOut();
+            return true;
+        }
+    }
+
+    //Funcion para revisar los textarea simples
+    function check_input(key,pattern){
+        //Si el campo está vacio se muestra msj de error y se retorna false
+        if(checkInput(key, pattern)){
+            $("#msj_"+key).fadeIn();
+            return false;
+        }
+        //Si el campo está lleno se quita el msj de error y se retorna true
+        else{
+            $("#msj_"+key).fadeOut();
+            return true;
+        }
+    }
+    //Funcion para revisar campos dinamicos simples
+    function check_simple_dinamic_field(key,counter){
+        var retorno=true;
+        var pattern = "^[a-z A-Z]|[0-9]{1,30}$";
+        if(counter>0){
+            for (var i = 1; i <= counter; i++) {
+                pos=i.toString();
+                keyi=key+pos;
+                //Si el campo esta vacio retorna se retornara false para que no se pueda llevar a cabo la peticion
+                if(check_input(keyi,pattern)==false){
+                    retorno=false;
+                };
+            }
+            return retorno
+        }
+        //Si no se ha generado ningun item no se activa el boton de enviar
+        else{
+            return false;
+        }
+    }
+    //Funcion para revisar campos dinamicos complejos
+    function check_complex_dinamic_field(key1,key2,counter,case1){
+        var retorno=true;
+        var pattern = "^[a-z A-Z]|[0-9]{1,30}$";
+        var numeric = "^[0-9]{1,30}$";
+        if(counter>0){
+            for (var i = 1; i <= counter; i++) {
+                pos=i.toString();
+                keyi1=key1+pos;
+                keyi2=key2+pos;
+                //Si un campo alfanumerico o numerico esta vacio retorna false y no se puede enviar datos al backend
+                alfanumerico=check_input(keyi1,pattern);
+                numerico=check_input(keyi2,numeric);
+                if(case1=="Evaluacion"){
+                    keyi3="fecha"+pos;
+                    externo=checkDateField(keyi3);
+                }
+                //En caso de ser una unidad se debe revisar cada subtema y verifica que no este vacio
+                else{
+                    counter2=$('#subtemas'+pos).val();
+                    //Si hay por lo menos un subtema se debe validar
+                    if(counter2>0){
+                        var externo2=true;
+                        for (var j = 1; j <= counter2; j++) {
+                            pos2=j.toString();
+                            keyi3="subtemauni"+pos+pos2;
+                            //Si hay almenos un subtema vacio se retorna False
+                            if(check_input(keyi3,pattern)==false){
+                                externo2=false;
+                            };
+                        }
+                    }
+                    //Si no se ha generado ni un subtema se retorna false
+                    else{
+                        var externo2=false;
+                    }
+                }
+                //Para retornar True todos los campos numericos,alfanumericos,subtemas y fecha deben tener almenos un caracter
+                if(alfanumerico==false || numerico==false || externo==false || externo2==false){
+                    retorno=false;
+                };
+            }
+            return retorno
+        }
+        //Si no se ha generado ningun item no se activa el boton de enviar
+        else{
+            return false;
+        }
+    }
+
+    //Devuelve True cuando el campo de tipo Input está vacio
+    function checkInput(InputName, pattern) {
+        return $("input[name='"+InputName+"']").val().match(pattern) ? false : true;
+    };
+    function checkDateField(InputName) {
+        if($("input[name='"+InputName+"']").val().length > 0){
+            $("#msj_"+InputName).fadeOut();
+            return true;
+        }
+        else{
+            $("#msj_"+InputName).fadeIn();
+            return false;
+        }
+    };
+    function checkTextarea(idText) {
+        return $(idText).val().length > 0 ? true : false;	
+    };
+    //Funcion con la que se genera pdf en la base dedatos del progreso
     $("#visualizar_pdf").on('click', function (e){
         e.preventDefault();
         let url = "{% url 'core' %}";
