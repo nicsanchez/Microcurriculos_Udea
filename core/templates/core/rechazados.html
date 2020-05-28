@@ -69,7 +69,14 @@
                     {% endif %}    
                     <td id="date_new{{rechazado.microcurriculo.id}}" name="date_new{{rechazado.microcurriculo.id}}">{{rechazado.created}}</td>
                     <td id="date{{rechazado.microcurriculo.id}}" name="date{{rechazado.microcurriculo.id}}">{{rechazado.updated}}</td>
-                    
+                    <td>
+                        {% if rechazado.estado == "Cerrado" %}
+                            <h7>Cierre definitivo</h7>
+                        {%else%}
+                            <a href="" class="isActivated">Reactivar</a>
+                            <a href="" class="isActivated">Cerrar</a>
+                        {%endif%}
+                    </td>
                 </tr>
             {% endfor %}
         </table>

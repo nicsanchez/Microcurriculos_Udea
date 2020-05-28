@@ -108,7 +108,9 @@ function texto(elem, id_text) {
                                     </table>
                                 </td>
                             {% else %}
-                                <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
+                                {% if solicitud.archivo %}
+                                    <td><a href="{{solicitud.archivo.url}}" download>Archivo adjunto</a></td>
+                                {% endif %}
                             {% endif %}
                             <td id="user{{solicitud.microcurriculo.id}}" name="user{{solicitud.microcurriculo.id}}">{{solicitud.usuario}}</td>
                             <td id="date_new{{solicitud.microcurriculo.id}}" name="date_new{{solicitud.microcurriculo.id}}">{{solicitud.created}}</td>
@@ -117,17 +119,17 @@ function texto(elem, id_text) {
                             <td>
                                 <a href="javascript:aceptar({{solicitud.microcurriculo.id}})" class="isActivated">Aceptar</a>
                                 {% if solicitud.soli != "Asignar" %}
-                                    <a href="javascript:rechazar({{solicitud.microcurriculo.id}})" class="isActivated">Rechazar</a>
+                                    <a href="javascript:rechazar({{solicitud.microcurriculo.id}})" class="isActivated">Devolver</a>
                                 {% endif %}
-                                <a href="javascript:cerrar({{solicitud.microcurriculo.id}})" class="isActivated">Cerrar</a>
+                                <a href="javascript:cerrar({{solicitud.microcurriculo.id}})" class="isActivated">Rechazar</a>
                             </td>
                             {% else %}
                             <td>
                                 <a href="" class="isDisabled">Aceptar</a>
                                 {% if solicitud.soli != "Asignar" %}
-                                    <a href="" class="isDisabled">Rechazar</a>
+                                    <a href="" class="isDisabled">Devolver</a>
                                 {% endif %}    
-                                <a href="" class="isDisabled">Cerrar</a>
+                                <a href="" class="isDisabled">Rechazar</a>
                             </td>
                             {% endif %}  
                         </tr>
@@ -220,7 +222,15 @@ function texto(elem, id_text) {
                             <td id="user{{rechazado.microcurriculo.id}}" name="user{{rechazado.microcurriculo.id}}">{{rechazado.usuario}}</td>
                             <td id="date_new{{rechazado.microcurriculo.id}}" name="date_new{{rechazado.microcurriculo.id}}">{{rechazado.created}}</td>
                             <td id="date{{rechazado.microcurriculo.id}}" name="date{{rechazado.microcurriculo.id}}">{{rechazado.updated}}</td>
-                            
+                            <td>
+                                {% if rechazado.estado == "Cerrado" %}
+                                    <h7>Cierre definitivo</h7>
+                                {%else%}
+                                    <a href="javascript:reactivar({{rechazado.microcurriculo.id}})" class="isActivated">Reactivar</a>
+                                    <a href="javascript:cerrar2({{rechazado.microcurriculo.id}})" class="isActivated">Cerrar</a>
+                                {%endif%}
+                            </td>
+
                         </tr>
                     {% elif request.user|has_group:"Editor" or request.user|has_rol:"Editor"%}
                         <tr>
@@ -243,7 +253,15 @@ function texto(elem, id_text) {
                             {% endif %}
                             <td id="date_new{{rechazado.microcurriculo.id}}" name="date_new{{rechazado.microcurriculo.id}}">{{rechazado.created}}</td>
                             <td id="date{{rechazado.microcurriculo.id}}" name="date{{rechazado.microcurriculo.id}}">{{rechazado.updated}}</td>
-                        
+
+                            <td>
+                                {% if rechazado.estado == "Cerrado" %}
+                                    <h7>Cierre definitivo</h7>
+                                {%else%}
+                                    <a href="javascript:reactivar({{rechazado.microcurriculo.id}})" class="isActivated">Reactivar</a>
+                                    <a href="javascript:cerrar2({{rechazado.microcurriculo.id}})" class="isActivated">Cerrar</a>
+                                {%endif%}
+                            </td>
                         </tr>
                     {% endif %}    
                 {% endif %}
@@ -371,6 +389,25 @@ function cerrar(n){
     let url = "{% url 'peticiones' %}";
     var id=String(n);
     var id_s=$('#id_s'+id).val();
+    var caso='rechazar2';
+    const postData={
+        'caso': caso,
+        'id_s': id_s,
+        'id_m': id,
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+    };
+    if(confirm("¿Esta seguro de cerrar la solicitud?")){
+        $.post(url, postData, function(response){
+            alert(response)
+            pagina="{% url 'nucleo' %}"
+            $(location).attr('href',pagina);
+        });
+    }    
+}
+function cerrar2(n){
+    let url = "{% url 'peticiones' %}";
+    var id=String(n);
+    var id_s=$('#id_s'+id).val();
     var caso='cerrar';
     const postData={
         'caso': caso,
@@ -386,6 +423,26 @@ function cerrar(n){
         });
     }    
 }
+function reactivar(n){
+    let url = "{% url 'peticiones' %}";
+    var id=String(n);
+    var id_s=$('#id_s'+id).val();
+    var caso='reactivar';
+    const postData={
+        'caso': caso,
+        'id_s': id_s,
+        'id_m': id,
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+    };
+    if(confirm("¿Esta seguro de activar nuevamente la solicitud?")){
+        $.post(url, postData, function(response){
+            alert(response)
+            pagina="{% url 'nucleo' %}"
+            $(location).attr('href',pagina);
+        });
+    }    
+}
+
 function aceptar(n){
     let url = "{% url 'peticiones' %}";
     var id=String(n);

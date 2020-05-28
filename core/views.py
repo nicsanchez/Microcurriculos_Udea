@@ -385,6 +385,7 @@ def peticiones(request):
                         os.remove("diff.tex")
                         os.chdir("/home/nicolas/CursoDjango/Microcurriculos/Microcurriculos_Udea") 
                         return HttpResponse(a)
+                #FUNCION EN LA QUE SE DEVUELVE SOLICITUD AL EDITOR        
                 elif request.POST['caso']=='rechazar':
                     if (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Coordinador"):
                         format1,fileb64=request.POST['archivo'].split(';base64,')
@@ -479,12 +480,13 @@ def peticiones(request):
                         insert=Versiones(version=archivo2,id_microcurriculos_2=micro_aso,accion="Rechazado",comentarios=archivo,usuario=solicitud.usuario,coordinador=user_p)
                         insert.save()
                         return HttpResponse("Se ha enviado su revision satisfactoriamente al editor")
+                #FUNCION PARA CERRAR DEFINITIVAMENTE LAS SOLICITUDES
                 elif request.POST['caso']=='cerrar':
-                    if (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Coordinador"):
+                    if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):
                         id_s=request.POST['id_s']
                         id_m=request.POST['id_m']
                         solicitud=Solicitud.objects.get(id=id_s)
-                        solicitud.estado="Rechazado"
+                        solicitud.estado="Cerrado"
                         solicitud.tipo="Cerrado"
                         solicitud.microcurriculo=None
                         solicitud.save(update_fields=['estado','tipo','microcurriculo','updated'])
@@ -496,14 +498,39 @@ def peticiones(request):
                         for unidad in unity_micro:
                             unidad.delete()
                         micro.delete()
-                        return HttpResponse("Se ha cerrado la solicitud")
+                        return HttpResponse("Se ha cerrado definitivamente la solicitud")
+                #FUNCION PARA RECHAZAR SOLICITUDES
+                elif request.POST['caso']=='rechazar2':
+                    if (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Coordinador"):
+                        user_p=str(request.user.first_name)+' '+str(request.user.last_name)
+                        id_s=request.POST['id_s']
+                        id_m=request.POST['id_m']
+                        solicitud=Solicitud.objects.get(id=id_s)
+                        solicitud.estado="Rechazado"
+                        solicitud.tipo="Cerrado"
+                        solicitud.coordinador=user_p
+                        solicitud.save(update_fields=['estado','tipo','coordinador','updated'])
+                        return HttpResponse("Se ha rechazado la solicitud")        
+                #FUNCION PARA REACTIVAR LAS SOLICITUDES CERRADAS
+                elif request.POST['caso']=='reactivar':
+                    if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):
+                        #user_p=str(request.user.first_name)+' '+str(request.user.last_name)
+                        id_s=request.POST['id_s']
+                        id_m=request.POST['id_m']
+                        solicitud=Solicitud.objects.get(id=id_s)
+                        solicitud.estado="Revision"
+                        solicitud.tipo="Abierto"
+                        #solicitud.coordinador=user_p
+                        solicitud.save(update_fields=['estado','tipo','updated'])
+                        return HttpResponse("Se ha activado nuevamente la solicitud")        
+                #FUNCION PARA ACEPTAR LAS SOLICITUDES
                 elif request.POST['caso']=='aceptar':
                     if (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Coordinador"):
                         user_p=str(request.user.first_name)+' '+str(request.user.last_name)
                         id_s=request.POST['id_s']
                         id_m=request.POST['id_m']
                         solicitud=Solicitud.objects.get(id=id_s)
-                        solicitud.estado="Final"
+                        solicitud.estado="Aceptado"
                         solicitud.tipo="Cerrado"
                         solicitud.coordinador=user_p
                         solicitud.save(update_fields=['estado','tipo','coordinador','updated'])

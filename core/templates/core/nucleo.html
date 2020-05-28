@@ -58,6 +58,11 @@
             <td><a href="{% url 'peticiones' %}" >Visualizar las solicitudes realizadas</a></td> 
         </tr>
     {% endif %}
+    {% if request.user|has_group:"Coordinador"%}
+        <tr>
+            <td><a href="{% url 'choose' %}" >Cambiar de rol</a></td> 
+        </tr>
+    {% endif %}
 </table>
 {% if request.user.is_authenticated %}
     <table>
