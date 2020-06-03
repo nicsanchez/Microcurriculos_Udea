@@ -16,6 +16,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as do_login
 from base64 import b64decode
 from django.core.files.base import ContentFile
+from django.contrib.auth.models import Group,User
 
 # Create your views here.
 def logout(request):
@@ -61,6 +62,44 @@ def choose(request):
     else:
         return redirect('/login')
 
+def register(request):
+    if request.user.is_authenticated:
+        if(str(request.user.groups.all()[0])=='Gestor'):
+            if request.method == "POST":
+                first_name=request.POST['name']
+                second_name=request.POST['s_name']
+                username=request.POST['user']
+                password=request.POST['password']
+                rpassword=request.POST['rpassword']
+                email=request.POST['email']
+                grupo=request.POST['group']
+                try:
+                    user = User.objects.get(username=username)
+                    mensaje = "El nombre de usuario "+username+" ya está siendo usado"
+                    return render(request, "core/register.html",{'alerta': mensaje})
+                except:    
+                    if( " " in username):
+                        mensaje = 'El nombre de usuario no puede tener espacios'
+                        return render(request, "core/register.html",{'alerta': mensaje})                   
+                    else:    
+                        if(rpassword==password):
+                            user = User.objects.create_user(username, email, password)
+                            group = Group.objects.all().filter(name=grupo)
+                            user.first_name = first_name
+                            user.last_name = second_name
+                            user.groups.set(group)
+                            user.save()
+                            mensaje = 'Usuario registrado con exito'
+                            return render(request, "core/register.html",{'mensaje': mensaje})                     
+                        else:  
+                            mensaje = 'Las contraseñas no coinciden'
+                            return render(request, "core/register.html",{'alerta': mensaje})                     
+            grupos=Group.objects.all()
+            return render(request, "core/register.html",{'groups':grupos})
+        else:
+            return redirect('/nucleo')
+    return redirect('/login')     
+
 def login(request):
     form=AuthenticationForm()
     if request.method == 'POST':
@@ -73,7 +112,7 @@ def login(request):
                 do_login(request, user)
                 if(str(request.user.groups.all()[0])=='Coordinador'):
                     return redirect('/choose')
-                elif(str(request.user.groups.all()[0])=='Editor'):
+                elif(str(request.user.groups.all()[0])=='Editor' or str(request.user.groups.all()[0])=='Gestor'):
                     return redirect('/nucleo')
     return render(request, "core/login.html", {'form': form})                
 

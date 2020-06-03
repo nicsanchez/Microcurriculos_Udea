@@ -234,10 +234,11 @@ class Versiones(models.Model):
 class UserRol(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     rol = models.TextField()
+    cursos = models.TextField(null=True)
 
     class Meta:
-        verbose_name = "Rol"
-        verbose_name_plural = "Roles"
+        verbose_name = "Atributo"
+        verbose_name_plural = "Atributos"
         ordering = ["id"]
     
     def __str__(self):

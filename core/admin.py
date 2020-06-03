@@ -42,7 +42,7 @@ class VersionesAdmin(admin.ModelAdmin):
     list_display = ('id','version','id_microcurriculos','id_microcurriculos_2','accion','comentarios','usuario','coordinador','created','updated')
 
 class RolesAdmin(admin.ModelAdmin):
-    list_display = ('user','rol')
+    list_display = ('user','rol','cursos')
 
 admin.site.register(Microcurriculum,MicrocurriculumAdmin)
 admin.site.register(Microcurriculum_2,Microcurriculum2Admin)

@@ -826,24 +826,24 @@ $(document).ready(function(){
     };
     //Cuando el usuario desee enviar la informacion al backend se va a ejecutar esta funcion
     $('#submit1').on("click", function() {
-        if (confirm('¿Estas seguro de enviar este formulario?')){
-            var no_dynamic_field= check_no_dinamic_field("des_gen");
-            var no_dynamic_field2= check_no_dinamic_field("propos");
-            var no_dynamic_field3= check_no_dinamic_field("metodo");
-            var no_dynamic_field4= check_no_dinamic_field("acti_asis");
-            var general=check_simple_dinamic_field("general",$('#c_g').val())
-            var specific=check_simple_dinamic_field("especifico",$('#c_es').val())
-            var resumido=check_simple_dinamic_field("item",$('#c_res').val())
-            var basic=check_simple_dinamic_field("basica",$('#c_bas').val())
-            var comple=check_simple_dinamic_field("complementaria",$('#c_com').val())
-            var evaluations=check_complex_dinamic_field("actividad","porcentaje",$('#c_e').val(),"Evaluacion");
-            var unities=check_complex_dinamic_field("temas","semanas",$('#c_u').val(),"Unidad");
-            check_empty_fields()
-            if(no_dynamic_field && no_dynamic_field2 && no_dynamic_field3 && no_dynamic_field4 && general && specific && resumido && basic && comple && evaluations && unities){
-                console.log("se puede enviar info");
+        var no_dynamic_field= check_no_dinamic_field("des_gen");
+        var no_dynamic_field2= check_no_dinamic_field("propos");
+        var no_dynamic_field3= check_no_dinamic_field("metodo");
+        var no_dynamic_field4= check_no_dinamic_field("acti_asis");
+        var general=check_simple_dinamic_field("general",$('#c_g').val())
+        var specific=check_simple_dinamic_field("especifico",$('#c_es').val())
+        var resumido=check_simple_dinamic_field("item",$('#c_res').val())
+        var basic=check_simple_dinamic_field("basica",$('#c_bas').val())
+        var comple=check_simple_dinamic_field("complementaria",$('#c_com').val())
+        var evaluations=check_complex_dinamic_field("actividad","porcentaje",$('#c_e').val(),"Evaluacion");
+        var unities=check_complex_dinamic_field("temas","semanas",$('#c_u').val(),"Unidad");
+        check_empty_fields()
+        if(no_dynamic_field && no_dynamic_field2 && no_dynamic_field3 && no_dynamic_field4 && general && specific && resumido && basic && comple && evaluations && unities){
+            console.log("se puede enviar info");
+            if (confirm('¿Estas seguro de enviar este formulario?')){
                 document.formulario.submit();
-            };
-        }
+            }
+        };
     });
 
     function check_empty_fields(){
@@ -899,7 +899,7 @@ $(document).ready(function(){
         }
     }
 
-    //Funcion para revisar los textarea simples
+    //Funcion para revisar los input simples
     function check_input(key,pattern){
         //Si el campo está vacio se muestra msj de error y se retorna false
         if(checkInput(key, pattern)){
@@ -939,6 +939,8 @@ $(document).ready(function(){
         var numeric = "^[0-9]{1,30}$";
         if(counter>0){
             for (var i = 1; i <= counter; i++) {
+                externo=true;
+                externo2=true;
                 pos=i.toString();
                 keyi1=key1+pos;
                 keyi2=key2+pos;

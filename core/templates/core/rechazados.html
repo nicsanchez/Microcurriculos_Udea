@@ -50,7 +50,11 @@
                     <input type="hidden" id="original{{rechazado.microcurriculo.id}}" name="original{{rechazado.microcurriculo.id}}" value="{{rechazado.original}}">
                     <input type="hidden" id="id_s{{rechazado.microcurriculo.id}}" name="id_s{{rechazado.microcurriculo.id}}" value="{{rechazado.id}}">
                     <td id="soli{{rechazado.microcurriculo.id}}" name="soli{{rechazado.microcurriculo.id}}">{{rechazado.soli}}</td>
-                    <td id="estado{{rechazado.microcurriculo.id}}" name="estado{{rechazado.microcurriculo.id}}">{{rechazado.estado}}</td>
+                    {% if rechazado.estado == "Cerrado" %}
+                        <td id="estado{{rechazado.microcurriculo.id}}" name="estado{{rechazado.microcurriculo.id}}">Rechazado</td>
+                    {%else%}
+                        <td id="estado{{rechazado.microcurriculo.id}}" name="estado{{rechazado.microcurriculo.id}}">{{rechazado.estado}}</td>
+                    {%endif%}
                     <td id="descripcion{{rechazado.microcurriculo.id}}" name="descripcion{{rechazado.microcurriculo.id}}">{{rechazado.descripcion}}</td>
                     <td id="curso_d{{rechazado.microcurriculo.id}}" name="curso_d{{rechazado.microcurriculo.id}}">{{rechazado.curso_destino}}</td>
                     <td id="pensum_d{{rechazado.microcurriculo.id}}" name="pensum_d{{rechazado.microcurriculo.id}}">{{rechazado.pensum_destino}}</td>
@@ -71,7 +75,7 @@
                     <td id="date{{rechazado.microcurriculo.id}}" name="date{{rechazado.microcurriculo.id}}">{{rechazado.updated}}</td>
                     <td>
                         {% if rechazado.estado == "Cerrado" %}
-                            <h7>Cierre definitivo</h7>
+                            <h7>Ninguna</h7>
                         {%else%}
                             <a href="" class="isActivated">Reactivar</a>
                             <a href="" class="isActivated">Cerrar</a>

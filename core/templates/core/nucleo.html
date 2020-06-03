@@ -35,7 +35,7 @@
     <p>
         {% if request.user|has_group:"Coordinador" %}
              Eres un <b>{{request.user.userrol.rol}}</b> de la aplicacion.
-        {% elif request.user|has_group:"Editor" %}
+        {% elif request.user|has_group:"Editor" or request.user|has_group:"Gestor" %}
             Eres un <b>{{request.user.groups.all.0}}</b> de la aplicacion.
         {% endif %}
     </p>
@@ -63,6 +63,11 @@
             <td><a href="{% url 'choose' %}" >Cambiar de rol</a></td> 
         </tr>
     {% endif %}
+    {% if request.user|has_group:"Gestor"%}
+        <tr>
+            <a href="{% url 'register' %}">Registrar nuevo usuario</a>
+        </tr>    
+    {% endif %}    
 </table>
 {% if request.user.is_authenticated %}
     <table>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous">
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Registrar un nuevo usuario</title>
+    <style type="text/css" media="screen">
+        .errores{
+            background: White;
+            box-shadow: 0 0 10px rgba(0,0,0,0,0.3);
+            color: black;
+            display: none;
+            font-size: 14px;
+            padding: 10px;
+            position:absolute;
+        }
+    </style>
+</head>
+{% if mensaje %}
+    <script>
+        alert('{{ mensaje }}');
+        window.location = "{% url 'core' %}";
+    </script>
+{% endif %}
+{% if alerta %}
+    <script>
+        alert('{{ alerta }}');
+        window.history.back();
+    </script>
+{% endif %}
+<h1>Registrar un nuevo usuario</h1>
+<body>
+    <form method="POST" name="formulario" id="formulario">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td>Nombres: </td>
+                <td><input type="text" id="name" name="name"></td>
+                <td id="msj_name" class="errores">*Digite este campo</td>     
+            </tr>
+            <tr>
+                <td>Apellidos: </td>
+                <td><input type="text" id="s_name" name="s_name"></td>
+                <td id="msj_s_name" class="errores">*Digite este campo</td>     
+            </tr>
+            <tr>
+                <td>Usuario: </td>
+                <td><input type="text" id="user" name="user"></td>
+                <td id="msj_user" class="errores">*Digite este campo</td>     
+            </tr>
+            <tr>
+                <td>Contraseña: </td>
+                <td><input type="password" id="password" name="password"></td>
+                <td id="msj_password" class="errores">*Digite este campo</td>     
+            </tr>
+            <tr>
+                <td>Confirmar contraseña: </td>
+                <td><input type="password" id="rpassword" name="rpassword"></td>
+                <td id="msj_rpassword" class="errores">*Digite este campo</td>     
+            </tr>
+            <tr>
+                <td>Email: </td>
+                <td><input type="text" id="email" name="email"></td>
+                <td id="msj_email" class="errores">*Digite un email válido</td>     
+            </tr>
+            <tr>
+                <td>Grupo: </td>
+                <td>
+                    <select name="group" id="group" required="True">
+                    <option >Seleccione</option>
+                    {% for group in groups %}
+                        <option> {{group}} </option>
+                    {% endfor %}
+                </td>
+                <td id="msj_group" class="errores">*Seleccione un grupo</td>     
+            </tr>
+        </table>
+        <table>
+            <button type="button" id="submit1">Registrar</button>
+        </table>   
+    </form>
+</body>
+<script lenguague="javascript"> 
+$(document).ready(function(){
+    $('#submit1').on("click", function() {
+        var pattern = "^[a-z A-Z]|[0-9]{1,30}$";
+        var emailrgx = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
+        var name = check_input("name",pattern);
+        var s_name = check_input("s_name",pattern);
+        var user = check_input("user",pattern);
+        var password = check_input("password",pattern);
+        var rpassword = check_input("rpassword",pattern);
+        var email = check_input("email",emailrgx);
+        var group = checkselect("group");
+        if(name && s_name && user && rpassword && password && email && group){
+            if(confirm('¿Estas seguro de enviar este formulario?')){
+                document.formulario.submit();
+            }
+        }
+    });
+    //Funcion para revisar los input simples
+    function check_input(key,pattern){
+        //Si el campo está vacio se muestra msj de error y se retorna false
+        if(checkInput(key, pattern)){
+            $("#msj_"+key).fadeIn();
+            return false;
+        }
+        //Si el campo está lleno se quita el msj de error y se retorna true
+        else{
+            $("#msj_"+key).fadeOut();
+            return true;
+        }
+    }
+    //Devuelve True cuando el campo de tipo Input está vacio
+    function checkInput(InputName, pattern) {
+        return $("input[name='"+InputName+"']").val().match(pattern) ? false : true;
+    };
+
+    function checkselect(id) {
+        if($("#"+id).val()=="Seleccione"){
+            $("#msj_"+id).fadeIn();
+            return false
+        }
+        else{
+            $("#msj_"+id).fadeOut();
+            return true
+        }
+    };
+});       
+</script>
+</html>    
