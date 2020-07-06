@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load auth_extras %}
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous">
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Editores</title>
+    <style type="text/css" media="screen">
+        A:link {color: blue; font-size: 12pt; text-decoration: none }
+        A:hover {color: blue; font-size: 12pt; text-decoration: none }
+        A:visited {color: blue; font-size: 12pt; text-decoration: none }
+        table{border-collapse: collapse; text-align: center; border: black 2px solid;}
+        td{border: black 2px dashed;}
+        tr{border: black 2px dashed;}
+        .td1{background: #c3c3c3;}
+        .td2{border: white;}
+    </style>
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <h1>Editores</h1>
+        <table>
+            <tr class="td1">
+                <td><strong>Usuario</strong></td>
+                <td><strong>Nombres</strong></td>
+                <td><strong>Apellidos</strong></td>
+                <td><strong>Email</strong></td>
+                <td><strong>Acciones</strong></td>
+            </tr>
+            {% for editor in editores %}
+            <tr>
+                <td id="username{{editor.id}}" name="username{{editor.id}}">{{editor.username}}</td>
+                <td id="f_name{{editor.id}}" name="f_name{{editor.id}}">{{editor.first_name}}</td>
+                <td id="l_name{{editor.id}}" name="l_name{{editor.id}}">{{editor.last_name}}</td>
+                <td id="email{{editor.id}}" name="email{{editor.id}}">{{editor.email}}</td>
+                <td><a href="javascript:cambiar({{editor.id}})">Cambiar Grupo</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="modificar_grupo">
+            <table class="table">
+                <tr class="td2">
+                    <td class="td2">Está modificando el grupo de: </td>
+                    <td id="editor" class="td2"></td>
+                </tr>
+                <tr class="td2">
+                    <td class="td2">Seleccione un grupo</td>
+                    <td class="td2">
+                        <select name="grupo" id="grupo" required="True">
+                        <option >Seleccione</option>
+                        {% for grupo in grupos %}
+                            <option>{{grupo}}</option>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr class="td2">
+                    <td class="td2"><a href="javascript:cambiar2()">Modificar Grupo </a></td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</body>
+</html>
+<script languague="javascript">
+function cambiar2(){
+    let url="{% url 'editor' %}";
+    var username=$('#editor').text();
+    var grupo=$('#grupo').val();
+    if(username!="" && grupo!="Seleccione"){
+        if(confirm("¿Esta seguro de cambiar el grupo de "+username+" a "+grupo+"?")){
+            const postData={
+            'username': username,
+            'grupo': grupo,
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+            };
+            $.post(url, postData, function(response){
+                alert(response);
+                window.location.reload();
+            });
+        }
+    }
+    else{
+        alert("Porfavor seleccione el grupo que va a asignar")
+    }
+}
+function cambiar(id){
+    var username=$('#username'+id).text();
+    $('#editor').html(username);
+    $('.modificar_grupo').each(function(){
+        $(this).show();
+    });
+}
+$(document).ready(function(){
+    $('.modificar_grupo').each(function(){
+        $(this).hide();
+    });
+});
+</script>    

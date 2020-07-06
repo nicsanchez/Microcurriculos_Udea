@@ -65,8 +65,14 @@
     {% endif %}
     {% if request.user|has_group:"Gestor"%}
         <tr>
-            <a href="{% url 'register' %}">Registrar nuevo usuario</a>
-        </tr>    
+            <td><a href="{% url 'register' %}">Registrar nuevo usuario</a></td>
+        </tr>
+        <tr>
+            <td><a href="{% url 'coordinador' %}">Administrar Coordinadores</a></td>
+        </tr>
+        <tr>
+           <td><a href="{% url 'editor' %}">Administrar Editores</a></td>
+        </tr> 
     {% endif %}    
 </table>
 {% if request.user.is_authenticated %}

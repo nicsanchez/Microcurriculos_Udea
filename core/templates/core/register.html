@@ -80,10 +80,12 @@
                 </td>
                 <td id="msj_group" class="errores">*Seleccione un grupo</td>     
             </tr>
-        </table>
+        </table> 
         <table>
-            <button type="button" id="submit1">Registrar</button>
-        </table>   
+            <tr>
+                <td><button type="button" id="submit1">Registrar</button></td>
+            </tr>
+        </table> 
     </form>
 </body>
 <script lenguague="javascript"> 
@@ -103,7 +105,7 @@ $(document).ready(function(){
                 document.formulario.submit();
             }
         }
-    });
+    });  
     //Funcion para revisar los input simples
     function check_input(key,pattern){
         //Si el campo está vacio se muestra msj de error y se retorna false

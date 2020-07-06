@@ -42,7 +42,12 @@ class VersionesAdmin(admin.ModelAdmin):
     list_display = ('id','version','id_microcurriculos','id_microcurriculos_2','accion','comentarios','usuario','coordinador','created','updated')
 
 class RolesAdmin(admin.ModelAdmin):
-    list_display = ('user','rol','cursos')
+    list_display = ('user','rol','cursos_adjuntos')
+    
+    def cursos_adjuntos(self,obj):
+        return ", ".join([str(c) for c in obj.cursos.all().order_by("id")])
+        
+    cursos_adjuntos.short_description = "Cursos"    
 
 admin.site.register(Microcurriculum,MicrocurriculumAdmin)
 admin.site.register(Microcurriculum_2,Microcurriculum2Admin)

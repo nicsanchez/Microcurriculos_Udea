@@ -4,11 +4,14 @@ from django.contrib import messages
 from django.core import serializers
 from django.http import JsonResponse
 from django.http import FileResponse,Http404
+from django.db.models import Q
 from diff_pdf_visually import pdfdiff
 import collections
 import json
 import base64
 import os
+from functools import reduce
+from operator import or_
 from subprocess import call
 from django.contrib.auth import logout as do_logout
 from django.contrib.auth import authenticate
@@ -23,11 +26,90 @@ def logout(request):
     do_logout(request)
     return redirect('/login')
 
+def coordinador(request):
+    if request.user.is_authenticated:
+        if(str(request.user.groups.all()[0])=='Gestor'):
+            if request.method == 'POST':
+                username=request.POST['username']
+                grupo=request.POST['grupo']
+                user = User.objects.get(username=username)
+                group = Group.objects.all().filter(name=grupo)
+                user.groups.clear()
+                user.groups.set(group)
+                user.save()
+                if(grupo!="Coordinador"):
+                    atributo=UserRol.objects.get(user=user)
+                    atributo.delete()
+                return HttpResponse("Se actualizó correctamente el grupo del usuario")
+            usuarios=User.objects.filter(groups__name="Coordinador")
+            grupos=Group.objects.all()
+            return render(request, "core/coordinador.html",{'coordinadores':usuarios,'grupos':grupos})
+        else:
+            return redirect('/nucleo')    
+    return redirect('/login')
+
+def editor(request):
+    if request.user.is_authenticated:
+        if(str(request.user.groups.all()[0])=='Gestor'):
+            if request.method == 'POST':
+                username=request.POST['username']
+                grupo=request.POST['grupo']
+                user = User.objects.get(username=username)
+                group = Group.objects.all().filter(name=grupo)
+                user.groups.clear()
+                user.groups.set(group)
+                user.save()
+                return HttpResponse("Se actualizó correctamente el grupo del usuario")
+            usuarios=User.objects.filter(groups__name="Editor")
+            grupos=Group.objects.all()
+            return render(request, "core/editor.html",{'editores':usuarios,'grupos':grupos})
+        else:
+            return redirect('/nucleo')    
+    return redirect('/login')
+
+def cursos(request, user_id=None):
+    if request.user.is_authenticated:
+        if(str(request.user.groups.all()[0])=='Gestor'):
+            if request.method == "POST":
+                if request.POST['caso']=='eliminar':
+                    id_c=request.POST['id']
+                    id_u=request.POST['id_u']
+                    curso_a=Curso_asignado.objects.get(id=id_c)
+                    user=User.objects.get(id=id_u)
+                    eliminar = UserRol.objects.get(user=user)
+                    eliminar.cursos.remove(curso_a)
+                    return HttpResponse("Se eliminó el curso correctamente")
+                elif request.POST['caso']=='agregar':
+                    curso=request.POST['curso']
+                    pensum=request.POST['pensum']
+                    id_u=request.POST['id_u']
+                    user=User.objects.get(id=id_u)
+                    curso_n=Curso.objects.get(nombre=curso)
+                    curso_a=Curso_asignado.objects.get(id_curso=curso_n,version_pensum=pensum)
+                    try:
+                        agregar = UserRol.objects.get(user=user)
+                        agregar.cursos.add(curso_a)
+                    except:
+                        insert = UserRol(user=user,rol="Coordinador")
+                        insert.save()
+                        agregar = UserRol.objects.get(user=user)
+                        agregar.cursos.add(curso_a)
+                    return HttpResponse("Se agrego el curso correctamente")
+            user=User.objects.get(id=user_id)
+            return render(request, "core/cursos.html",{'user':user})
+        else:
+            return redirect('/nucleo')    
+    return redirect('/login')
+
 def rechazados(request):
     if request.user.is_authenticated:
         if (str(request.user.groups.all()[0])=='Coordinador' or str(request.user.groups.all()[0])=='Editor'):
             if (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Coordinador"):
-                Rechazados=Solicitud.objects.filter(tipo="Cerrado").order_by('-updated')
+                #Cursos asociados al coordinador que hace la peticion
+                cursos=request.user.userrol.cursos.all()
+                #Consulta dinámica dependiendo de la cantidad de cursos que tenga el coordinador en cuestion
+                query = reduce(or_, (Q(curso_destino=str(c),pensum_destino=str(c.version_pensum)) for c in cursos))
+                Rechazados=Solicitud.objects.filter(query).filter(tipo="Cerrado").order_by('-updated')
             elif(str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                 name=request.user.first_name+" "+request.user.last_name
                 Rechazados=Solicitud.objects.filter(usuario=name,tipo="Cerrado").order_by('-updated')
@@ -909,8 +991,12 @@ def peticiones(request):
                             sol.save(update_fields=['estado','updated'])
                             return HttpResponse(y)
             if (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Coordinador"):
-                peticion=Solicitud.objects.all().order_by('-updated')
-                Rechazados=Solicitud.objects.filter(tipo="Cerrado").order_by('-updated')[:5]
+                #Cursos asociados al coordinador que hace la peticion
+                cursos=request.user.userrol.cursos.all()
+                #Consulta dinámica dependiendo de la cantidad de cursos que tenga el coordinador en cuestion
+                query = reduce(or_, (Q(curso_destino=str(c),pensum_destino=str(c.version_pensum)) for c in cursos))
+                peticion=Solicitud.objects.filter(query).order_by('-updated')
+                Rechazados=Solicitud.objects.filter(query).filter(tipo="Cerrado").order_by('-updated')[:5]
             elif(str(request.user.groups.all()[0])=='Editor' or (str(request.user.groups.all()[0])=='Coordinador' and str(request.user.userrol.rol)=="Editor")):
                 name=request.user.first_name+" "+request.user.last_name
                 peticion=Solicitud.objects.filter(usuario=name).order_by('-updated')

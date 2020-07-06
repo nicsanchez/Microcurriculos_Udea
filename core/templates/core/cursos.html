@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load auth_extras %}
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous">
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cursos asociados</title>
+    <style type="text/css" media="screen">
+        A:link {color: blue; font-size: 12pt; text-decoration: none }
+        A:hover {color: blue; font-size: 12pt; text-decoration: none }
+        A:visited {color: blue; font-size: 12pt; text-decoration: none }
+        table{border-collapse: collapse; text-align: center; border: black 2px solid;}
+        .table2{text-align: left ; border: white 2px solid;}
+        td{border: black 2px dashed;}
+        .td2{border: white 2px dashed;}
+        tr{border: black 2px dashed;}
+        .tr2{border: white 2px dashed;}
+        .td1{background: #c3c3c3;}
+        .td2{border: white}
+    </style>
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <h1>Cursos Asociados</h1>
+        <table class="table2">    
+            <tr class="tr2">
+                <td class="td2">Pensum :</td>
+                <td class="td2"><select name="version_pensum" id="version_pensum">
+                    <option >Seleccione</option> 
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select></td>
+                <td class="td2">Nivel :</td>
+                <td class="td2"><select name="nivel" id="nivel">
+                    <option>Seleccione</option> 
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                </select></td>               
+            </tr>
+            <tr class="tr2">
+                <td class="td2">Area :</td>
+                <td class="td2"><select name="area" id="area">
+                    <option >Seleccione</option> 
+                    <option>Básica de Ingeniería</option>
+                    <option>Ciencias Básicas</option>
+                    <option>Formacíon Complementaria</option>
+                    <option>Ingeníeria Aplicada</option>
+                </select></td>
+                <td class="td2">Cursos : </td>
+                <td class="td2"><select name="curso" id="curso">
+                    <option >Seleccione</option>
+                </select></td>
+            </tr>
+        </table>
+        <a href="javascript:agregar({{user.id}})" >Agregar el curso</a>
+        <table>
+            <tr class="td1">
+                <td><strong>Nombre</strong></td>
+                <td><strong>Pensum</strong></td>
+                <td><strong>Nivel</strong></td>
+                <td><strong>Area</strong></td>
+                <td><strong>Acciones</strong></td>
+            </tr>
+            {% for curso in user.userrol.cursos.all %}
+            <tr id="{{curso.id}}">
+                <td>{{curso}}</td>
+                <td>{{curso.version_pensum}}</td>
+                <td>{{curso.nivel}}</td>
+                <td>{{curso.area}}</td>
+                <td>
+                    <a href="javascript:eliminar({{curso.id}},{{user.id}})" >Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+</body>
+</html>
+<script lenguague="javascript">
+function eliminar(id,id_u){
+    let url = "{% url 'cursos' '1' %}";
+    var caso="eliminar";
+    const postData={
+        'id': id,
+        'id_u': id_u,
+        'caso': caso,
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+    };
+    if(confirm('¿Esta seguro de eliminar el curso?')){
+        $.post(url, postData, function(response){
+            alert(response);
+            window.location.reload();
+        }); 
+    }   
+};
+function agregar(id_u){
+    let url = "{% url 'cursos' '1' %}";
+    var curso = $('#curso').val();
+    var pensum = $('#version_pensum').val();
+    var caso="agregar";
+    const postData={
+        'curso': curso,
+        'pensum': pensum,
+        'caso': caso,
+        'id_u': id_u,
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+    };
+    if(confirm('¿Esta seguro de agregar el curso seleccionado?')){
+        $.post(url, postData, function(response){
+            alert(response);
+            window.location.reload();
+        }); 
+    }   
+};
+$(document).ready(function(){
+    $("#version_pensum").change(function(){
+        let url = "{% url 'curso' %}";
+        var pensum_sel = $('#version_pensum').val();
+        var curso_sel = $('#curso').val();
+        const postData={
+			'pensum': $('#version_pensum').val(),
+            'nivel':$('#nivel').val(),
+            'area':$('#area').val(),
+            'caso':"cursos",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+			let curso = JSON.parse(response);
+            $("#curso").empty();
+            $("#curso").append(`<option>Seleccione</option>`);
+            for(var i=0; i<curso.data.length;i++){
+                $("#curso").append(`<option>${curso.data[i]}</option>`);
+            };
+		});
+    });
+    $("#nivel").change(function(){
+        let url = "{% url 'curso' %}";
+        const postData={
+			'pensum': $('#version_pensum').val(),
+            'nivel':$('#nivel').val(),
+            'area':$('#area').val(),
+            'caso':"cursos",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+			let curso = JSON.parse(response);
+            $("#curso").empty();
+            $("#curso").append(`<option>Seleccione</option>`);
+            for(var i=0; i<curso.data.length;i++){
+                $("#curso").append(`<option>${curso.data[i]}</option>`);
+            };
+		});
+    });
+    $("#area").change(function(){
+        let url = "{% url 'curso' %}";
+        const postData={
+			'pensum': $('#version_pensum').val(),
+            'nivel':$('#nivel').val(),
+            'area':$('#area').val(),
+            'caso':"cursos",
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+        $.post(url, postData, function(response){
+			let curso = JSON.parse(response);
+            $("#curso").empty();
+            $("#curso").append(`<option>Seleccione</option>`);
+            for(var i=0; i<curso.data.length;i++){
+                $("#curso").append(`<option>${curso.data[i]}</option>`);
+            };
+		});
+    });
+});
+</script>
