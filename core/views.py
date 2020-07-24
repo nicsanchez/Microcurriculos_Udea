@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse,get_object_or_404,redirect
-from .models import Microcurriculum,Unity,Evaluation,Curso,Curso_asignado,Curso_programado,Semestres,Microcurriculum_2,Unity_2,Evaluation_2,Solicitud,Versiones,UserRol
+from .models import Microcurriculum,Unity,Evaluation,Curso,Curso_asignado,Curso_programado,Semestres,Microcurriculum_2,Unity_2,Evaluation_2,Solicitud,Versiones,UserRol,Programa
 from django.contrib import messages
 from django.core import serializers
 from django.http import JsonResponse
@@ -26,6 +26,26 @@ def logout(request):
     do_logout(request)
     return redirect('/login')
 
+def gestor(request):
+    if request.user.is_authenticated:
+        if(str(request.user.groups.all()[0])=='Jefe'):
+            if request.method == 'POST':
+                username=request.POST['username']
+                departamento=request.POST['departamento']
+                user = User.objects.get(username=username)
+                dep = Programa.objects.get(nombre_progr=departamento)
+                atributos = UserRol.objects.get(user=user)
+                atributos.departamento=dep
+                atributos.save(update_fields=['departamento'])
+                return HttpResponse("Se actualizó correctamente el grupo del usuario")
+            usuarios=User.objects.filter(groups__name="Gestor")
+            grupos=Group.objects.all()
+            programas=Programa.objects.all()
+            return render(request, "core/gestores.html",{'gestores':usuarios,'grupos':grupos,'programas':programas})
+        else:
+            return redirect('/nucleo')    
+    return redirect('/login')
+
 def coordinador(request):
     if request.user.is_authenticated:
         if(str(request.user.groups.all()[0])=='Gestor'):
@@ -37,12 +57,19 @@ def coordinador(request):
                 user.groups.clear()
                 user.groups.set(group)
                 user.save()
-                if(grupo!="Coordinador"):
+                departamento = request.user.userrol.departamento.id
+                dep = Programa(id=departamento)
+                if(grupo != "Coordinador"):
                     atributo=UserRol.objects.get(user=user)
                     atributo.delete()
+                    insert = UserRol(user=user,departamento=dep)
+                    insert.save()
                 return HttpResponse("Se actualizó correctamente el grupo del usuario")
-            usuarios=User.objects.filter(groups__name="Coordinador")
-            grupos=Group.objects.all()
+            departamento = request.user.userrol.departamento.id
+            dep = Programa(id=departamento)
+            usuarios=User.objects.filter(groups__name="Coordinador").filter(userrol__departamento=dep)
+            query = reduce(or_, (Q(name="Coordinador"),Q(name="Editor")))
+            grupos=Group.objects.filter(query)
             return render(request, "core/coordinador.html",{'coordinadores':usuarios,'grupos':grupos})
         else:
             return redirect('/nucleo')    
@@ -61,7 +88,8 @@ def editor(request):
                 user.save()
                 return HttpResponse("Se actualizó correctamente el grupo del usuario")
             usuarios=User.objects.filter(groups__name="Editor")
-            grupos=Group.objects.all()
+            query = reduce(or_, (Q(name="Coordinador"),Q(name="Editor")))
+            grupos=Group.objects.filter(query)
             return render(request, "core/editor.html",{'editores':usuarios,'grupos':grupos})
         else:
             return redirect('/nucleo')    
@@ -146,7 +174,7 @@ def choose(request):
 
 def register(request):
     if request.user.is_authenticated:
-        if(str(request.user.groups.all()[0])=='Gestor'):
+        if(str(request.user.groups.all()[0])=='Gestor' or str(request.user.groups.all()[0])=='Jefe'):
             if request.method == "POST":
                 first_name=request.POST['name']
                 second_name=request.POST['s_name']
@@ -172,12 +200,21 @@ def register(request):
                             user.groups.set(group)
                             user.save()
                             mensaje = 'Usuario registrado con exito'
+                            programa=request.POST['programa']
+                            departamento=Programa.objects.get(nombre_progr=programa)
+                            insert = UserRol(user=user,departamento=departamento)
+                            insert.save()
                             return render(request, "core/register.html",{'mensaje': mensaje})                     
                         else:  
                             mensaje = 'Las contraseñas no coinciden'
                             return render(request, "core/register.html",{'alerta': mensaje})                     
-            grupos=Group.objects.all()
-            return render(request, "core/register.html",{'groups':grupos})
+            if(str(request.user.groups.all()[0])=='Gestor'):
+                grupos=Group.objects.filter(Q(name="Coordinador")|Q(name="Editor"))
+                programas=Programa.objects.filter(nombre_progr=str(request.user.userrol.departamento))
+            elif(str(request.user.groups.all()[0])=='Jefe'):    
+                grupos=Group.objects.filter(Q(name="Gestor")|Q(name="Jefe"))
+                programas=Programa.objects.all()
+            return render(request, "core/register.html",{'groups':grupos,'programas':programas})
         else:
             return redirect('/nucleo')
     return redirect('/login')     
@@ -194,7 +231,7 @@ def login(request):
                 do_login(request, user)
                 if(str(request.user.groups.all()[0])=='Coordinador'):
                     return redirect('/choose')
-                elif(str(request.user.groups.all()[0])=='Editor' or str(request.user.groups.all()[0])=='Gestor'):
+                elif(str(request.user.groups.all()[0])=='Editor' or str(request.user.groups.all()[0])=='Gestor' or str(request.user.groups.all()[0])=='Jefe' ):
                     return redirect('/nucleo')
     return render(request, "core/login.html", {'form': form})                
 

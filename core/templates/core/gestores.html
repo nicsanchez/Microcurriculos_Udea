@@ -11,7 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Coordinadores</title>
+    <title>Gestores</title>
     <style type="text/css" media="screen">
         A:link {color: blue; font-size: 12pt; text-decoration: none }
         A:hover {color: blue; font-size: 12pt; text-decoration: none }
@@ -26,78 +26,70 @@
 <body>
     <form method="POST">
         {% csrf_token %}
-        <h1>Coordinadores</h1>
+        <h1>Gestores</h1>
         <table>
             <tr class="td1">
                 <td><strong>Usuario</strong></td>
                 <td><strong>Nombres</strong></td>
                 <td><strong>Apellidos</strong></td>
                 <td><strong>Email</strong></td>
-                <td><strong>Cursos</strong></td>
+                <td><strong>Departamento</strong></td>
                 <td><strong>Acciones</strong></td>
             </tr>
-            {% for coordinador in coordinadores %}
+            {% for gestor in gestores %}
             <tr>
-                <td id="username{{coordinador.id}}" name="username{{coordinador.id}}">{{coordinador.username}}</td>
-                <td id="f_name{{coordinador.id}}" name="f_name{{coordinador.id}}">{{coordinador.first_name}}</td>
-                <td id="l_name{{coordinador.id}}" name="l_name{{coordinador.id}}">{{coordinador.last_name}}</td>
-                <td id="email{{coordinador.id}}" name="email{{coordinador.id}}">{{coordinador.email}}</td>
-                <td id="username{{coordinador.id}}" name="username{{coordinador.id}}">
-                    <table class="td2">
-                        {% for curso in coordinador.userrol.cursos.all %}
-                            <tr class="td2">
-                                <td class="td2">{{curso}}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </td>
+                <td id="username{{gestor.id}}" name="username{{gestor.id}}">{{gestor.username}}</td>
+                <td id="f_name{{gestor.id}}" name="f_name{{gestor.id}}">{{gestor.first_name}}</td>
+                <td id="l_name{{gestor.id}}" name="l_name{{gestor.id}}">{{gestor.last_name}}</td>
+                <td id="email{{gestor.id}}" name="email{{gestor.id}}">{{gestor.email}}</td>
+                <td id="username{{gestor.id}}" name="username{{gestor.id}}">{{gestor.userrol.departamento}}</td>
                 <td>    
                     <table class="td2">
                         <tr class="td2">
-                            <td class="td2"><a href="{% url 'cursos' coordinador.id %}">Modificar Cursos</a></td>
+                            <td class="td2"><a href="javascript:cambiar({{gestor.id}})">Modificar Departamento</a></td>
                         </tr>
                         <tr class="td2">
-                            <td class="td2"><a href="javascript:cambiar({{coordinador.id}})">Cambiar Grupo</a></td>
+                            <td class="td2"><a href="">Cambiar Grupo</a></td>
                         </tr>
                     </table>
                 </td>
             </tr>
             {% endfor %}
         </table>
-        <div class="modificar_grupo">
+        <div class="modificar_departamento">
             <table class="table">
                 <tr class="td2">
-                    <td class="td2">Está modificando el grupo de: </td>
-                    <td id="admin" class="td2"></td>
+                    <td class="td2">Está modificando el departamento al que pertenece: </td>
+                    <td id="gestor" class="td2"></td>
                 </tr>
                 <tr class="td2">
-                    <td class="td2">Seleccione un grupo</td>
+                    <td class="td2">Seleccione un departamento</td>
                     <td class="td2">
-                        <select name="grupo" id="grupo" required="True">
+                        <select name="departamento" id="departamento" required="True">
                         <option >Seleccione</option>
-                        {% for grupo in grupos %}
-                            <option>{{grupo}}</option>
+                        {% for programa in programas %}
+                            <option>{{programa}}</option>
                         {% endfor %}
                     </td>
                 </tr>
                 <tr class="td2">
-                    <td class="td2"><a href="javascript:cambiar2()">Modificar Grupo </a></td>
+                    <td class="td2"><a href="javascript:cambiar2()">Modificar departamento </a></td>
                 </tr>
             </table>
         </div>
     </form>
 </body>
 </html>
-<script languague="javascript">
+<script>
 function cambiar2(){
-    let url="{% url 'coordinador' %}";
-    var username=$('#admin').text();
-    var grupo=$('#grupo').val();
-    if(username!="" && grupo!="Seleccione"){
-        if(confirm("¿Esta seguro de cambiar el grupo de "+username+" a "+grupo+"? \n *Recuerde que se eliminarán los cursos asociados")){
+    let url="{% url 'gestor' %}";
+    var username=$('#gestor').text();
+    var departamento=$('#departamento').val();
+    if(username!="" && departamento!="Seleccione"){
+        if(confirm("¿Esta seguro de cambiar el departamento de "+username+" a "+departamento+"?")){
             const postData={
             'username': username,
-            'grupo': grupo,
+            'departamento': departamento,
             csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
             };
             $.post(url, postData, function(response){
@@ -112,14 +104,14 @@ function cambiar2(){
 }
 function cambiar(id){
     var username=$('#username'+id).text();
-    $('#admin').html(username);
-    $('.modificar_grupo').each(function(){
+    $('#gestor').html(username);
+    $('.modificar_departamento').each(function(){
         $(this).show();
     });
-}
+};
 $(document).ready(function(){
-    $('.modificar_grupo').each(function(){
+    $('.modificar_departamento').each(function(){
         $(this).hide();
     });
 });
-</script>    
+</script>  

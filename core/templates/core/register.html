@@ -80,6 +80,17 @@
                 </td>
                 <td id="msj_group" class="errores">*Seleccione un grupo</td>     
             </tr>
+            <tr>
+                <td>Departamento: </td>
+                <td>
+                    <select name="programa" id="programa" required="True">
+                    <option >Seleccione</option>
+                    {% for programa in programas %}
+                        <option> {{programa}} </option>
+                    {% endfor %}
+                </td>
+            <td id="msj_group" class="errores">*Seleccione un grupo</td>     
+        </tr>
         </table> 
         <table>
             <tr>

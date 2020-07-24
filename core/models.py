@@ -233,7 +233,8 @@ class Versiones(models.Model):
 
 class UserRol(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
-    rol = models.TextField()
+    departamento = models.ForeignKey(Programa, on_delete=models.PROTECT,null=True)
+    rol = models.TextField(null=True)
     cursos = models.ManyToManyField(Curso_asignado,verbose_name="Cursos")
 
     class Meta:

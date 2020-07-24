@@ -24,6 +24,7 @@ urlpatterns = [
     path('register/',views.register,name="register"),
     path('coordinador/',views.coordinador,name="coordinador"),
     path('editor/',views.editor,name="editor"),
+    path('gestor/',views.gestor,name="gestor"),
     path('cursos/<int:user_id>/',views.cursos, name='cursos')
 ]
 if settings.DEBUG:

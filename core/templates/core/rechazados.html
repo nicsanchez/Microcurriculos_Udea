@@ -52,7 +52,7 @@
                     <td id="soli{{rechazado.microcurriculo.id}}" name="soli{{rechazado.microcurriculo.id}}">{{rechazado.soli}}</td>
                     {% if rechazado.estado == "Cerrado" %}
                         <td id="estado{{rechazado.microcurriculo.id}}" name="estado{{rechazado.microcurriculo.id}}">Rechazado</td>
-                    {%else%}
+                    {%else %}
                         <td id="estado{{rechazado.microcurriculo.id}}" name="estado{{rechazado.microcurriculo.id}}">{{rechazado.estado}}</td>
                     {%endif%}
                     <td id="descripcion{{rechazado.microcurriculo.id}}" name="descripcion{{rechazado.microcurriculo.id}}">{{rechazado.descripcion}}</td>
@@ -74,7 +74,7 @@
                     <td id="date_new{{rechazado.microcurriculo.id}}" name="date_new{{rechazado.microcurriculo.id}}">{{rechazado.created}}</td>
                     <td id="date{{rechazado.microcurriculo.id}}" name="date{{rechazado.microcurriculo.id}}">{{rechazado.updated}}</td>
                     <td>
-                        {% if rechazado.estado == "Cerrado" %}
+                        {% if rechazado.estado == "Cerrado" or rechazado.estado == "Aceptado"%}
                             <h7>Ninguna</h7>
                         {%else%}
                             <a href="" class="isActivated">Reactivar</a>

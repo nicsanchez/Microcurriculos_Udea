@@ -42,7 +42,7 @@ class VersionesAdmin(admin.ModelAdmin):
     list_display = ('id','version','id_microcurriculos','id_microcurriculos_2','accion','comentarios','usuario','coordinador','created','updated')
 
 class RolesAdmin(admin.ModelAdmin):
-    list_display = ('user','rol','cursos_adjuntos')
+    list_display = ('user','rol','cursos_adjuntos','departamento')
     
     def cursos_adjuntos(self,obj):
         return ", ".join([str(c) for c in obj.cursos.all().order_by("id")])

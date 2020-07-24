@@ -34,8 +34,10 @@
     </p>
     <p>
         {% if request.user|has_group:"Coordinador" %}
-             Eres un <b>{{request.user.userrol.rol}}</b> de la aplicacion.
-        {% elif request.user|has_group:"Editor" or request.user|has_group:"Gestor" %}
+            Eres un <b>{{request.user.userrol.rol}}</b> del departamento <b>{{request.user.userrol.departamento}}</b>.
+        {% elif request.user|has_group:"Gestor"%}
+            Eres un <b>{{request.user.groups.all.0}}</b> del departamento <b>{{request.user.userrol.departamento}}</b>.
+        {% elif request.user|has_group:"Editor" or request.user|has_group:"Gestor" or request.user|has_group:"Jefe"%}
             Eres un <b>{{request.user.groups.all.0}}</b> de la aplicacion.
         {% endif %}
     </p>
@@ -73,7 +75,15 @@
         <tr>
            <td><a href="{% url 'editor' %}">Administrar Editores</a></td>
         </tr> 
-    {% endif %}    
+    {% endif %}
+    {% if request.user|has_group:"Jefe"%}
+        <tr>
+            <td><a href="{% url 'register' %}">Registrar nuevo gestor</a></td>
+        </tr>
+        <tr>
+            <td><a href="{% url 'gestor' %}">Administrar Gestores</a></td>
+        </tr>
+    {% endif %}       
 </table>
 {% if request.user.is_authenticated %}
     <table>
